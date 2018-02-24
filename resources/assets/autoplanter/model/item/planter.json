@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "autoplanter:planter",
+    "down": "minecraft:blocks/dirt",
+    "up": "minecraft:blocks/dirt",
+    "north": "autoplanter:planter",
+    "east": "autoplanter:planter",
+    "south": "autoplanter:planter",
+    "west": "autoplanter:planter"
+  }
+}

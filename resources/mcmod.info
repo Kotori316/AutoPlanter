@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "autoplanter",
+    "name": "AutoPlanter",
+    "description": "Add automatically planting dirt.",
+    "version": "1.0",
+    "mcversion": "1.12.2",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [ "Kotori316" ],
+    "credits": "The Forge and FML guys, for making this example",
+    "logoFile": "",
+    "screenshots": [ ],
+    "dependencies": [ ]
+  }
+]
