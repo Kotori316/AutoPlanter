@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ppp",
+    "dDd",
+    "ggg"
+  ],
+  "key": {
+    "p": {
+      "type": "forge:ore_dict",
+      "ore": "dirt"
+    },
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "treeSapling"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result": {
+    "item": "autoplanter:planter",
+    "count": 1
+  }
+}
