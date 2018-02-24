@@ -24,6 +24,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 
+import com.kotori316.autoplanter.tiles.TilePlanter;
+
 public class BlockPlanter extends BlockContainer {
     public static final Material DIRT = new MaterialDirt();
     public final ItemBlock itemBlock;

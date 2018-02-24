@@ -8,6 +8,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
+import com.kotori316.autoplanter.tiles.ContainerPlanter;
+import com.kotori316.autoplanter.tiles.GuiPlanter;
+import com.kotori316.autoplanter.tiles.TilePlanter;
+
 public class GuiHandler implements IGuiHandler {
 
     @Nullable

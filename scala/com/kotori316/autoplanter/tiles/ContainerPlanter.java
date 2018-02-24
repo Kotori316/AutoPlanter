@@ -1,4 +1,4 @@
-package com.kotori316.autoplanter;
+package com.kotori316.autoplanter.tiles;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

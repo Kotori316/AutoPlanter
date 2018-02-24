@@ -1,4 +1,4 @@
-package com.kotori316.autoplanter;
+package com.kotori316.autoplanter.tiles;
 
 import java.util.Collections;
 import java.util.Set;
@@ -18,6 +18,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+
+import com.kotori316.autoplanter.BlockPlanter;
 
 public class TilePlanter extends TileEntity implements IInventory {
     private static final Set<ItemDamage> SAPLINGS = Collections.emptySet();

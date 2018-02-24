@@ -1,4 +1,4 @@
-package com.kotori316.autoplanter;
+package com.kotori316.autoplanter.tiles;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -7,6 +7,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+
+import com.kotori316.autoplanter.AutoPlanter;
 
 @SideOnly(Side.CLIENT)
 public class GuiPlanter extends GuiContainer {

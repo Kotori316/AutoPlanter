@@ -27,6 +27,9 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kotori316.autoplanter.tiles.ItemDamage;
+import com.kotori316.autoplanter.tiles.TilePlanter;
+
 @Mod(name = AutoPlanter.MOD_NAME, modid = AutoPlanter.modID, version = "${version}")
 public class AutoPlanter {
 

@@ -1,4 +1,4 @@
-package com.kotori316.autoplanter;
+package com.kotori316.autoplanter.tiles;
 
 import java.util.Objects;
 
