@@ -14,15 +14,18 @@ import com.kotori316.autoplanter.tiles.TilePlanter;
 
 public class GuiHandler implements IGuiHandler {
 
+    public static final int PLANTER_GUIID = 0;
+
     @Nullable
     @Override
     public Container getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         switch (ID) {
-            case 0:
+            case PLANTER_GUIID:
                 return new ContainerPlanter(((TilePlanter) world.getTileEntity(pos)), player);
+            default:
+                return null;
         }
-        return null;
     }
 
     @Nullable
@@ -30,7 +33,7 @@ public class GuiHandler implements IGuiHandler {
     public GuiContainer getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         switch (ID) {
-            case 0:
+            case PLANTER_GUIID:
                 return new GuiPlanter(((TilePlanter) world.getTileEntity(pos)), player);
             default:
                 return null;

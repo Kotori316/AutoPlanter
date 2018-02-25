@@ -68,7 +68,7 @@ public class BlockPlanter extends BlockContainer {
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!playerIn.isSneaking() && !(facing == EnumFacing.UP && TilePlanter.isValid.test(playerIn.getHeldItem(hand)))) {
-            playerIn.openGui(AutoPlanter.getInstance(), 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+            playerIn.openGui(AutoPlanter.getInstance(), GuiHandler.PLANTER_GUIID, worldIn, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
