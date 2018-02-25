@@ -31,7 +31,7 @@ public class ContainerPlanter extends Container {
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         Slot from = getSlot(index);
-        if (from != null && from.getHasStack()) {
+        if (from.getHasStack()) {
             ItemStack current = from.getStack();
             int originalSize = current.getCount();
             int originalSlot = 9;
@@ -56,6 +56,12 @@ public class ContainerPlanter extends Container {
             from.onTake(playerIn, current);
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer playerIn) {
+        super.onContainerClosed(playerIn);
+        tilePlanter.closeInventory(playerIn);
     }
 
     private static class LimitableSlot extends Slot {

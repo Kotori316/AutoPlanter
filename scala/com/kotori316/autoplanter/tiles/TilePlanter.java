@@ -104,6 +104,7 @@ public class TilePlanter extends TileEntity implements IInventory {
 
     @Override
     public void closeInventory(EntityPlayer player) {
+        if (!getWorld().isRemote) plantSapling();
     }
 
     @Override
