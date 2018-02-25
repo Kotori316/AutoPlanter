@@ -2,6 +2,8 @@ package com.kotori316.autoplanter.tiles;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -15,7 +17,7 @@ public class ItemDamage {
     private final Item item;
     private final int meta;
     private final NBTTagCompound nbtTagCompound;
-    public static final ItemDamage INVALID = new ItemDamage(null, 0, null) {
+    public static final ItemDamage INVALID = new ItemDamage(Item.getItemFromBlock(Blocks.AIR), 0, null) {
         @Override
         public boolean equals(Object obj) {
             return false;
@@ -37,7 +39,7 @@ public class ItemDamage {
         }
     };
 
-    public ItemDamage(Item item, int meta, NBTTagCompound nbtTagCompound) {
+    public ItemDamage(@Nonnull Item item, int meta, @Nullable NBTTagCompound nbtTagCompound) {
         this.item = item;
         this.meta = meta;
         this.nbtTagCompound = nbtTagCompound;
@@ -53,8 +55,9 @@ public class ItemDamage {
             return this.item == that.item &&
                     (this.meta == OreDictionary.WILDCARD_VALUE || that.meta == OreDictionary.WILDCARD_VALUE || this.meta == that.meta) &&
                     Objects.equals(this.nbtTagCompound, that.nbtTagCompound);
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemBlock;
@@ -33,7 +34,6 @@ public class BlockPlanter extends BlockContainer {
 
     public BlockPlanter() {
         super(DIRT);
-        setUnlocalizedName("BlockPlanter");
         setHardness(0.6f);
         setResistance(100);
         setSoundType(SoundType.GROUND);
@@ -46,7 +46,7 @@ public class BlockPlanter extends BlockContainer {
 
     @Override
     public boolean canSustainPlant(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing direction, IPlantable plantable) {
-        Block block = plantable.getPlant(world, pos.offset(EnumFacing.UP)).getBlock();
+        Block block = plantable.getPlant(world, pos.offset(direction)).getBlock();
         return block instanceof BlockSapling;
     }
 
@@ -82,6 +82,18 @@ public class BlockPlanter extends BlockContainer {
     @Override
     public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, EntityLiving.SpawnPlacementType type) {
         return false;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+        return Container.calcRedstone(worldIn.getTileEntity(pos));
     }
 
     @Override

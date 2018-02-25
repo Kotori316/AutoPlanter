@@ -49,12 +49,12 @@ public class TilePlanter extends TileEntity implements IInventory {
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        ItemStackHelper.saveAllItems(compound, inventory);
+        ItemStackHelper.loadAllItems(compound, inventory);
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        ItemStackHelper.loadAllItems(compound, inventory);
+        ItemStackHelper.saveAllItems(compound, inventory);
         return super.writeToNBT(compound);
     }
 
