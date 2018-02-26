@@ -14,15 +14,17 @@ import com.kotori316.autoplanter.AutoPlanter;
 public class GuiPlanter extends GuiContainer {
 
     private final static ResourceLocation resourceLocation = new ResourceLocation(AutoPlanter.modID, "textures/gui/planter.png");
+    private final TilePlanter tilePlanter;
 
     public GuiPlanter(TilePlanter tilePlanter, EntityPlayer player) {
         super(new ContainerPlanter(tilePlanter, player));
+        this.tilePlanter = tilePlanter;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String s = "Auto Planter";
-        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
+        String s = tilePlanter.getName();
+        this.fontRenderer.drawString(I18n.format(s), this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
     }
 
