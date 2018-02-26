@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class ItemDamage {
+public class ItemDamage implements Comparable<ItemDamage> {
 
     private final Item item;
     private final int meta;
@@ -69,6 +69,11 @@ public class ItemDamage {
     @Override
     public int hashCode() {
         return item.hashCode();
+    }
+
+    @Override
+    public int compareTo(ItemDamage that) {
+        return Integer.compare(Item.getIdFromItem(this.item), Item.getIdFromItem(that.item));
     }
 
     public boolean isBlock() {
