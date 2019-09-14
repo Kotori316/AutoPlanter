@@ -30,6 +30,7 @@ public class GuiHandler implements IGuiHandler {
 
     @Nullable
     @Override
+    @net.minecraftforge.fml.relauncher.SideOnly(net.minecraftforge.fml.relauncher.Side.CLIENT)
     public GuiContainer getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         switch (ID) {

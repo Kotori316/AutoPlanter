@@ -50,7 +50,7 @@ public class ItemDamage implements Comparable<ItemDamage> {
         if (super.equals(obj)) {
             return true;
         }
-        if (ItemDamage.class.isInstance(obj)) {
+        if (obj instanceof ItemDamage) {
             ItemDamage that = (ItemDamage) obj;
             return this.item == that.item &&
                     (this.meta == OreDictionary.WILDCARD_VALUE || that.meta == OreDictionary.WILDCARD_VALUE || this.meta == that.meta) &&

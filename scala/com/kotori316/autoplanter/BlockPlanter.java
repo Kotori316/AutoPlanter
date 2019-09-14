@@ -99,7 +99,7 @@ public class BlockPlanter extends BlockContainer {
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         TileEntity entity = worldIn.getTileEntity(pos);
-        if (IInventory.class.isInstance(entity)) {
+        if (entity instanceof IInventory) {
             IInventory inventory = (IInventory) entity;
             InventoryHelper.dropInventoryItems(worldIn, pos, inventory);
             worldIn.updateComparatorOutputLevel(pos, this);
