@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ppp",
+    "dDd",
+    "ggg"
+  ],
+  "key": {
+    "p": {
+      "item": "minecraft:dirt"
+    },
+    "d": {
+      "tag": "forge:ingots"
+    },
+    "g": {
+      "tag": "minecraft:saplings"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result": {
+    "item": "auto_planter:planter",
+    "count": 1
+  }
+}
