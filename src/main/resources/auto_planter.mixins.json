@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.kotori316.auto_planter.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinCanPlantOn"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,17 +1,16 @@
 package com.kotori316.auto_planter;
 
 import com.mojang.datafixers.DSL;
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.container.ContainerType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,56 +21,36 @@ import com.kotori316.auto_planter.planter.PlanterGui;
 import com.kotori316.auto_planter.planter.PlanterTile;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(AutoPlanter.AUTO_PLANTER)
-public final class AutoPlanter {
+//@Mod(AutoPlanter.AUTO_PLANTER)
+public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String AUTO_PLANTER = "auto_planter";
 
-    public AutoPlanter() {
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+    @Override
+    public void onInitialize() {
+        Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK);
+        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK.blockItem);
+        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, "check_plantable"), Holder.CHECK_PLANTABLE_ITEM);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+//        Registry.register(Registry.CONTAINER, PlanterContainer.GUI_ID, Holder.PLANTER_CONTAINER_TYPE);
+
+        ContainerProviderRegistry.INSTANCE.registerFactory(new Identifier(PlanterContainer.GUI_ID), (syncId, identifier, player, buf) ->
+            new PlanterContainer(syncId, player, buf.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
     }
 
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static final class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            // register a new block here
-//            LOGGER.info("HELLO from Register Block");
-            blockRegistryEvent.getRegistry().register(Holder.PLANTER_BLOCK);
-        }
-
-        @SubscribeEvent
-        public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
-            itemRegistryEvent.getRegistry().register(Holder.CHECK_PLANTABLE_ITEM);
-            itemRegistryEvent.getRegistry().register(Holder.PLANTER_BLOCK.blockItem);
-        }
-
-        @SubscribeEvent
-        public static void tiles(RegistryEvent.Register<TileEntityType<?>> e) {
-            e.getRegistry().register(Holder.PLANTER_TILE_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.TILE_ID));
-        }
-
-        @SubscribeEvent
-        public static void containers(RegistryEvent.Register<ContainerType<?>> e) {
-            e.getRegistry().register(Holder.PLANTER_CONTAINER_TYPE.setRegistryName(PlanterContainer.GUI_ID));
-        }
-
-        @SubscribeEvent
-        public static void clientInit(FMLClientSetupEvent event) {
-            ScreenManager.registerFactory(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
-        }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public void onInitializeClient() {
+        ScreenProviderRegistry.INSTANCE.<PlanterContainer>registerFactory(new Identifier(PlanterContainer.GUI_ID), c ->
+            new PlanterGui(c, c.player.inventory, Holder.PLANTER_BLOCK.getName()));
     }
 
     public static class Holder {
         public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
-        public static final TileEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
-            TileEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.nilType());
-        public static final ContainerType<PlanterContainer> PLANTER_CONTAINER_TYPE =
-            IForgeContainerType.create((id, inv, data) -> new PlanterContainer(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
+        public static final BlockEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
+            BlockEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.nilType());
+        public static final ContainerType<PlanterContainer> PLANTER_CONTAINER_TYPE = null;
     }
 }

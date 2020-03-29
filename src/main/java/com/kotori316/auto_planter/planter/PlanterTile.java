@@ -2,59 +2,47 @@ package com.kotori316.auto_planter.planter;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Container;
+import net.minecraft.container.NameableContainerProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraft.util.math.Direction;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterTile extends TileEntity implements IInventory, INamedContainerProvider {
+public class PlanterTile extends BlockEntity implements Inventory, NameableContainerProvider {
     public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.name + "_tile";
     public static final int SIZE = 9;
-    public final NonNullList<ItemStack> inventoryContents;
-    public final IItemHandlerModifiable handler = new InvWrapper(this);
+    public final DefaultedList<ItemStack> inventoryContents;
 
     public PlanterTile() {
         super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
-        inventoryContents = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+        inventoryContents = DefaultedList.ofSize(getInvSize(), ItemStack.EMPTY);
     }
 
     public void plantSapling() {
-        if (world != null && !world.isRemote) {
+        if (world != null && !world.isClient) {
             BlockPos upPos = getPos().up();
             BlockState state = world.getBlockState(upPos);
-            PlayerEntity fake = FakePlayerFactory.getMinecraft(((ServerWorld) world));
-            Vec3d hitPos = new Vec3d(0.5, 0, 0.5).add(pos.getX(), pos.getY(), pos.getZ());
-            BlockRayTraceResult rayTrace = new BlockRayTraceResult(hitPos, Direction.UP, pos, false);
             for (ItemStack maybeSapling : inventoryContents) {
                 if (isSapling(maybeSapling)) {
-                    fake.setHeldItem(Hand.MAIN_HAND, maybeSapling);
-                    BlockItemUseContext context = new BlockItemUseContext(new ItemUseContext(fake, Hand.MAIN_HAND, rayTrace));
-                    if (state.isReplaceable(context)) {
-                        ((BlockItem) maybeSapling.getItem()).tryPlace(context);
+                    AutomaticItemPlacementContext context = new AutomaticItemPlacementContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
+                    if (state.canReplace(context)) {
+                        ((BlockItem) maybeSapling.getItem()).place(context);
+                        break;
                     }
                 }
             }
@@ -62,35 +50,35 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        ItemStackHelper.saveAllItems(compound, inventoryContents);
-        return super.write(compound);
+    public CompoundTag toTag(CompoundTag tag) {
+        Inventories.toTag(tag, inventoryContents);
+        return super.toTag(tag);
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
-        ItemStackHelper.loadAllItems(compound, inventoryContents);
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
+        Inventories.fromTag(tag, inventoryContents);
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getInvSize() {
         return SIZE;
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isInvEmpty() {
         return inventoryContents.stream().allMatch(ItemStack::isEmpty);
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getInvStack(int index) {
         return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index) : ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        ItemStack itemstack = ItemStackHelper.getAndSplit(this.inventoryContents, index, count);
+    public ItemStack takeInvStack(int index, int count) {
+        ItemStack itemstack = Inventories.splitStack(this.inventoryContents, index, count);
         if (!itemstack.isEmpty()) {
             this.markDirty();
         }
@@ -98,7 +86,7 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
+    public ItemStack removeInvStack(int index) {
         ItemStack itemstack = this.inventoryContents.get(index);
         if (itemstack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -109,22 +97,22 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setInvStack(int index, ItemStack stack) {
         this.inventoryContents.set(index, stack);
-        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
-            stack.setCount(this.getInventoryStackLimit());
+        if (!stack.isEmpty() && stack.getCount() > this.getInvMaxStackAmount()) {
+            stack.setCount(this.getInvMaxStackAmount());
         }
         this.markDirty();
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        return player.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5) <= 64;
+    public boolean canPlayerUseInv(PlayerEntity player) {
+        return player.squaredDistanceTo(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5) <= 64;
     }
 
     @Override
-    public void closeInventory(PlayerEntity player) {
-        if (world != null && !world.isRemote) plantSapling();
+    public void onInvClose(PlayerEntity player) {
+        if (world != null && !world.isClient) plantSapling();
     }
 
     @Override
@@ -133,7 +121,7 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean isValidInvStack(int index, ItemStack stack) {
         return isSapling(stack);
     }
 
@@ -148,8 +136,8 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(AutoPlanter.Holder.PLANTER_BLOCK.getTranslationKey());
+    public Text getDisplayName() {
+        return new TranslatableText(AutoPlanter.Holder.PLANTER_BLOCK.getTranslationKey());
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.kotori316.auto_planter.AutoPlanter;
 
 public class CheckPlantableItem extends Item {
     public CheckPlantableItem() {
-        super(new Item.Properties());
-        setRegistryName(AutoPlanter.AUTO_PLANTER, "check_plantable");
+        super(new Item.Settings());
     }
 }
