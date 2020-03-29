@@ -10,7 +10,7 @@
       "item": "minecraft:dirt"
     },
     "d": {
-      "tag": "forge:ingots"
+      "item": "minecraft:iron_ingot"
     },
     "g": {
       "tag": "minecraft:saplings"
