@@ -46,13 +46,9 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
         if (world != null && !world.isRemote) {
             BlockPos upPos = getPos().up();
             BlockState state = world.getBlockState(upPos);
-            PlayerEntity fake = FakePlayerFactory.getMinecraft(((ServerWorld) world));
-            Vec3d hitPos = new Vec3d(0.5, 0, 0.5).add(pos.getX(), pos.getY(), pos.getZ());
-            BlockRayTraceResult rayTrace = new BlockRayTraceResult(hitPos, Direction.UP, pos, false);
             for (ItemStack maybeSapling : inventoryContents) {
                 if (isSapling(maybeSapling)) {
-                    fake.setHeldItem(Hand.MAIN_HAND, maybeSapling);
-                    BlockItemUseContext context = new BlockItemUseContext(new ItemUseContext(fake, Hand.MAIN_HAND, rayTrace));
+                    DirectionalPlaceContext context = new DirectionalPlaceContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
                     if (state.isReplaceable(context)) {
                         ((BlockItem) maybeSapling.getItem()).tryPlace(context);
                     }
