@@ -35,7 +35,7 @@ public final class AutoPlanter {
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = AUTO_PLANTER)
     public static final class RegistryEvents {
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
@@ -46,7 +46,7 @@ public final class AutoPlanter {
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
-            itemRegistryEvent.getRegistry().register(Holder.CHECK_PLANTABLE_ITEM);
+//            itemRegistryEvent.getRegistry().register(Holder.CHECK_PLANTABLE_ITEM);
             itemRegistryEvent.getRegistry().register(Holder.PLANTER_BLOCK.blockItem);
         }
 
@@ -70,7 +70,7 @@ public final class AutoPlanter {
         public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
         public static final TileEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
-            TileEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.nilType());
+            TileEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final ContainerType<PlanterContainer> PLANTER_CONTAINER_TYPE =
             IForgeContainerType.create((id, inv, data) -> new PlanterContainer(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
     }

@@ -1,5 +1,6 @@
 package com.kotori316.auto_planter.planter;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -7,39 +8,35 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class PlanterGui extends ContainerScreen<PlanterContainer> {
-    private static final ResourceLocation DISPENSER_GUI_TEXTURES = new ResourceLocation("textures/gui/container/dispenser.png");
+    private static final ResourceLocation LOCATION = new ResourceLocation("textures/gui/container/dispenser.png");
 
     public PlanterGui(PlanterContainer c, PlayerInventory inv, ITextComponent t) {
         super(c, inv, t);
     }
 
     @Override
-    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
-        this.renderBackground();
-        super.render(p_render_1_, p_render_2_, p_render_3_);
-        this.renderHoveredToolTip(p_render_1_, p_render_2_);
+    public void func_230430_a_(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.func_230446_a_(matrixStack);// back ground
+        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+        this.func_230459_a_(matrixStack, mouseX, mouseY); // render tooltip
     }
 
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String s = this.title.getFormattedText();
-        this.font.drawString(s, (float) (this.xSize / 2 - this.font.getStringWidth(s) / 2), 6.0F, 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float) (this.ySize - 96 + 2), 4210752);
+    protected void func_230451_b_(MatrixStack p_230451_1_, int mouseX, int mouseY) {
+        super.func_230451_b_(p_230451_1_, mouseX, mouseY);
     }
 
     /**
      * Draws the background layer of this container (behind the items).
      */
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    @SuppressWarnings("deprecation")
+    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        assert this.minecraft != null;
-        this.minecraft.getTextureManager().bindTexture(DISPENSER_GUI_TEXTURES);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(i, j, 0, 0, this.xSize, this.ySize);
+        this.getMinecraft().getTextureManager().bindTexture(LOCATION);
+        this.func_238474_b_(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 }

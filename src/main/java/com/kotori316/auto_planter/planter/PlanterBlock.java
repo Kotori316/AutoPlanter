@@ -73,7 +73,7 @@ public class PlanterBlock extends ContainerBlock {
     @Override
     public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
         PlantType type = plantable.getPlantType(world, pos.offset(facing));
-        return type == PlantType.Plains;
+        return type == PlantType.PLAINS;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class PlanterBlock extends ContainerBlock {
     @Override
     @SuppressWarnings("deprecation")
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
+        if (!state.isIn(newState.getBlock())) {
             if (!worldIn.isRemote) {
                 TileEntity entity = worldIn.getTileEntity(pos);
                 if (entity instanceof PlanterTile) {

@@ -46,11 +46,13 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
         if (world != null && !world.isRemote) {
             BlockPos upPos = getPos().up();
             BlockState state = world.getBlockState(upPos);
-            for (ItemStack maybeSapling : inventoryContents) {
-                if (isSapling(maybeSapling)) {
-                    DirectionalPlaceContext context = new DirectionalPlaceContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
-                    if (state.isReplaceable(context)) {
-                        ((BlockItem) maybeSapling.getItem()).tryPlace(context);
+            if (world.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
+                for (ItemStack maybeSapling : inventoryContents) {
+                    if (isSapling(maybeSapling)) {
+                        DirectionalPlaceContext context = new DirectionalPlaceContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
+                        if (state.isReplaceable(context)) {
+                            ((BlockItem) maybeSapling.getItem()).tryPlace(context);
+                        }
                     }
                 }
             }
@@ -64,8 +66,8 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void func_230337_a_(BlockState state, CompoundNBT compound) {
+        super.func_230337_a_(state, compound);
         ItemStackHelper.loadAllItems(compound, inventoryContents);
     }
 
@@ -152,7 +154,7 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
-            return BlockTags.SAPLINGS.contains(block);
+            return BlockTags.SAPLINGS.func_230235_a_(block);
         }
         return false;
     }
