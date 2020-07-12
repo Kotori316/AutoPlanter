@@ -1,6 +1,5 @@
 package com.kotori316.auto_planter.planter;
 
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -9,13 +8,16 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -26,6 +28,7 @@ import net.minecraft.world.World;
 import com.kotori316.auto_planter.AutoPlanter;
 
 public class PlanterBlock extends BlockWithEntity {
+    public static final BooleanProperty TRIGGERED = Properties.TRIGGERED;
     public static final String name = "planter";
 
     public final BlockItem blockItem;
@@ -33,6 +36,12 @@ public class PlanterBlock extends BlockWithEntity {
     public PlanterBlock() {
         super(Block.Settings.copy(Blocks.DIRT).strength(0.6f, 100).allowsSpawning((state, world, pos, type) -> false));
         blockItem = new BlockItem(this, new Item.Settings().group(ItemGroup.DECORATIONS));
+        setDefaultState(getStateManager().getDefaultState().with(TRIGGERED, false));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(TRIGGERED);
     }
 
     @Override
@@ -41,7 +50,10 @@ public class PlanterBlock extends BlockWithEntity {
         BlockEntity entity = worldIn.getBlockEntity(pos);
         if (entity instanceof PlanterTile) {
             ItemStack stack = player.getStackInHand(handIn);
-            if (hit.getSide() != Direction.UP || !PlanterTile.isSapling(stack)) {
+            boolean notHasSapling = hit.getSide() != Direction.UP || !PlanterTile.isPlantable(stack, true);
+            boolean notHasHoe = !(player.getMainHandStack().getItem() instanceof HoeItem) &&
+                !(player.getOffHandStack().getItem() instanceof HoeItem);
+            if (notHasSapling && notHasHoe) {
                 if (!worldIn.isClient) {
                     player.openHandledScreen(((PlanterTile) entity));
                 }

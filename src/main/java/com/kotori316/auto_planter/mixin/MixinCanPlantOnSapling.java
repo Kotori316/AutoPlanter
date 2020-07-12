@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.kotori316.auto_planter.AutoPlanter;
 
 @Mixin(PlantBlock.class)
-public class MixinCanPlantOn {
+public class MixinCanPlantOnSapling {
     @Inject(method = "canPlantOnTop", at = @At("HEAD"), cancellable = true)
     protected void addPlanter(BlockState floor, BlockView view, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (floor.getBlock() == AutoPlanter.Holder.PLANTER_BLOCK) {
+        if (floor.isOf(AutoPlanter.Holder.PLANTER_BLOCK)) {
             Block block = (Block) (Object) this;
             if (BlockTags.SAPLINGS.contains(block)) {
                 cir.setReturnValue(Boolean.TRUE);

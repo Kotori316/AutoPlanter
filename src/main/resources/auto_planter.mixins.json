@@ -3,7 +3,10 @@
   "package": "com.kotori316.auto_planter.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinCanPlantOn"
+    "MixinCanPlantOnSapling",
+    "MixinCanPlantOnSeed",
+    "MixinHoeUsed",
+    "MixinIsDirt"
   ],
   "client": [
   ],

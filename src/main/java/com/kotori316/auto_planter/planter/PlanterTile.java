@@ -3,6 +3,7 @@ package com.kotori316.auto_planter.planter;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CropBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,7 +42,7 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
             BlockState state = world.getBlockState(upPos);
             if (world.getFluidState(upPos).isEmpty()) {
                 for (ItemStack maybeSapling : inventoryContents) {
-                    if (isSapling(maybeSapling)) {
+                    if (isPlantable(maybeSapling, getCachedState().get(PlanterBlock.TRIGGERED))) {
                         AutomaticItemPlacementContext context = new AutomaticItemPlacementContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
                         if (state.canReplace(context)) {
                             ((BlockItem) maybeSapling.getItem()).place(context);
@@ -126,15 +127,21 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
 
     @Override
     public boolean isValid(int index, ItemStack stack) {
-        return isSapling(stack);
+        return isPlantable(stack, true);
     }
 
-    public static boolean isSapling(ItemStack stack) {
+    public static boolean isPlantable(ItemStack stack, boolean triggered) {
         if (stack.isEmpty()) return false;
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
-            return BlockTags.SAPLINGS.contains(block);
+            if (BlockTags.SAPLINGS.contains(block)) {
+                return true;
+            }
+            if (triggered) {
+                // Seed and crops
+                return block instanceof CropBlock;
+            }
         }
         return false;
     }
