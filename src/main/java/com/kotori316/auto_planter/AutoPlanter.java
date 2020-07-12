@@ -15,7 +15,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.kotori316.auto_planter.items.CheckPlantableItem;
 import com.kotori316.auto_planter.planter.PlanterBlock;
 import com.kotori316.auto_planter.planter.PlanterContainer;
 import com.kotori316.auto_planter.planter.PlanterGui;
@@ -67,7 +66,7 @@ public final class AutoPlanter {
     }
 
     public static class Holder {
-        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
+//        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
         public static final TileEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
             TileEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());

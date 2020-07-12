@@ -25,8 +25,8 @@ public class PlanterGui extends ContainerScreen<PlanterContainer> {
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
     @Override
-    protected void func_230451_b_(MatrixStack p_230451_1_, int mouseX, int mouseY) {
-        super.func_230451_b_(p_230451_1_, mouseX, mouseY);
+    protected void func_230451_b_(MatrixStack stack, int mouseX, int mouseY) {
+        super.func_230451_b_(stack, mouseX, mouseY);
     }
 
     /**
