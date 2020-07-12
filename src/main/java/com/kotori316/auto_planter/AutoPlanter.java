@@ -31,7 +31,7 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     public void onInitialize() {
         Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK);
         Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK.blockItem);
-        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, "check_plantable"), Holder.CHECK_PLANTABLE_ITEM);
+//        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, "check_plantable"), Holder.CHECK_PLANTABLE_ITEM);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
 //        Registry.register(Registry.CONTAINER, PlanterContainer.GUI_ID, Holder.PLANTER_CONTAINER_TYPE);
 
@@ -44,7 +44,7 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     }
 
     public static class Holder {
-        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
+//        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
         public static final BlockEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
             BlockEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
