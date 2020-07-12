@@ -5,10 +5,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -35,22 +35,20 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
 //        Registry.register(Registry.CONTAINER, PlanterContainer.GUI_ID, Holder.PLANTER_CONTAINER_TYPE);
 
-        ContainerProviderRegistry.INSTANCE.registerFactory(new Identifier(PlanterContainer.GUI_ID), (syncId, identifier, player, buf) ->
-            new PlanterContainer(syncId, player, buf.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
-        ScreenProviderRegistry.INSTANCE.<PlanterContainer>registerFactory(new Identifier(PlanterContainer.GUI_ID), c ->
-            new PlanterGui(c, c.player.inventory, Holder.PLANTER_BLOCK.getName()));
+        ScreenRegistry.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
     }
 
     public static class Holder {
         public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
         public static final BlockEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
-            BlockEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.nilType());
-        public static final ContainerType<PlanterContainer> PLANTER_CONTAINER_TYPE = null;
+            BlockEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+        public static final ScreenHandlerType<PlanterContainer> PLANTER_CONTAINER_TYPE = ScreenHandlerRegistry.registerExtended(new Identifier(PlanterContainer.GUI_ID),
+            (i, player, buf) -> new PlanterContainer(i, player.player, buf.readBlockPos()));
     }
 }

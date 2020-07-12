@@ -7,13 +7,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Container;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -32,7 +31,7 @@ public class PlanterBlock extends BlockWithEntity {
     public final BlockItem blockItem;
 
     public PlanterBlock() {
-        super(Block.Settings.copy(Blocks.DIRT).strength(0.6f, 100));
+        super(Block.Settings.copy(Blocks.DIRT).strength(0.6f, 100).allowsSpawning((state, world, pos, type) -> false));
         blockItem = new BlockItem(this, new Item.Settings().group(ItemGroup.DECORATIONS));
     }
 
@@ -43,8 +42,9 @@ public class PlanterBlock extends BlockWithEntity {
         if (entity instanceof PlanterTile) {
             ItemStack stack = player.getStackInHand(handIn);
             if (hit.getSide() != Direction.UP || !PlanterTile.isSapling(stack)) {
-                if (!worldIn.isClient)
-                    ContainerProviderRegistry.INSTANCE.openContainer(new Identifier(PlanterContainer.GUI_ID), player, b -> b.writeBlockPos(pos));
+                if (!worldIn.isClient) {
+                    player.openHandledScreen(((PlanterTile) entity));
+                }
                 return ActionResult.SUCCESS;
             }
         }
@@ -64,12 +64,6 @@ public class PlanterBlock extends BlockWithEntity {
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean allowsSpawning(BlockState state, BlockView view, BlockPos pos, EntityType<?> type) {
-        return false;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
     public boolean hasComparatorOutput(BlockState state) {
         return true;
     }
@@ -77,23 +71,22 @@ public class PlanterBlock extends BlockWithEntity {
     @Override
     @SuppressWarnings("deprecation")
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return Container.calculateComparatorOutput(world.getBlockEntity(pos));
+        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onBlockRemoved(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
+    public void onStateReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.isOf(newState.getBlock())) {
             if (!worldIn.isClient) {
                 BlockEntity entity = worldIn.getBlockEntity(pos);
                 if (entity instanceof PlanterTile) {
                     PlanterTile inventory = (PlanterTile) entity;
                     ItemScatterer.spawn(worldIn, pos, inventory);
-                    worldIn.updateHorizontalAdjacent(pos, state.getBlock());
+                    worldIn.updateComparators(pos, state.getBlock());
                 }
             }
-            super.onBlockRemoved(state, worldIn, pos, newState, isMoving);
-
+            super.onStateReplaced(state, worldIn, pos, newState, isMoving);
         }
     }
 

@@ -1,10 +1,9 @@
 package com.kotori316.auto_planter.planter;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Container;
-import net.minecraft.container.NameableContainerProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -14,35 +13,40 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterTile extends BlockEntity implements Inventory, NameableContainerProvider {
+public class PlanterTile extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory {
     public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.name + "_tile";
     public static final int SIZE = 9;
     public final DefaultedList<ItemStack> inventoryContents;
 
     public PlanterTile() {
         super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
-        inventoryContents = DefaultedList.ofSize(getInvSize(), ItemStack.EMPTY);
+        inventoryContents = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 
     public void plantSapling() {
         if (world != null && !world.isClient) {
             BlockPos upPos = getPos().up();
             BlockState state = world.getBlockState(upPos);
-            for (ItemStack maybeSapling : inventoryContents) {
-                if (isSapling(maybeSapling)) {
-                    AutomaticItemPlacementContext context = new AutomaticItemPlacementContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
-                    if (state.canReplace(context)) {
-                        ((BlockItem) maybeSapling.getItem()).place(context);
-                        break;
+            if (world.getFluidState(upPos).isEmpty()) {
+                for (ItemStack maybeSapling : inventoryContents) {
+                    if (isSapling(maybeSapling)) {
+                        AutomaticItemPlacementContext context = new AutomaticItemPlacementContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
+                        if (state.canReplace(context)) {
+                            ((BlockItem) maybeSapling.getItem()).place(context);
+                            break;
+                        }
                     }
                 }
             }
@@ -56,28 +60,28 @@ public class PlanterTile extends BlockEntity implements Inventory, NameableConta
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
+    public void fromTag(BlockState state, CompoundTag tag) {
+        super.fromTag(state, tag);
         Inventories.fromTag(tag, inventoryContents);
     }
 
     @Override
-    public int getInvSize() {
+    public int size() {
         return SIZE;
     }
 
     @Override
-    public boolean isInvEmpty() {
+    public boolean isEmpty() {
         return inventoryContents.stream().allMatch(ItemStack::isEmpty);
     }
 
     @Override
-    public ItemStack getInvStack(int index) {
+    public ItemStack getStack(int index) {
         return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index) : ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack takeInvStack(int index, int count) {
+    public ItemStack removeStack(int index, int count) {
         ItemStack itemstack = Inventories.splitStack(this.inventoryContents, index, count);
         if (!itemstack.isEmpty()) {
             this.markDirty();
@@ -86,7 +90,7 @@ public class PlanterTile extends BlockEntity implements Inventory, NameableConta
     }
 
     @Override
-    public ItemStack removeInvStack(int index) {
+    public ItemStack removeStack(int index) {
         ItemStack itemstack = this.inventoryContents.get(index);
         if (itemstack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -97,21 +101,21 @@ public class PlanterTile extends BlockEntity implements Inventory, NameableConta
     }
 
     @Override
-    public void setInvStack(int index, ItemStack stack) {
+    public void setStack(int index, ItemStack stack) {
         this.inventoryContents.set(index, stack);
-        if (!stack.isEmpty() && stack.getCount() > this.getInvMaxStackAmount()) {
-            stack.setCount(this.getInvMaxStackAmount());
+        if (!stack.isEmpty() && stack.getCount() > this.getMaxCountPerStack()) {
+            stack.setCount(this.getMaxCountPerStack());
         }
         this.markDirty();
     }
 
     @Override
-    public boolean canPlayerUseInv(PlayerEntity player) {
+    public boolean canPlayerUse(PlayerEntity player) {
         return player.squaredDistanceTo(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5) <= 64;
     }
 
     @Override
-    public void onInvClose(PlayerEntity player) {
+    public void onClose(PlayerEntity player) {
         if (world != null && !world.isClient) plantSapling();
     }
 
@@ -121,7 +125,7 @@ public class PlanterTile extends BlockEntity implements Inventory, NameableConta
     }
 
     @Override
-    public boolean isValidInvStack(int index, ItemStack stack) {
+    public boolean isValid(int index, ItemStack stack) {
         return isSapling(stack);
     }
 
@@ -141,8 +145,12 @@ public class PlanterTile extends BlockEntity implements Inventory, NameableConta
     }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inv, PlayerEntity p) {
-        return new PlanterContainer(id, p, getPos(), AutoPlanter.Holder.PLANTER_CONTAINER_TYPE);
+    public ScreenHandler createMenu(int id, PlayerInventory inv, PlayerEntity p) {
+        return new PlanterContainer(id, p, getPos());
     }
 
+    @Override
+    public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+        buf.writeBlockPos(pos);
+    }
 }

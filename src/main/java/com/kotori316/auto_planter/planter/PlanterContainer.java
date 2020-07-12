@@ -1,27 +1,27 @@
 package com.kotori316.auto_planter.planter;
 
-import net.minecraft.container.Container;
-import net.minecraft.container.ContainerType;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterContainer extends Container {
+public class PlanterContainer extends ScreenHandler {
     public final PlanterTile tile;
     private static final int size = PlanterTile.SIZE;
     public static final String GUI_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.name + "_gui";
     public final PlayerEntity player;
 
-    public PlanterContainer(int id, PlayerEntity player, BlockPos pos, ContainerType<?> type) {
-        super(type, id);
+    public PlanterContainer(int id, PlayerEntity player, BlockPos pos) {
+        super(AutoPlanter.Holder.PLANTER_CONTAINER_TYPE, id);
         this.player = player;
         this.tile = ((PlanterTile) player.getEntityWorld().getBlockEntity(pos));
         assert tile != null;
-        tile.onInvOpen(player);
+        tile.onOpen(player);
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
@@ -43,13 +43,13 @@ public class PlanterContainer extends Container {
 
     @Override
     public boolean canUse(PlayerEntity playerIn) {
-        return tile.canPlayerUseInv(playerIn);
+        return tile.canPlayerUse(playerIn);
     }
 
     @Override
     public ItemStack transferSlot(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slotList.get(index);
+        Slot slot = this.slots.get(index);
         if (slot != null && slot.hasStack()) {
             ItemStack slotStack = slot.getStack();
             itemstack = slotStack.copy();
@@ -80,7 +80,7 @@ public class PlanterContainer extends Container {
     @Override
     public void close(PlayerEntity player) {
         super.close(player);
-        this.tile.onInvClose(player);
+        this.tile.onClose(player);
     }
 
     public static final class TileSlot extends Slot {
@@ -94,7 +94,7 @@ public class PlanterContainer extends Container {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return inventory.isValidInvStack(invSlot, stack);
+            return inventory.isValid(invSlot, stack);
         }
     }
 }
