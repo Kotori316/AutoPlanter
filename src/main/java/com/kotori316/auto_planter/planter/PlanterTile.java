@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CropsBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -48,7 +49,7 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
             BlockState state = world.getBlockState(upPos);
             if (world.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
                 for (ItemStack maybeSapling : inventoryContents) {
-                    if (isSapling(maybeSapling)) {
+                    if (isPlantable(maybeSapling, getBlockState().get(PlanterBlock.TRIGGERED))) {
                         DirectionalPlaceContext context = new DirectionalPlaceContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
                         if (state.isReplaceable(context)) {
                             ((BlockItem) maybeSapling.getItem()).tryPlace(context);
@@ -146,15 +147,21 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return isSapling(stack);
+        return isPlantable(stack, true);
     }
 
-    public static boolean isSapling(ItemStack stack) {
+    public static boolean isPlantable(ItemStack stack, boolean triggered) {
         if (stack.isEmpty()) return false;
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
-            return BlockTags.SAPLINGS.func_230235_a_(block);
+            if (BlockTags.SAPLINGS.func_230235_a_(block)) {
+                return true;
+            }
+            if (triggered) {
+                // Seed and crops
+                return block instanceof CropsBlock;
+            }
         }
         return false;
     }

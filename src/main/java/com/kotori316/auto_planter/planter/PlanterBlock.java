@@ -17,6 +17,9 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -26,12 +29,18 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.PlantType;
+import net.minecraftforge.common.ToolType;
+import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
 public class PlanterBlock extends ContainerBlock {
+    public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
     public static final String name = "planter";
 
     public final BlockItem blockItem;
@@ -41,6 +50,13 @@ public class PlanterBlock extends ContainerBlock {
         setRegistryName(AutoPlanter.AUTO_PLANTER, name);
         blockItem = new BlockItem(this, new Item.Properties().group(ItemGroup.DECORATIONS));
         blockItem.setRegistryName(AutoPlanter.AUTO_PLANTER, name);
+        setDefaultState(getStateContainer().getBaseState().with(TRIGGERED, false));
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(TRIGGERED);
     }
 
     @Override
@@ -49,7 +65,10 @@ public class PlanterBlock extends ContainerBlock {
         TileEntity entity = worldIn.getTileEntity(pos);
         if (entity instanceof PlanterTile) {
             ItemStack stack = player.getHeldItem(handIn);
-            if (hit.getFace() != Direction.UP || !PlanterTile.isSapling(stack)) {
+            boolean notHasSapling = hit.getFace() != Direction.UP || !PlanterTile.isPlantable(stack, true);
+            boolean notHasHoe = !player.getHeldItemMainhand().getToolTypes().contains(ToolType.HOE) &&
+                !player.getHeldItemOffhand().getToolTypes().contains(ToolType.HOE);
+            if (notHasSapling && notHasHoe) {
                 if (!worldIn.isRemote)
                     NetworkHooks.openGui(((ServerPlayerEntity) player), ((PlanterTile) entity), pos);
                 return ActionResultType.SUCCESS;
@@ -57,6 +76,17 @@ public class PlanterBlock extends ContainerBlock {
         }
 
         return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+    }
+
+    @SubscribeEvent
+    public void onHoeUsed(UseHoeEvent event) {
+        World world = event.getContext().getWorld();
+        BlockPos pos = event.getContext().getPos();
+        BlockState state = world.getBlockState(pos);
+        if (state.isIn(this) && !state.get(TRIGGERED)) {
+            world.setBlockState(pos, state.with(TRIGGERED, Boolean.TRUE));
+            event.setResult(Event.Result.ALLOW);
+        }
     }
 
     @Override
@@ -73,7 +103,15 @@ public class PlanterBlock extends ContainerBlock {
     @Override
     public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
         PlantType type = plantable.getPlantType(world, pos.offset(facing));
-        return type == PlantType.PLAINS;
+        if (state.get(TRIGGERED)) {
+            return type == PlantType.PLAINS || type == PlantType.CROP;
+        } else
+            return type == PlantType.PLAINS;
+    }
+
+    @Override
+    public boolean isFertile(BlockState state, IBlockReader world, BlockPos pos) {
+        return state.get(TRIGGERED);
     }
 
     @Override
