@@ -29,12 +29,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.PlantType;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.event.entity.player.UseHoeEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import com.kotori316.auto_planter.AutoPlanter;
@@ -51,7 +47,6 @@ public class PlanterBlock extends ContainerBlock {
         blockItem = new BlockItem(this, new Item.Properties().group(ItemGroup.DECORATIONS));
         blockItem.setRegistryName(AutoPlanter.AUTO_PLANTER, name);
         setDefaultState(getStateContainer().getBaseState().with(TRIGGERED, false));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -78,14 +73,13 @@ public class PlanterBlock extends ContainerBlock {
         return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
     }
 
-    @SubscribeEvent
-    public void onHoeUsed(UseHoeEvent event) {
-        World world = event.getContext().getWorld();
-        BlockPos pos = event.getContext().getPos();
-        BlockState state = world.getBlockState(pos);
-        if (state.isIn(this) && !state.get(TRIGGERED)) {
-            world.setBlockState(pos, state.with(TRIGGERED, Boolean.TRUE));
-            event.setResult(Event.Result.ALLOW);
+    @Nullable
+    @Override
+    public BlockState getToolModifiedState(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, ToolType toolType) {
+        if (toolType.equals(ToolType.HOE) && state.isIn(this) && !state.get(TRIGGERED)) {
+            return state.with(TRIGGERED, Boolean.TRUE);
+        } else {
+            return super.getToolModifiedState(state, world, pos, player, stack, toolType);
         }
     }
 

@@ -67,8 +67,8 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
     }
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT compound) {
-        super.func_230337_a_(state, compound);
+    public void read(BlockState state, CompoundNBT compound) {
+        super.read(state, compound);
         ItemStackHelper.loadAllItems(compound, inventoryContents);
     }
 
@@ -155,7 +155,7 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
-            if (BlockTags.SAPLINGS.func_230235_a_(block)) {
+            if (BlockTags.SAPLINGS.contains(block)) {
                 return true;
             }
             if (triggered) {

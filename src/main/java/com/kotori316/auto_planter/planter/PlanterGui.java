@@ -15,9 +15,9 @@ public class PlanterGui extends ContainerScreen<PlanterContainer> {
     }
 
     @Override
-    public void func_230430_a_(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-        this.func_230446_a_(matrixStack);// back ground
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.renderBackground(matrixStack);// back ground
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.func_230459_a_(matrixStack, mouseX, mouseY); // render tooltip
     }
 
@@ -25,8 +25,8 @@ public class PlanterGui extends ContainerScreen<PlanterContainer> {
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
     @Override
-    protected void func_230451_b_(MatrixStack stack, int mouseX, int mouseY) {
-        super.func_230451_b_(stack, mouseX, mouseY);
+    protected void drawGuiContainerForegroundLayer(MatrixStack stack, int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(stack, mouseX, mouseY);
     }
 
     /**
@@ -34,9 +34,9 @@ public class PlanterGui extends ContainerScreen<PlanterContainer> {
      */
     @Override
     @SuppressWarnings("deprecation")
-    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.getMinecraft().getTextureManager().bindTexture(LOCATION);
-        this.func_238474_b_(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        this.blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 }
