@@ -6,7 +6,6 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,7 +28,7 @@ public final class AutoPlanter {
 
     public AutoPlanter() {
         // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+        // MinecraftForge.EVENT_BUS.register(this);
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
@@ -66,7 +65,7 @@ public final class AutoPlanter {
     }
 
     public static class Holder {
-//        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
+        //        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
         public static final TileEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
             TileEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
