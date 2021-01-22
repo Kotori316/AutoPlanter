@@ -1,5 +1,6 @@
 plugins {
-    id 'fabric-loom' version '0.5.22'
+    // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
+    id 'fabric-loom' version "0.6.29"
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
