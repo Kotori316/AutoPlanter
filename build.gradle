@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -119,12 +119,12 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
 
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'sources'
+    archiveClassifier.set('sources')
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    classifier = 'deobf'
+    archiveClassifier.set('deobf')
 }
 
 // Tell the artifact system about our extra jars
