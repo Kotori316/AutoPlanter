@@ -47,11 +47,10 @@ public class PlanterContainer extends ScreenHandler {
 
     @Override
     public ItemStack transferSlot(PlayerEntity playerIn, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot.hasStack()) {
             ItemStack slotStack = slot.getStack();
-            itemstack = slotStack.copy();
+            ItemStack copy = slotStack.copy();
             if (index < 9) {
                 if (!this.insertItem(slotStack, size, size + 36, true)) {
                     return ItemStack.EMPTY;
@@ -66,14 +65,15 @@ public class PlanterContainer extends ScreenHandler {
                 slot.markDirty();
             }
 
-            if (slotStack.getCount() == itemstack.getCount()) {
+            if (slotStack.getCount() == copy.getCount()) {
                 return ItemStack.EMPTY;
+            } else {
+                slot.onTakeItem(playerIn, slotStack);
+                return copy;
             }
-
-            slot.onTakeItem(playerIn, slotStack);
+        } else {
+            return ItemStack.EMPTY;
         }
-
-        return itemstack;
     }
 
     @Override
