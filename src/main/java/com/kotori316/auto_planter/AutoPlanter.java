@@ -14,14 +14,11 @@ import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.kotori316.auto_planter.items.CheckPlantableItem;
 import com.kotori316.auto_planter.planter.PlanterBlock;
 import com.kotori316.auto_planter.planter.PlanterContainer;
 import com.kotori316.auto_planter.planter.PlanterGui;
 import com.kotori316.auto_planter.planter.PlanterTile;
 
-// The value here should match an entry in the META-INF/mods.toml file
-//@Mod(AutoPlanter.AUTO_PLANTER)
 public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
@@ -31,9 +28,7 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     public void onInitialize() {
         Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK);
         Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK.blockItem);
-//        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, "check_plantable"), Holder.CHECK_PLANTABLE_ITEM);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
-//        Registry.register(Registry.CONTAINER, PlanterContainer.GUI_ID, Holder.PLANTER_CONTAINER_TYPE);
 
     }
 
@@ -44,7 +39,6 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     }
 
     public static class Holder {
-//        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
         public static final BlockEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
             BlockEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
