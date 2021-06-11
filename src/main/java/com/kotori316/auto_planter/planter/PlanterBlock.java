@@ -22,7 +22,6 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import com.kotori316.auto_planter.AutoPlanter;
@@ -65,8 +64,8 @@ public class PlanterBlock extends BlockWithEntity {
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView view) {
-        return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE.instantiate();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE.instantiate(pos, state);
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,8 +31,8 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
     public static final int SIZE = 9;
     public final DefaultedList<ItemStack> inventoryContents;
 
-    public PlanterTile() {
-        super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+    public PlanterTile(BlockPos pos, BlockState state) {
+        super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE, pos, state);
         inventoryContents = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 
@@ -55,15 +55,15 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        Inventories.toTag(tag, inventoryContents);
-        return super.toTag(tag);
+    public NbtCompound writeNbt(NbtCompound tag) {
+        Inventories.writeNbt(tag, inventoryContents);
+        return super.writeNbt(tag);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        Inventories.fromTag(tag, inventoryContents);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
+        Inventories.readNbt(tag, inventoryContents);
     }
 
     @Override

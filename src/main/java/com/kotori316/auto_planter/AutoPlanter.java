@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.screen.ScreenHandlerType;
@@ -41,7 +42,7 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     public static class Holder {
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
         public static final BlockEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
-            BlockEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+            FabricBlockEntityTypeBuilder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final ScreenHandlerType<PlanterContainer> PLANTER_CONTAINER_TYPE = ScreenHandlerRegistry.registerExtended(new Identifier(PlanterContainer.GUI_ID),
             (i, player, buf) -> new PlanterContainer(i, player.player, buf.readBlockPos()));
     }
