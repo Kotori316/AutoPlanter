@@ -30,7 +30,7 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK);
         Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK.blockItem);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
-
+        LOGGER.debug("Registered misc in mod Auto Planter");
     }
 
     @Override

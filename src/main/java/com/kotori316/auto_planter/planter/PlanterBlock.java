@@ -91,8 +91,7 @@ public class PlanterBlock extends BlockWithEntity {
         if (!state.isOf(newState.getBlock())) {
             if (!worldIn.isClient) {
                 BlockEntity entity = worldIn.getBlockEntity(pos);
-                if (entity instanceof PlanterTile) {
-                    PlanterTile inventory = (PlanterTile) entity;
+                if (entity instanceof PlanterTile inventory) {
                     ItemScatterer.spawn(worldIn, pos, inventory);
                     worldIn.updateComparators(pos, state.getBlock());
                 }
@@ -107,8 +106,7 @@ public class PlanterBlock extends BlockWithEntity {
         super.neighborUpdate(state, worldIn, pos, blockIn, fromPos, isMoving);
         if (!worldIn.isClient) {
             BlockEntity t = worldIn.getBlockEntity(pos);
-            if (t instanceof PlanterTile) {
-                PlanterTile tile = (PlanterTile) t;
+            if (t instanceof PlanterTile tile) {
                 tile.plantSapling();
             }
         }
