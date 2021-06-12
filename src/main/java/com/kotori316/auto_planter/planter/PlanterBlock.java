@@ -5,7 +5,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.HoeItem;
@@ -46,15 +45,14 @@ public class PlanterBlock extends BlockWithEntity {
     @Override
     @SuppressWarnings("deprecation")
     public ActionResult onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockHitResult hit) {
-        BlockEntity entity = worldIn.getBlockEntity(pos);
-        if (entity instanceof PlanterTile) {
+        if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
             ItemStack stack = player.getStackInHand(handIn);
             boolean notHasSapling = hit.getSide() != Direction.UP || !PlanterTile.isPlantable(stack, true);
             boolean notHasHoe = !(player.getMainHandStack().getItem() instanceof HoeItem) &&
                 !(player.getOffHandStack().getItem() instanceof HoeItem);
             if (notHasSapling && notHasHoe) {
                 if (!worldIn.isClient) {
-                    player.openHandledScreen(((PlanterTile) entity));
+                    player.openHandledScreen(planterTile);
                 }
                 return ActionResult.SUCCESS;
             }
@@ -64,7 +62,7 @@ public class PlanterBlock extends BlockWithEntity {
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public PlanterTile createBlockEntity(BlockPos pos, BlockState state) {
         return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE.instantiate(pos, state);
     }
 
@@ -90,8 +88,7 @@ public class PlanterBlock extends BlockWithEntity {
     public void onStateReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.isOf(newState.getBlock())) {
             if (!worldIn.isClient) {
-                BlockEntity entity = worldIn.getBlockEntity(pos);
-                if (entity instanceof PlanterTile inventory) {
+                if (worldIn.getBlockEntity(pos) instanceof PlanterTile inventory) {
                     ItemScatterer.spawn(worldIn, pos, inventory);
                     worldIn.updateComparators(pos, state.getBlock());
                 }
@@ -105,8 +102,7 @@ public class PlanterBlock extends BlockWithEntity {
     public void neighborUpdate(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         super.neighborUpdate(state, worldIn, pos, blockIn, fromPos, isMoving);
         if (!worldIn.isClient) {
-            BlockEntity t = worldIn.getBlockEntity(pos);
-            if (t instanceof PlanterTile tile) {
+            if (worldIn.getBlockEntity(pos) instanceof PlanterTile tile) {
                 tile.plantSapling();
             }
         }
