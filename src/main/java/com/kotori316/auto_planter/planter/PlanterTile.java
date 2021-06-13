@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -26,13 +27,11 @@ import net.minecraft.util.math.Direction;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterTile extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory {
-    public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.name + "_tile";
-    public static final int SIZE = 9;
+public abstract class PlanterTile extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory {
     public final DefaultedList<ItemStack> inventoryContents;
 
-    public PlanterTile(BlockPos pos, BlockState state) {
-        super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE, pos, state);
+    public PlanterTile(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
+        super(entityType, pos, state);
         inventoryContents = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 
@@ -54,6 +53,8 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
         }
     }
 
+    public abstract PlanterBlock.PlanterBlockType blockType();
+
     @Override
     public NbtCompound writeNbt(NbtCompound tag) {
         Inventories.writeNbt(tag, inventoryContents);
@@ -68,7 +69,7 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
 
     @Override
     public int size() {
-        return SIZE;
+        return blockType().storageSize;
     }
 
     @Override
@@ -148,7 +149,7 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
 
     @Override
     public Text getDisplayName() {
-        return new TranslatableText(AutoPlanter.Holder.PLANTER_BLOCK.getTranslationKey());
+        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
     }
 
     @Override
@@ -159,5 +160,32 @@ public class PlanterTile extends BlockEntity implements Inventory, ExtendedScree
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
         buf.writeBlockPos(pos);
+    }
+
+    public static class Normal extends PlanterTile {
+
+        public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Normal.name + "_tile";
+
+        public Normal(BlockPos pos, BlockState state) {
+            super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE, pos, state);
+        }
+
+        @Override
+        public PlanterBlock.PlanterBlockType blockType() {
+            return PlanterBlock.PlanterBlockType.NORMAL;
+        }
+    }
+
+    public static class Upgraded extends PlanterTile {
+        public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Upgraded.name + "_tile";
+
+        public Upgraded(BlockPos pos, BlockState state) {
+            super(AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE, pos, state);
+        }
+
+        @Override
+        public PlanterBlock.PlanterBlockType blockType() {
+            return PlanterBlock.PlanterBlockType.UPGRADED;
+        }
     }
 }

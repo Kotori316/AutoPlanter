@@ -27,9 +27,12 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK);
-        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.name), Holder.PLANTER_BLOCK.blockItem);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+        Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.Normal.name), Holder.PLANTER_BLOCK);
+        Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.Upgraded.name), Holder.PLANTER_UPGRADED_BLOCK);
+        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.Normal.name), Holder.PLANTER_BLOCK.blockItem);
+        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.Upgraded.name), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.Normal.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.Upgraded.TILE_ID, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
         LOGGER.debug("Registered misc in mod Auto Planter");
     }
 
@@ -40,9 +43,12 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     }
 
     public static class Holder {
-        public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
-        public static final BlockEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
-            FabricBlockEntityTypeBuilder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+        public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock.Normal();
+        public static final PlanterBlock PLANTER_UPGRADED_BLOCK = new PlanterBlock.Upgraded();
+        public static final BlockEntityType<PlanterTile.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
+            FabricBlockEntityTypeBuilder.create(PlanterTile.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+        public static final BlockEntityType<PlanterTile.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
+            FabricBlockEntityTypeBuilder.create(PlanterTile.Upgraded::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final ScreenHandlerType<PlanterContainer> PLANTER_CONTAINER_TYPE = ScreenHandlerRegistry.registerExtended(new Identifier(PlanterContainer.GUI_ID),
             (i, player, buf) -> new PlanterContainer(i, player.player, buf.readBlockPos()));
     }

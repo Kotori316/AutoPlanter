@@ -8,8 +8,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import com.kotori316.auto_planter.AutoPlanter;
+
 public class PlanterGui extends HandledScreen<PlanterContainer> {
     private static final Identifier DISPENSER_GUI_TEXTURES = new Identifier("textures/gui/container/dispenser.png");
+    private static final Identifier PLANTER4_GUI_TEXTURES = new Identifier(AutoPlanter.AUTO_PLANTER, "textures/gui/planter.png");
 
     public PlanterGui(PlanterContainer c, PlayerInventory inv, Text t) {
         super(c, inv, t);
@@ -31,7 +34,11 @@ public class PlanterGui extends HandledScreen<PlanterContainer> {
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, DISPENSER_GUI_TEXTURES);
+        var texture = switch (getScreenHandler().tile.blockType()) {
+            case NORMAL -> DISPENSER_GUI_TEXTURES;
+            case UPGRADED -> PLANTER4_GUI_TEXTURES;
+        };
+        RenderSystem.setShaderTexture(0, texture);
         this.drawTexture(matrices, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 

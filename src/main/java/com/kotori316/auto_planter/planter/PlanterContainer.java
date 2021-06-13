@@ -11,8 +11,8 @@ import com.kotori316.auto_planter.AutoPlanter;
 
 public class PlanterContainer extends ScreenHandler {
     public final PlanterTile tile;
-    private static final int size = PlanterTile.SIZE;
-    public static final String GUI_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.name + "_gui";
+    private final int size;
+    public static final String GUI_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Normal.name + "_gui";
     public final PlayerEntity player;
 
     public PlanterContainer(int id, PlayerEntity player, BlockPos pos) {
@@ -21,11 +21,24 @@ public class PlanterContainer extends ScreenHandler {
         this.tile = ((PlanterTile) player.getEntityWorld().getBlockEntity(pos));
         assert tile != null;
         tile.onOpen(player);
+        this.size = tile.size();
 
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                this.addSlot(new TileSlot(tile, j + i * 3, 62 + j * 18, 17 + i * 18));
-            }
+        switch (tile.blockType().rowColumn) {
+            case 3:
+            default:
+                for (int i = 0; i < 3; ++i) {
+                    for (int j = 0; j < 3; ++j) {
+                        this.addSlot(new TileSlot(tile, j + i * 3, 62 + j * 18, 17 + i * 18));
+                    }
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 4; ++i) {
+                    for (int j = 0; j < 4; ++j) {
+                        this.addSlot(new TileSlot(tile, j + i * 4, 53 + j * 18, 8 + i * 18));
+                    }
+                }
+                break;
         }
 
         for (int k = 0; k < 3; ++k) {
@@ -51,7 +64,7 @@ public class PlanterContainer extends ScreenHandler {
         if (slot.hasStack()) {
             ItemStack slotStack = slot.getStack();
             ItemStack copy = slotStack.copy();
-            if (index < 9) {
+            if (index < size) {
                 if (!this.insertItem(slotStack, size, size + 36, true)) {
                     return ItemStack.EMPTY;
                 }

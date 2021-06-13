@@ -6,7 +6,8 @@
     "MixinCanPlantOnSapling",
     "MixinCanPlantOnSeed",
     "MixinHoeUsed",
-    "MixinIsDirt"
+    "MixinIsDirt",
+    "MixinGetAvailableMoisture"
   ],
   "client": [
   ],

@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "triggered=false": {"model": "auto_planter:block/planter"},
+    "triggered=true": {"model": "auto_planter:block/planter_triggered"}
+  }
+}

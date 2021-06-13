@@ -5,6 +5,7 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.HoeItem;
@@ -25,20 +26,23 @@ import net.minecraft.world.World;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterBlock extends BlockWithEntity {
+public abstract class PlanterBlock extends BlockWithEntity {
     public static final BooleanProperty TRIGGERED = Properties.TRIGGERED;
-    public static final String name = "planter";
 
     public final BlockItem blockItem;
+    public final PlanterBlockType blockType;
 
-    public PlanterBlock() {
+    public PlanterBlock(PlanterBlockType blockType) {
         super(Block.Settings.copy(Blocks.DIRT).strength(0.6f, 100).allowsSpawning((state, world, pos, type) -> false));
+        this.blockType = blockType;
         blockItem = new BlockItem(this, new Item.Settings().group(ItemGroup.DECORATIONS));
         setDefaultState(getStateManager().getDefaultState().with(TRIGGERED, false));
     }
 
+    protected abstract BlockEntityType<? extends PlanterTile> getEntityType();
+
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected final void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(TRIGGERED);
     }
 
@@ -62,8 +66,8 @@ public class PlanterBlock extends BlockWithEntity {
     }
 
     @Override
-    public PlanterTile createBlockEntity(BlockPos pos, BlockState state) {
-        return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE.instantiate(pos, state);
+    public final PlanterTile createBlockEntity(BlockPos pos, BlockState state) {
+        return getEntityType().instantiate(pos, state);
     }
 
     @Override
@@ -102,9 +106,45 @@ public class PlanterBlock extends BlockWithEntity {
     public void neighborUpdate(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         super.neighborUpdate(state, worldIn, pos, blockIn, fromPos, isMoving);
         if (!worldIn.isClient) {
-            if (worldIn.getBlockEntity(pos) instanceof PlanterTile tile) {
-                tile.plantSapling();
-            }
+            worldIn.getBlockEntity(pos, getEntityType())
+                .ifPresent(PlanterTile::plantSapling);
+        }
+    }
+
+    public static class Normal extends PlanterBlock {
+        public static final String name = "planter";
+
+        public Normal() {
+            super(PlanterBlockType.NORMAL);
+        }
+
+        @Override
+        protected BlockEntityType<? extends PlanterTile> getEntityType() {
+            return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE;
+        }
+    }
+
+    public static class Upgraded extends PlanterBlock {
+        public static final String name = "planter_upgraded";
+
+        public Upgraded() {
+            super(PlanterBlockType.UPGRADED);
+        }
+
+        @Override
+        protected BlockEntityType<? extends PlanterTile> getEntityType() {
+            return AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE;
+        }
+    }
+
+    public enum PlanterBlockType {
+        NORMAL(9), UPGRADED(16);
+        public final int storageSize;
+        public final int rowColumn;
+
+        PlanterBlockType(int storageSize) {
+            this.storageSize = storageSize;
+            this.rowColumn = (int) Math.sqrt(storageSize);
         }
     }
 }
