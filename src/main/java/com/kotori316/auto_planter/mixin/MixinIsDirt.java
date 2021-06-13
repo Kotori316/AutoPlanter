@@ -7,13 +7,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.kotori316.auto_planter.AutoPlanter;
+import com.kotori316.auto_planter.planter.PlanterBlock;
 
 @Mixin(Feature.class)
 public class MixinIsDirt {
     @Inject(method = "isSoil(Lnet/minecraft/block/BlockState;)Z", at = @At("HEAD"), cancellable = true)
     private static void planterIsDirt(BlockState state, CallbackInfoReturnable<Boolean> cir) {
-        if (state.isOf(AutoPlanter.Holder.PLANTER_BLOCK))
+        if (state.getBlock() instanceof PlanterBlock)
             cir.setReturnValue(Boolean.TRUE);
     }
 }
