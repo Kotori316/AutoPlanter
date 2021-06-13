@@ -15,7 +15,7 @@ import com.kotori316.auto_planter.AutoPlanter;
 public class MixinGetAvailableMoisture {
     // Use cache because float boxing always creates new instance.
     private static final Float AUTO_PLANTER_MOISTURE = 9f;
-    private static final Float UPGRADED_PLANTER_MOISTURE = 9f;
+    private static final Float UPGRADED_PLANTER_MOISTURE = 45f;
 
     @Inject(method = "getAvailableMoisture", at = @At("HEAD"), cancellable = true)
     private static void planterMoisture(Block block, BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {

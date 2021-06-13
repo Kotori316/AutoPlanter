@@ -10,7 +10,7 @@
       "item": "minecraft:dirt"
     },
     "d": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:diamond"
     },
     "g": {
       "tag": "minecraft:saplings"
@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "auto_planter:planter",
+    "item": "auto_planter:planter_upgraded",
     "count": 1
   }
 }

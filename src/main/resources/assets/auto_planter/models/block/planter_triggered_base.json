@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "#side",
+    "down": "minecraft:block/dirt",
+    "up": "minecraft:block/farmland_moist",
+    "north": "#side",
+    "east": "#side",
+    "south": "#side",
+    "west": "#side"
+  }
+}
