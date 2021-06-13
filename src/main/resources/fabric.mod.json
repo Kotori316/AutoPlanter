@@ -12,7 +12,7 @@
     "sources": "https://github.com/Kotori316/AutoPlanter"
   },
   "license": "All rights reserved",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/auto_planter/textures/planter_big.png",
   "environment": "*",
   "entrypoints": {
     "main": [

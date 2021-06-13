@@ -138,13 +138,13 @@ public abstract class PlanterBlock extends BlockWithEntity {
     }
 
     public enum PlanterBlockType {
-        NORMAL(9), UPGRADED(16);
+        NORMAL(3), UPGRADED(4);
         public final int storageSize;
         public final int rowColumn;
 
-        PlanterBlockType(int storageSize) {
-            this.storageSize = storageSize;
-            this.rowColumn = (int) Math.sqrt(storageSize);
+        PlanterBlockType(int rowColumn) {
+            this.storageSize = rowColumn * rowColumn;
+            this.rowColumn = rowColumn;
         }
     }
 }
