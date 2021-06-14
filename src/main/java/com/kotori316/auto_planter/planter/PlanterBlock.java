@@ -21,6 +21,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -31,23 +32,29 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterBlock extends ContainerBlock {
+public abstract class PlanterBlock extends ContainerBlock {
     public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
-    public static final String name = "planter";
 
     public final BlockItem blockItem;
+    public final PlanterBlockType blockType;
 
-    public PlanterBlock() {
+    public PlanterBlock(PlanterBlockType blockType, String name) {
         super(Block.Properties.create(Material.EARTH).hardnessAndResistance(0.6f, 100).sound(SoundType.GROUND));
         setRegistryName(AutoPlanter.AUTO_PLANTER, name);
+        this.blockType = blockType;
         blockItem = new BlockItem(this, new Item.Properties().group(ItemGroup.DECORATIONS));
         blockItem.setRegistryName(AutoPlanter.AUTO_PLANTER, name);
         setDefaultState(getStateContainer().getBaseState().with(TRIGGERED, false));
     }
+
+    protected abstract TileEntityType<? extends PlanterTile> getEntityType();
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
@@ -85,7 +92,7 @@ public class PlanterBlock extends ContainerBlock {
 
     @Override
     public TileEntity createNewTileEntity(IBlockReader worldIn) {
-        return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE.create();
+        return getEntityType().create();
     }
 
     @Override
@@ -151,6 +158,49 @@ public class PlanterBlock extends ContainerBlock {
                 PlanterTile tile = (PlanterTile) t;
                 tile.plantSapling();
             }
+        }
+    }
+
+    public static class Normal extends PlanterBlock {
+        public static final String name = "planter";
+
+        public Normal() {
+            super(PlanterBlockType.NORMAL, name);
+        }
+
+        @Override
+        protected TileEntityType<? extends PlanterTile> getEntityType() {
+            return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE;
+        }
+    }
+
+    public static class Upgraded extends PlanterBlock {
+        public static final String name = "planter_upgraded";
+
+        public Upgraded() {
+            super(PlanterBlockType.UPGRADED, name);
+        }
+
+        @Override
+        protected TileEntityType<? extends PlanterTile> getEntityType() {
+            return AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE;
+        }
+
+        @SubscribeEvent
+        public void grow(BlockEvent.CropGrowEvent.Pre event) {
+            if (event.getWorld().getBlockState(event.getPos().down()).getBlock().matchesBlock(this))
+                event.setResult(Event.Result.ALLOW);
+        }
+    }
+
+    public enum PlanterBlockType {
+        NORMAL(3), UPGRADED(4);
+        public final int storageSize;
+        public final int rowColumn;
+
+        PlanterBlockType(int rowColumn) {
+            this.storageSize = rowColumn * rowColumn;
+            this.rowColumn = rowColumn;
         }
     }
 }

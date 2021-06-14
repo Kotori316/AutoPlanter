@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -31,15 +32,13 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterTile extends TileEntity implements IInventory, INamedContainerProvider {
-    public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.name + "_tile";
-    public static final int SIZE = 9;
+public abstract class PlanterTile extends TileEntity implements IInventory, INamedContainerProvider {
     public final NonNullList<ItemStack> inventoryContents;
     public final IItemHandlerModifiable handler = new InvWrapper(this);
     private final LazyOptional<IItemHandlerModifiable> handlerLazyOptional = LazyOptional.of(() -> handler);
 
-    public PlanterTile() {
-        super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+    public PlanterTile(TileEntityType<?> entityType) {
+        super(entityType);
         inventoryContents = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
     }
 
@@ -59,6 +58,8 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
             }
         }
     }
+
+    public abstract PlanterBlock.PlanterBlockType blockType();
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
@@ -88,7 +89,7 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
 
     @Override
     public int getSizeInventory() {
-        return SIZE;
+        return blockType().storageSize;
     }
 
     @Override
@@ -168,7 +169,7 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
 
     @Override
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(AutoPlanter.Holder.PLANTER_BLOCK.getTranslationKey());
+        return new TranslationTextComponent(getBlockState().getBlock().getTranslationKey());
     }
 
     @Override
@@ -176,4 +177,30 @@ public class PlanterTile extends TileEntity implements IInventory, INamedContain
         return new PlanterContainer(id, p, getPos(), AutoPlanter.Holder.PLANTER_CONTAINER_TYPE);
     }
 
+    public static class Normal extends PlanterTile {
+
+        public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Normal.name + "_tile";
+
+        public Normal() {
+            super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+        }
+
+        @Override
+        public PlanterBlock.PlanterBlockType blockType() {
+            return PlanterBlock.PlanterBlockType.NORMAL;
+        }
+    }
+
+    public static class Upgraded extends PlanterTile {
+        public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Upgraded.name + "_tile";
+
+        public Upgraded() {
+            super(AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
+        }
+
+        @Override
+        public PlanterBlock.PlanterBlockType blockType() {
+            return PlanterBlock.PlanterBlockType.UPGRADED;
+        }
+    }
 }

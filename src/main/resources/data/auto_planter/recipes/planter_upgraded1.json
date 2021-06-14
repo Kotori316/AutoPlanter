@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ggg",
+    "dDd",
+    "ppp"
+  ],
+  "key": {
+    "p": {
+      "item": "minecraft:dirt"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "g": {
+      "tag": "minecraft:saplings"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result": {
+    "item": "auto_planter:planter_upgraded",
+    "count": 1
+  }
+}

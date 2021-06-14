@@ -6,6 +6,7 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,6 +30,7 @@ public final class AutoPlanter {
     public AutoPlanter() {
         // Register ourselves for server and other game events we are interested in
         // MinecraftForge.EVENT_BUS.register(this);
+        LOGGER.info("{} initialization", AUTO_PLANTER);
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
@@ -40,17 +42,21 @@ public final class AutoPlanter {
             // register a new block here
 //            LOGGER.info("HELLO from Register Block");
             blockRegistryEvent.getRegistry().register(Holder.PLANTER_BLOCK);
+            blockRegistryEvent.getRegistry().register(Holder.PLANTER_UPGRADED_BLOCK);
+            MinecraftForge.EVENT_BUS.register(Holder.PLANTER_UPGRADED_BLOCK);
         }
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
 //            itemRegistryEvent.getRegistry().register(Holder.CHECK_PLANTABLE_ITEM);
             itemRegistryEvent.getRegistry().register(Holder.PLANTER_BLOCK.blockItem);
+            itemRegistryEvent.getRegistry().register(Holder.PLANTER_UPGRADED_BLOCK.blockItem);
         }
 
         @SubscribeEvent
         public static void tiles(RegistryEvent.Register<TileEntityType<?>> e) {
-            e.getRegistry().register(Holder.PLANTER_TILE_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.TILE_ID));
+            e.getRegistry().register(Holder.PLANTER_TILE_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.Normal.TILE_ID));
+            e.getRegistry().register(Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.Upgraded.TILE_ID));
         }
 
         @SubscribeEvent
@@ -66,9 +72,12 @@ public final class AutoPlanter {
 
     public static class Holder {
         //        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
-        public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock();
-        public static final TileEntityType<PlanterTile> PLANTER_TILE_TILE_ENTITY_TYPE =
-            TileEntityType.Builder.create(PlanterTile::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+        public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock.Normal();
+        public static final PlanterBlock PLANTER_UPGRADED_BLOCK = new PlanterBlock.Upgraded();
+        public static final TileEntityType<PlanterTile.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
+            TileEntityType.Builder.create(PlanterTile.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+        public static final TileEntityType<PlanterTile.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
+            TileEntityType.Builder.create(PlanterTile.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
         public static final ContainerType<PlanterContainer> PLANTER_CONTAINER_TYPE =
             IForgeContainerType.create((id, inv, data) -> new PlanterContainer(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
     }
