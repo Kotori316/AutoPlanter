@@ -4,17 +4,20 @@ import java.time.format.DateTimeFormatter
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 
-version = '16.3'
+version = '16.4'
 group = 'com.kotori316' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'AutoPlanter'
 
@@ -38,7 +41,8 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property("mixin.debug.export", "true")
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
@@ -86,8 +90,21 @@ minecraft {
     }
 }
 
+repositories {
+    maven {
+        name = "Mixin"
+        url = 'https://repo.spongepowered.org/maven'
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
+    // Mixin
+    annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
+}
+
+mixin {
+    add sourceSets.main, "mixins.auto_planter.refmap.json"
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -99,9 +116,10 @@ jar {
                 "Specification-Vendor"    : vendor,
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
+                "Implementation-Version"  : project.version.toString(),
                 "Implementation-Vendor"   : vendor,
-                "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "MixinConfigs"            : "auto_planter.mixins.json",
         ])
     }
 }

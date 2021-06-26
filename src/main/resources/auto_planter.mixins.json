@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.kotori316.auto_planter.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinSaplingGrow"
+  ],
+  "client": [ ],
+  "server": [ ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "mixins.auto_planter.refmap.json"
+}
