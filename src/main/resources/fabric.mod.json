@@ -9,7 +9,8 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/planting-dirt-for-saplings",
-    "sources": "https://github.com/Kotori316/AutoPlanter"
+    "sources": "https://github.com/Kotori316/AutoPlanter",
+    "issues": "https://github.com/Kotori316/AutoPlanter/issues"
   },
   "license": "All rights reserved",
   "icon": "assets/auto_planter/textures/planter_big.png",
