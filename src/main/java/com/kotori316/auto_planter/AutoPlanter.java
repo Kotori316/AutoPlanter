@@ -1,11 +1,11 @@
 package com.kotori316.auto_planter;
 
 import com.mojang.datafixers.DSL;
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
@@ -54,19 +54,19 @@ public final class AutoPlanter {
         }
 
         @SubscribeEvent
-        public static void tiles(RegistryEvent.Register<TileEntityType<?>> e) {
+        public static void tiles(RegistryEvent.Register<BlockEntityType<?>> e) {
             e.getRegistry().register(Holder.PLANTER_TILE_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.Normal.TILE_ID));
             e.getRegistry().register(Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.Upgraded.TILE_ID));
         }
 
         @SubscribeEvent
-        public static void containers(RegistryEvent.Register<ContainerType<?>> e) {
+        public static void containers(RegistryEvent.Register<MenuType<?>> e) {
             e.getRegistry().register(Holder.PLANTER_CONTAINER_TYPE.setRegistryName(PlanterContainer.GUI_ID));
         }
 
         @SubscribeEvent
         public static void clientInit(FMLClientSetupEvent event) {
-            ScreenManager.registerFactory(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
+            MenuScreens.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
         }
     }
 
@@ -74,11 +74,11 @@ public final class AutoPlanter {
         //        public static final CheckPlantableItem CHECK_PLANTABLE_ITEM = new CheckPlantableItem();
         public static final PlanterBlock PLANTER_BLOCK = new PlanterBlock.Normal();
         public static final PlanterBlock PLANTER_UPGRADED_BLOCK = new PlanterBlock.Upgraded();
-        public static final TileEntityType<PlanterTile.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
-            TileEntityType.Builder.create(PlanterTile.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
-        public static final TileEntityType<PlanterTile.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
-            TileEntityType.Builder.create(PlanterTile.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
-        public static final ContainerType<PlanterContainer> PLANTER_CONTAINER_TYPE =
+        public static final BlockEntityType<PlanterTile.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
+            BlockEntityType.Builder.of(PlanterTile.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+        public static final BlockEntityType<PlanterTile.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
+            BlockEntityType.Builder.of(PlanterTile.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
+        public static final MenuType<PlanterContainer> PLANTER_CONTAINER_TYPE =
             IForgeContainerType.create((id, inv, data) -> new PlanterContainer(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
     }
 }

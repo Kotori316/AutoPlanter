@@ -2,28 +2,27 @@ package com.kotori316.auto_planter.planter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -32,26 +31,26 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public abstract class PlanterTile extends TileEntity implements IInventory, INamedContainerProvider {
+public abstract class PlanterTile extends BlockEntity implements Container, MenuProvider {
     public final NonNullList<ItemStack> inventoryContents;
     public final IItemHandlerModifiable handler = new InvWrapper(this);
     private final LazyOptional<IItemHandlerModifiable> handlerLazyOptional = LazyOptional.of(() -> handler);
 
-    public PlanterTile(TileEntityType<?> entityType) {
-        super(entityType);
-        inventoryContents = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+    public PlanterTile(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
+        super(entityType, pos, state);
+        inventoryContents = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
     }
 
     public void plantSapling() {
-        if (world != null && !world.isRemote) {
-            BlockPos upPos = getPos().up();
-            BlockState state = world.getBlockState(upPos);
-            if (world.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
+        if (level != null && !level.isClientSide) {
+            BlockPos upPos = getBlockPos().above();
+            BlockState state = level.getBlockState(upPos);
+            if (level.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
                 for (ItemStack maybeSapling : inventoryContents) {
-                    if (isPlantable(maybeSapling, getBlockState().get(PlanterBlock.TRIGGERED))) {
-                        DirectionalPlaceContext context = new DirectionalPlaceContext(world, upPos, Direction.DOWN, maybeSapling, Direction.UP);
-                        if (state.isReplaceable(context)) {
-                            ((BlockItem) maybeSapling.getItem()).tryPlace(context);
+                    if (isPlantable(maybeSapling, getBlockState().getValue(PlanterBlock.TRIGGERED))) {
+                        DirectionalPlaceContext context = new DirectionalPlaceContext(level, upPos, Direction.DOWN, maybeSapling, Direction.UP);
+                        if (state.canBeReplaced(context)) {
+                            ((BlockItem) maybeSapling.getItem()).place(context);
                         }
                     }
                 }
@@ -62,15 +61,15 @@ public abstract class PlanterTile extends TileEntity implements IInventory, INam
     public abstract PlanterBlock.PlanterBlockType blockType();
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        ItemStackHelper.saveAllItems(compound, inventoryContents);
-        return super.write(compound);
+    public CompoundTag save(CompoundTag compound) {
+        ContainerHelper.saveAllItems(compound, inventoryContents);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
-        super.read(state, compound);
-        ItemStackHelper.loadAllItems(compound, inventoryContents);
+    public void load(CompoundTag compound) {
+        super.load(compound);
+        ContainerHelper.loadAllItems(compound, inventoryContents);
     }
 
     @Nonnull
@@ -82,13 +81,13 @@ public abstract class PlanterTile extends TileEntity implements IInventory, INam
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         handlerLazyOptional.invalidate();
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return blockType().storageSize;
     }
 
@@ -98,21 +97,21 @@ public abstract class PlanterTile extends TileEntity implements IInventory, INam
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index) : ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        ItemStack itemstack = ItemStackHelper.getAndSplit(this.inventoryContents, index, count);
+    public ItemStack removeItem(int index, int count) {
+        ItemStack itemstack = ContainerHelper.removeItem(this.inventoryContents, index, count);
         if (!itemstack.isEmpty()) {
-            this.markDirty();
+            this.setChanged();
         }
         return itemstack;
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
+    public ItemStack removeItemNoUpdate(int index) {
         ItemStack itemstack = this.inventoryContents.get(index);
         if (itemstack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -123,31 +122,31 @@ public abstract class PlanterTile extends TileEntity implements IInventory, INam
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         this.inventoryContents.set(index, stack);
-        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
-            stack.setCount(this.getInventoryStackLimit());
+        if (!stack.isEmpty() && stack.getCount() > this.getMaxStackSize()) {
+            stack.setCount(this.getMaxStackSize());
         }
-        this.markDirty();
+        this.setChanged();
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        return player.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5) <= 64;
+    public boolean stillValid(Player player) {
+        return player.distanceToSqr(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5) <= 64;
     }
 
     @Override
-    public void closeInventory(PlayerEntity player) {
-        if (world != null && !world.isRemote) plantSapling();
+    public void stopOpen(Player player) {
+        if (level != null && !level.isClientSide) plantSapling();
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         inventoryContents.clear();
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean canPlaceItem(int index, ItemStack stack) {
         return isPlantable(stack, true);
     }
 
@@ -161,28 +160,28 @@ public abstract class PlanterTile extends TileEntity implements IInventory, INam
             }
             if (triggered) {
                 // Seed and crops
-                return block instanceof CropsBlock;
+                return block instanceof CropBlock;
             }
         }
         return false;
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getBlockState().getBlock().getTranslationKey());
+    public Component getDisplayName() {
+        return getBlockState().getBlock().getName();
     }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inv, PlayerEntity p) {
-        return new PlanterContainer(id, p, getPos(), AutoPlanter.Holder.PLANTER_CONTAINER_TYPE);
+    public AbstractContainerMenu createMenu(int id, Inventory inv, Player p) {
+        return new PlanterContainer(id, p, getBlockPos(), AutoPlanter.Holder.PLANTER_CONTAINER_TYPE);
     }
 
     public static class Normal extends PlanterTile {
 
         public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Normal.name + "_tile";
 
-        public Normal() {
-            super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+        public Normal(BlockPos pos, BlockState state) {
+            super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE, pos, state);
         }
 
         @Override
@@ -194,8 +193,8 @@ public abstract class PlanterTile extends TileEntity implements IInventory, INam
     public static class Upgraded extends PlanterTile {
         public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Upgraded.name + "_tile";
 
-        public Upgraded() {
-            super(AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
+        public Upgraded(BlockPos pos, BlockState state) {
+            super(AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE, pos, state);
         }
 
         @Override
