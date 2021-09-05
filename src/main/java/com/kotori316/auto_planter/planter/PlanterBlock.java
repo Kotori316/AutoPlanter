@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,7 +40,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
-import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -83,12 +85,18 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
             ItemStack stack = player.getItemInHand(handIn);
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
-            boolean notHasHoe = !player.getMainHandItem().getToolTypes().contains(ToolType.HOE) &&
-                !player.getOffhandItem().getToolTypes().contains(ToolType.HOE);
+            boolean notHasHoe = !isHoe(player.getMainHandItem()) &&
+                !isHoe(player.getOffhandItem());
             if (notHasSapling && notHasHoe) {
                 if (!worldIn.isClientSide)
                     NetworkHooks.openGui(((ServerPlayer) player), planterTile, pos);
                 return InteractionResult.SUCCESS;
+            } else if (!notHasHoe && state.is(this) && !state.getValue(TRIGGERED)) {
+                worldIn.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (!worldIn.isClientSide) {
+                    worldIn.setBlock(pos, state.setValue(TRIGGERED, true), Block.UPDATE_ALL);
+                    player.getItemInHand(handIn).hurtAndBreak(1, player, p -> p.broadcastBreakEvent(handIn));
+                }
             }
         }
         return super.use(state, worldIn, pos, player, handIn, hit);
@@ -96,12 +104,16 @@ public abstract class PlanterBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolType toolType) {
-        if (toolType.equals(ToolType.HOE) && state.is(this) && !state.getValue(TRIGGERED)) {
+    public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolAction toolType) {
+        if (/*toolType.equals(ToolType.HOE)*/ isHoe(stack) && state.is(this) && !state.getValue(TRIGGERED)) {
             return state.setValue(TRIGGERED, Boolean.TRUE);
         } else {
             return super.getToolModifiedState(state, world, pos, player, stack, toolType);
         }
+    }
+
+    private static boolean isHoe(ItemStack stack) {
+        return stack.getItem() instanceof HoeItem;
     }
 
     @Override
