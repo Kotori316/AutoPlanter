@@ -103,13 +103,14 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.51'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.59'
     // Mixin
-    annotationProcessor("org.spongepowered:mixin:0.8.3:processor")
+    annotationProcessor("org.spongepowered:mixin:0.8.4:processor")
 }
 
 mixin {
     add sourceSets.main, "mixins.auto_planter.refmap.json"
+    defaultObfuscationEnv = ""
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
