@@ -1,11 +1,16 @@
 package com.kotori316.auto_planter.mixin;
-/*
+
 import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
@@ -24,13 +29,13 @@ public abstract class MixinSaplingGrow {
                     // Is this a real sapling? It might be a modified sapling.
                     newState = state;
                 }
-                placeTree(worldIn, pos, newState, random);
+                advanceTree(worldIn, pos, newState, random);
+                // AutoPlanter.LOGGER.debug("Tree was grown in #growOnPlanter. {}, {}", state, pos);
             }
             ci.cancel();
         }
     }
 
     @Shadow
-    public abstract void placeTree(ServerLevel world, BlockPos pos, BlockState state, Random random);
+    public abstract void advanceTree(ServerLevel world, BlockPos pos, BlockState state, Random random);
 }
-*/

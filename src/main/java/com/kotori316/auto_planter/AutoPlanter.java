@@ -24,7 +24,7 @@ import com.kotori316.auto_planter.planter.PlanterTile;
 @Mod(AutoPlanter.AUTO_PLANTER)
 public final class AutoPlanter {
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String AUTO_PLANTER = "auto_planter";
 
     public AutoPlanter() {
