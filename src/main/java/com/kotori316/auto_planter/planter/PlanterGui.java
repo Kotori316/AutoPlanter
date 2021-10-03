@@ -20,7 +20,7 @@ public class PlanterGui extends AbstractContainerScreen<PlanterContainer> {
 
     @Override
     public void render(PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-        this.renderBackground(matrixStack);// back ground
+        this.renderBackground(matrixStack);// background
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY); // render tooltip
     }
