@@ -103,7 +103,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.84'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.86'
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.4:processor")
 }
@@ -126,6 +126,7 @@ jar {
                 "Implementation-Vendor"   : vendor,
                 "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "MixinConfigs"            : "auto_planter.mixins.json",
+                'Automatic-Module-Name'   : 'auto_planter',
         ])
     }
 }
