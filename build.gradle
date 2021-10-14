@@ -98,7 +98,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.8'
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 }
