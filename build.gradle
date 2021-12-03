@@ -1,6 +1,6 @@
 plugins {
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
-    id 'fabric-loom' version "0.10.50"
+    id 'fabric-loom' version "0.10-SNAPSHOT"
 }
 
 archivesBaseName = project.archives_base_name
@@ -41,6 +41,6 @@ java {
     // If you remove this line, sources will not be generated.
     withSourcesJar()
     toolchain {
-        it.languageVersion = JavaLanguageVersion.of(16)
+        it.languageVersion = JavaLanguageVersion.of(17)
     }
 }

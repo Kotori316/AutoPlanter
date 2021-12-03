@@ -1,15 +1,19 @@
 package com.kotori316.auto_planter.planter;
 
+import java.util.Objects;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.NotNull;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
 public class PlanterContainer extends ScreenHandler {
+    @NotNull
     public final PlanterTile tile;
     private final int size;
     public static final String GUI_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Normal.name + "_gui";
@@ -18,8 +22,7 @@ public class PlanterContainer extends ScreenHandler {
     public PlanterContainer(int id, PlayerEntity player, BlockPos pos) {
         super(AutoPlanter.Holder.PLANTER_CONTAINER_TYPE, id);
         this.player = player;
-        this.tile = ((PlanterTile) player.getEntityWorld().getBlockEntity(pos));
-        assert tile != null;
+        this.tile = Objects.requireNonNull((PlanterTile) player.getEntityWorld().getBlockEntity(pos));
         tile.onOpen(player);
         this.size = tile.size();
 

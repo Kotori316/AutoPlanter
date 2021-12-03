@@ -56,9 +56,9 @@ public abstract class PlanterTile extends BlockEntity implements Inventory, Exte
     public abstract PlanterBlock.PlanterBlockType blockType();
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         Inventories.writeNbt(tag, inventoryContents);
-        return super.writeNbt(tag);
+        super.writeNbt(tag);
     }
 
     @Override
