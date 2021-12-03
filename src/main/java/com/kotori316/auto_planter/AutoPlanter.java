@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -79,6 +79,6 @@ public final class AutoPlanter {
         public static final BlockEntityType<PlanterTile.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
             BlockEntityType.Builder.of(PlanterTile.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
         public static final MenuType<PlanterContainer> PLANTER_CONTAINER_TYPE =
-            IForgeContainerType.create((id, inv, data) -> new PlanterContainer(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
+            IForgeMenuType.create((id, inv, data) -> new PlanterContainer(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
     }
 }
