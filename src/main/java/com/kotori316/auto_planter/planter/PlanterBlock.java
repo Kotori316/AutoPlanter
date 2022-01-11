@@ -122,6 +122,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
@@ -131,8 +132,9 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         PlantType type = plantable.getPlantType(world, pos.relative(facing));
         if (state.getValue(TRIGGERED)) {
             return type == PlantType.PLAINS || type == PlantType.CROP;
-        } else
+        } else {
             return type == PlantType.PLAINS;
+        }
     }
 
     @Override

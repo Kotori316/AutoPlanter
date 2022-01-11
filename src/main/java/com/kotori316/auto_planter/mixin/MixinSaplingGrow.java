@@ -16,6 +16,7 @@ import com.kotori316.auto_planter.AutoPlanter;
 
 @Mixin(SaplingBlock.class)
 public abstract class MixinSaplingGrow {
+    @SuppressWarnings("deprecation")
     @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
     public void growOnPlanter(BlockState state, ServerLevel worldIn, BlockPos pos, Random random, CallbackInfo ci) {
         if (worldIn.getBlockState(pos.below()).is(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
