@@ -61,12 +61,6 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     public abstract PlanterBlock.PlanterBlockType blockType();
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        saveAdditional(compound);
-        return super.save(compound);
-    }
-
-    @Override
     protected void saveAdditional(CompoundTag compound) {
         ContainerHelper.saveAllItems(compound, inventoryContents);
         super.saveAdditional(compound);
