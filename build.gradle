@@ -48,6 +48,8 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
+            property('mixin.env.remapRefMap', 'true')
+            property('mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg")
             property 'forge.logging.markers', 'REGISTRIES'
             property("mixin.debug.export", "true")
 
@@ -66,6 +68,8 @@ minecraft {
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property('mixin.env.remapRefMap', 'true')
+            property('mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg")
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
@@ -105,7 +109,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.58'
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.79'
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
