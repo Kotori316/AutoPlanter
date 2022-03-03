@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -18,7 +18,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -154,13 +153,12 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
         if (stack.isEmpty()) return false;
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
-            Block block = ((BlockItem) item).getBlock();
-            if (BlockTags.SAPLINGS.contains(block)) {
+            if (stack.is(ItemTags.SAPLINGS)) {
                 return true;
             }
             if (triggered) {
                 // Seed and crops
-                return block instanceof CropBlock;
+                return ((BlockItem) item).getBlock() instanceof CropBlock;
             }
         }
         return false;
