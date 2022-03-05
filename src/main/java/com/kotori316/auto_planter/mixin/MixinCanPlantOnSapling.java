@@ -19,7 +19,7 @@ public class MixinCanPlantOnSapling {
     protected void addPlanter(BlockState floor, BlockView view, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         if (floor.getBlock() instanceof PlanterBlock) {
             Block block = (Block) (Object) this;
-            if (BlockTags.SAPLINGS.contains(block)) {
+            if (block.getDefaultState().isIn(BlockTags.SAPLINGS)) {
                 cir.setReturnValue(Boolean.TRUE);
             }
         }

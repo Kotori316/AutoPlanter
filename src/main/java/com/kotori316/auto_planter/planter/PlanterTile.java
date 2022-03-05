@@ -136,7 +136,7 @@ public abstract class PlanterTile extends BlockEntity implements Inventory, Exte
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
-            if (BlockTags.SAPLINGS.contains(block)) {
+            if (block.getDefaultState().isIn(BlockTags.SAPLINGS)) {
                 return true;
             }
             if (triggered) {
