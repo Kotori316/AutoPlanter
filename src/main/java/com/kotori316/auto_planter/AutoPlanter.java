@@ -5,11 +5,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -33,13 +32,14 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.Upgraded.name), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.Normal.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.Upgraded.TILE_ID, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
+        Registry.register(Registry.SCREEN_HANDLER, new Identifier(PlanterContainer.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
         LOGGER.debug("Registered misc in mod Auto Planter");
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
-        ScreenRegistry.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
+        HandledScreens.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
     }
 
     public static class Holder {
@@ -49,7 +49,7 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
             FabricBlockEntityTypeBuilder.create(PlanterTile.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final BlockEntityType<PlanterTile.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
             FabricBlockEntityTypeBuilder.create(PlanterTile.Upgraded::new, PLANTER_BLOCK).build(DSL.emptyPartType());
-        public static final ScreenHandlerType<PlanterContainer> PLANTER_CONTAINER_TYPE = ScreenHandlerRegistry.registerExtended(new Identifier(PlanterContainer.GUI_ID),
+        public static final ExtendedScreenHandlerType<PlanterContainer> PLANTER_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(
             (i, player, buf) -> new PlanterContainer(i, player.player, buf.readBlockPos()));
     }
 }
