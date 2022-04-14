@@ -3,14 +3,13 @@ package com.kotori316.auto_planter.planter;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,6 +40,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -72,8 +72,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         }
     }
 
-    protected abstract BlockEntityType<? extends PlanterTile> getEntityType();
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(TRIGGERED);
@@ -93,12 +91,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
                 if (!worldIn.isClientSide)
                     NetworkHooks.openGui(((ServerPlayer) player), planterTile, pos);
                 return InteractionResult.SUCCESS;
-            } else if (!notHasHoe && state.is(this) && !state.getValue(TRIGGERED)) {
-                worldIn.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                if (!worldIn.isClientSide) {
-                    worldIn.setBlock(pos, state.setValue(TRIGGERED, true), Block.UPDATE_ALL);
-                    player.getItemInHand(handIn).hurtAndBreak(1, player, p -> p.broadcastBreakEvent(handIn));
-                }
             }
         }
         return super.use(state, worldIn, pos, player, handIn, hit);
@@ -116,7 +108,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return getEntityType().create(pos, state);
+        return this.blockType.entityType.get().create(pos, state);
     }
 
     @Override
@@ -188,11 +180,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         public Normal() {
             super(PlanterBlockType.NORMAL, name);
         }
-
-        @Override
-        protected BlockEntityType<? extends PlanterTile> getEntityType() {
-            return AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE;
-        }
     }
 
     public static class Upgraded extends PlanterBlock {
@@ -200,11 +187,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
 
         public Upgraded() {
             super(PlanterBlockType.UPGRADED, name);
-        }
-
-        @Override
-        protected BlockEntityType<? extends PlanterTile> getEntityType() {
-            return AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE;
         }
 
         @SubscribeEvent
@@ -215,13 +197,16 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     }
 
     public enum PlanterBlockType {
-        NORMAL(3), UPGRADED(4);
+        NORMAL(3, () -> AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE),
+        UPGRADED(4, () -> AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
         public final int storageSize;
         public final int rowColumn;
+        public final Supplier<BlockEntityType<? extends PlanterTile>> entityType;
 
-        PlanterBlockType(int rowColumn) {
+        PlanterBlockType(int rowColumn, Supplier<BlockEntityType<? extends PlanterTile>> entityType) {
             this.storageSize = rowColumn * rowColumn;
             this.rowColumn = rowColumn;
+            this.entityType = entityType;
         }
     }
 }

@@ -20,13 +20,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
@@ -34,9 +34,11 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     public final NonNullList<ItemStack> inventoryContents;
     public final IItemHandlerModifiable handler = new InvWrapper(this);
     private final LazyOptional<IItemHandlerModifiable> handlerLazyOptional = LazyOptional.of(() -> handler);
+    private final PlanterBlock.PlanterBlockType blockType;
 
-    public PlanterTile(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
-        super(entityType, pos, state);
+    public PlanterTile(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
+        super(blockType.entityType.get(), pos, state);
+        this.blockType = blockType;
         inventoryContents = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
     }
 
@@ -57,7 +59,10 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
         }
     }
 
-    public abstract PlanterBlock.PlanterBlockType blockType();
+    @NotNull
+    public final PlanterBlock.PlanterBlockType blockType() {
+        return this.blockType;
+    }
 
     @Override
     protected void saveAdditional(CompoundTag compound) {
@@ -179,12 +184,7 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
         public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Normal.name + "_tile";
 
         public Normal(BlockPos pos, BlockState state) {
-            super(AutoPlanter.Holder.PLANTER_TILE_TILE_ENTITY_TYPE, pos, state);
-        }
-
-        @Override
-        public PlanterBlock.PlanterBlockType blockType() {
-            return PlanterBlock.PlanterBlockType.NORMAL;
+            super(pos, state, PlanterBlock.PlanterBlockType.NORMAL);
         }
     }
 
@@ -192,12 +192,7 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
         public static final String TILE_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Upgraded.name + "_tile";
 
         public Upgraded(BlockPos pos, BlockState state) {
-            super(AutoPlanter.Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE, pos, state);
-        }
-
-        @Override
-        public PlanterBlock.PlanterBlockType blockType() {
-            return PlanterBlock.PlanterBlockType.UPGRADED;
+            super(pos, state, PlanterBlock.PlanterBlockType.UPGRADED);
         }
     }
 }

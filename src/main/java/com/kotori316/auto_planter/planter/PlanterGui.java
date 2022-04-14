@@ -40,10 +40,10 @@ public class PlanterGui extends AbstractContainerScreen<PlanterContainer> {
     protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        if (getMenu().tile.blockType() == PlanterBlock.PlanterBlockType.NORMAL)
-            RenderSystem.setShaderTexture(0, LOCATION);
-        else
-            RenderSystem.setShaderTexture(0, PLANTER4_GUI_TEXTURES);
+        switch (getMenu().tile.blockType()) {
+            case NORMAL -> RenderSystem.setShaderTexture(0, LOCATION);
+            case UPGRADED -> RenderSystem.setShaderTexture(0, PLANTER4_GUI_TEXTURES);
+        }
         this.blit(matrixStack, getGuiLeft(), getGuiTop(), 0, 0, imageWidth, imageHeight);
     }
 }

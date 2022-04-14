@@ -24,7 +24,6 @@ public class PlanterContainer extends AbstractContainerMenu {
         checkContainerSize(tile, size);
         tile.startOpen(player);
 
-
         switch (tile.blockType().rowColumn) {
             case 3:
             default:
