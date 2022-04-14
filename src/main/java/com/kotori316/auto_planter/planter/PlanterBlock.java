@@ -82,12 +82,14 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (player.getMainHandItem().canPerformAction(ToolActions.HOE_TILL) ||
+            player.getOffhandItem().canPerformAction(ToolActions.HOE_TILL)) {
+            return InteractionResult.PASS;
+        }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
             ItemStack stack = player.getItemInHand(handIn);
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
-            boolean notHasHoe = !isHoe(player.getMainHandItem()) &&
-                !isHoe(player.getOffhandItem());
-            if (notHasSapling && notHasHoe) {
+            if (notHasSapling) {
                 if (!worldIn.isClientSide)
                     NetworkHooks.openGui(((ServerPlayer) player), planterTile, pos);
                 return InteractionResult.SUCCESS;
@@ -110,10 +112,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         } else {
             return super.getToolModifiedState(state, context, toolAction, simulate);
         }
-    }
-
-    private static boolean isHoe(ItemStack stack) {
-        return stack.getItem() instanceof HoeItem;
     }
 
     @Override
