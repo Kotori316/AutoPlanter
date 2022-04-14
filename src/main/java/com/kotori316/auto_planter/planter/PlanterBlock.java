@@ -104,11 +104,11 @@ public abstract class PlanterBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolAction toolType) {
-        if (/*toolType.equals(ToolType.HOE)*/ isHoe(stack) && state.is(this) && !state.getValue(TRIGGERED)) {
+    public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
+        if (toolAction == ToolActions.HOE_TILL && state.is(this) && !state.getValue(TRIGGERED)) {
             return state.setValue(TRIGGERED, Boolean.TRUE);
         } else {
-            return super.getToolModifiedState(state, world, pos, player, stack, toolType);
+            return super.getToolModifiedState(state, context, toolAction, simulate);
         }
     }
 
