@@ -32,6 +32,8 @@ jobs:
       run: |
         CI_FORGE=$(java -jar $(find / -maxdepth 1 -name "fictional*.jar") 1.18)
         sed -i -e "s/forgeVersion=.*/forgeVersion=${CI_FORGE}/" gradle.properties
+    - name: Set executable
+      run: chmod +x ./gradlew
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
