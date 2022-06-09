@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import com.kotori316.auto_planter.AutoPlanter;
@@ -29,14 +30,14 @@ public class PlanterContainer extends AbstractContainerMenu {
             default:
                 for (int i = 0; i < 3; ++i) {
                     for (int j = 0; j < 3; ++j) {
-                        this.addSlot(new SlotItemHandler(tile.handler, j + i * 3, 62 + j * 18, 17 + i * 18));
+                        this.addSlot(new HandlerSlot(tile.handler, j + i * 3, 62 + j * 18, 17 + i * 18));
                     }
                 }
                 break;
             case 4:
                 for (int i = 0; i < 4; ++i) {
                     for (int j = 0; j < 4; ++j) {
-                        this.addSlot(new SlotItemHandler(tile.handler, j + i * 4, 53 + j * 18, 8 + i * 18));
+                        this.addSlot(new HandlerSlot(tile.handler, j + i * 4, 53 + j * 18, 8 + i * 18));
                     }
                 }
                 break;
@@ -94,5 +95,17 @@ public class PlanterContainer extends AbstractContainerMenu {
     public void removed(Player playerIn) {
         super.removed(playerIn);
         this.tile.stopOpen(playerIn);
+    }
+
+    private static final class HandlerSlot extends SlotItemHandler {
+
+        public HandlerSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+            super(itemHandler, index, xPosition, yPosition);
+        }
+
+        @Override
+        public void initialize(ItemStack stack) {
+            this.set(stack);
+        }
     }
 }

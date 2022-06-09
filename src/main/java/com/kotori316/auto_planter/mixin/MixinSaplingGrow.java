@@ -1,9 +1,8 @@
 package com.kotori316.auto_planter.mixin;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +16,7 @@ import com.kotori316.auto_planter.AutoPlanter;
 public abstract class MixinSaplingGrow {
     @SuppressWarnings({"deprecation", "ConstantConditions"})
     @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
-    public void growOnPlanter(BlockState state, ServerLevel worldIn, BlockPos pos, Random random, CallbackInfo ci) {
+    public void growOnPlanter(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random, CallbackInfo ci) {
         if (worldIn.getBlockState(pos.below()).is(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
             if (worldIn.getMaxLocalRawBrightness(pos.above()) >= 9 && worldIn.isAreaLoaded(pos, 1)) {
                 // Check light level only. Random check is skipped.

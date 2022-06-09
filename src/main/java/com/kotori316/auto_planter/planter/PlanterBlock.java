@@ -54,13 +54,13 @@ public abstract class PlanterBlock extends BaseEntityBlock {
 
     public final BlockItem blockItem;
     public final PlanterBlockType blockType;
+    public final String name;
 
     public PlanterBlock(PlanterBlockType blockType, String name) {
         super(Block.Properties.of(Material.DIRT).strength(0.6f, 100).sound(SoundType.GRAVEL));
-        setRegistryName(AutoPlanter.AUTO_PLANTER, name);
+        this.name = name;
         this.blockType = blockType;
         blockItem = new BlockItem(this, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
-        blockItem.setRegistryName(AutoPlanter.AUTO_PLANTER, name);
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
         try {
             // temporal way to handle hoe activation.

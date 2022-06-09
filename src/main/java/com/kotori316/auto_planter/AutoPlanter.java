@@ -2,16 +2,18 @@ package com.kotori316.auto_planter;
 
 import com.mojang.datafixers.DSL;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,30 +40,33 @@ public final class AutoPlanter {
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = AUTO_PLANTER)
     public static final class RegistryEvents {
         @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
+        public static void register(RegisterEvent event) {
+            event.register(Registry.BLOCK_REGISTRY, RegistryEvents::onBlocksRegistry);
+            event.register(Registry.ITEM_REGISTRY, RegistryEvents::onItemsRegistry);
+            event.register(Registry.BLOCK_ENTITY_TYPE_REGISTRY, RegistryEvents::tiles);
+            event.register(Registry.MENU_REGISTRY, RegistryEvents::containers);
+        }
+
+        public static void onBlocksRegistry(final RegisterEvent.RegisterHelper<Block> helper) {
             // register a new block here
-//            LOGGER.info("HELLO from Register Block");
-            blockRegistryEvent.getRegistry().register(Holder.PLANTER_BLOCK);
-            blockRegistryEvent.getRegistry().register(Holder.PLANTER_UPGRADED_BLOCK);
+            helper.register(new ResourceLocation(AUTO_PLANTER, Holder.PLANTER_BLOCK.name), Holder.PLANTER_BLOCK);
+            helper.register(new ResourceLocation(AUTO_PLANTER, Holder.PLANTER_UPGRADED_BLOCK.name), Holder.PLANTER_UPGRADED_BLOCK);
             MinecraftForge.EVENT_BUS.register(Holder.PLANTER_UPGRADED_BLOCK);
         }
 
-        @SubscribeEvent
-        public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
+        public static void onItemsRegistry(final RegisterEvent.RegisterHelper<Item> helper) {
 //            itemRegistryEvent.getRegistry().register(Holder.CHECK_PLANTABLE_ITEM);
-            itemRegistryEvent.getRegistry().register(Holder.PLANTER_BLOCK.blockItem);
-            itemRegistryEvent.getRegistry().register(Holder.PLANTER_UPGRADED_BLOCK.blockItem);
+            helper.register(new ResourceLocation(AUTO_PLANTER, Holder.PLANTER_BLOCK.name), Holder.PLANTER_BLOCK.blockItem);
+            helper.register(new ResourceLocation(AUTO_PLANTER, Holder.PLANTER_UPGRADED_BLOCK.name), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
         }
 
-        @SubscribeEvent
-        public static void tiles(RegistryEvent.Register<BlockEntityType<?>> e) {
-            e.getRegistry().register(Holder.PLANTER_TILE_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.Normal.TILE_ID));
-            e.getRegistry().register(Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE.setRegistryName(PlanterTile.Upgraded.TILE_ID));
+        public static void tiles(RegisterEvent.RegisterHelper<BlockEntityType<?>> helper) {
+            helper.register(new ResourceLocation(PlanterTile.Normal.TILE_ID), Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+            helper.register(new ResourceLocation(PlanterTile.Upgraded.TILE_ID), Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
         }
 
-        @SubscribeEvent
-        public static void containers(RegistryEvent.Register<MenuType<?>> e) {
-            e.getRegistry().register(Holder.PLANTER_CONTAINER_TYPE.setRegistryName(PlanterContainer.GUI_ID));
+        public static void containers(RegisterEvent.RegisterHelper<MenuType<?>> helper) {
+            helper.register(new ResourceLocation(PlanterContainer.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
         }
 
         @SubscribeEvent
