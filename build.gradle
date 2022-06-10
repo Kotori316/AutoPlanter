@@ -14,11 +14,12 @@ buildscript {
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
+plugins {
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+}
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
 
 version = '19.0'
 group = 'com.kotori316' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -160,4 +161,21 @@ task deobfJar(type: Jar) {
 // Tell the artifact system about our extra jars
 artifacts {
     archives srcJar, deobfJar
+}
+
+curseforge {
+    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    project {
+        id = '289078'
+        changelogType = 'markdown'
+        changelog = "For Minecraft ${(project.forgeVersion as String).split("-")[0]} with Forge ${project.forgeVersion}"
+        addGameVersion((project.forgeVersion as String).split("-")[0])
+        addGameVersion 'Forge'
+        releaseType = 'release'
+        mainArtifact jar
+    }
+    options {
+        curseGradleOptions.debug = false // defaults to false
+        javaVersionAutoDetect = false
+    }
 }
