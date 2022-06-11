@@ -2,29 +2,29 @@ package com.kotori316.auto_planter.planter;
 
 import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public class PlanterContainer extends ScreenHandler {
+public class PlanterContainer extends AbstractContainerMenu {
     @NotNull
     public final PlanterTile tile;
     private final int size;
     public static final String GUI_ID = AutoPlanter.AUTO_PLANTER + ":" + PlanterBlock.Normal.name + "_gui";
-    public final PlayerEntity player;
+    public final Player player;
 
-    public PlanterContainer(int id, PlayerEntity player, BlockPos pos) {
+    public PlanterContainer(int id, Player player, BlockPos pos) {
         super(AutoPlanter.Holder.PLANTER_CONTAINER_TYPE, id);
         this.player = player;
-        this.tile = Objects.requireNonNull((PlanterTile) player.getEntityWorld().getBlockEntity(pos));
-        tile.onOpen(player);
-        this.size = tile.size();
+        this.tile = Objects.requireNonNull((PlanterTile) player.getCommandSenderWorld().getBlockEntity(pos));
+        tile.startOpen(player);
+        this.size = tile.getContainerSize();
 
         switch (tile.blockType().rowColumn) {
             case 3:
@@ -57,34 +57,34 @@ public class PlanterContainer extends ScreenHandler {
     }
 
     @Override
-    public boolean canUse(PlayerEntity playerIn) {
-        return tile.canPlayerUse(playerIn);
+    public boolean stillValid(Player playerIn) {
+        return tile.stillValid(playerIn);
     }
 
     @Override
-    public ItemStack transferSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         Slot slot = this.slots.get(index);
-        if (slot.hasStack()) {
-            ItemStack slotStack = slot.getStack();
+        if (slot.hasItem()) {
+            ItemStack slotStack = slot.getItem();
             ItemStack copy = slotStack.copy();
             if (index < size) {
-                if (!this.insertItem(slotStack, size, size + 36, true)) {
+                if (!this.moveItemStackTo(slotStack, size, size + 36, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.insertItem(slotStack, 0, size, false)) {
+            } else if (!this.moveItemStackTo(slotStack, 0, size, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (slotStack.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.markDirty();
+                slot.setChanged();
             }
 
             if (slotStack.getCount() == copy.getCount()) {
                 return ItemStack.EMPTY;
             } else {
-                slot.onTakeItem(playerIn, slotStack);
+                slot.onTake(playerIn, slotStack);
                 return copy;
             }
         } else {
@@ -93,23 +93,23 @@ public class PlanterContainer extends ScreenHandler {
     }
 
     @Override
-    public void close(PlayerEntity player) {
-        super.close(player);
-        this.tile.onClose(player);
+    public void removed(Player player) {
+        super.removed(player);
+        this.tile.stopOpen(player);
     }
 
     public static final class TileSlot extends Slot {
 
         private final int invSlot;
 
-        public TileSlot(Inventory inventory, int invSlot, int xPosition, int yPosition) {
+        public TileSlot(Container inventory, int invSlot, int xPosition, int yPosition) {
             super(inventory, invSlot, xPosition, yPosition);
             this.invSlot = invSlot;
         }
 
         @Override
-        public boolean canInsert(ItemStack stack) {
-            return inventory.isValid(invSlot, stack);
+        public boolean mayPlace(ItemStack stack) {
+            return container.canPlaceItem(invSlot, stack);
         }
     }
 }

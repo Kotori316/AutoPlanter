@@ -1,111 +1,111 @@
 package com.kotori316.auto_planter.planter;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
-public abstract class PlanterBlock extends BlockWithEntity {
-    public static final BooleanProperty TRIGGERED = Properties.TRIGGERED;
+public abstract class PlanterBlock extends BaseEntityBlock {
+    public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
 
     public final BlockItem blockItem;
     public final PlanterBlockType blockType;
 
     public PlanterBlock(PlanterBlockType blockType) {
-        super(Block.Settings.copy(Blocks.DIRT).strength(0.6f, 100).allowsSpawning((state, world, pos, type) -> false));
+        super(Block.Properties.copy(Blocks.DIRT).strength(0.6f, 100).isValidSpawn((state, world, pos, type) -> false));
         this.blockType = blockType;
-        blockItem = new BlockItem(this, new Item.Settings().group(ItemGroup.DECORATIONS));
-        setDefaultState(getStateManager().getDefaultState().with(TRIGGERED, false));
+        blockItem = new BlockItem(this, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+        registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
     }
 
     protected abstract BlockEntityType<? extends PlanterTile> getEntityType();
 
     @Override
-    protected final void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected final void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(TRIGGERED);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
-            ItemStack stack = player.getStackInHand(handIn);
-            boolean notHasSapling = hit.getSide() != Direction.UP || !PlanterTile.isPlantable(stack, true);
-            boolean notHasHoe = !(player.getMainHandStack().getItem() instanceof HoeItem) &&
-                !(player.getOffHandStack().getItem() instanceof HoeItem);
+            ItemStack stack = player.getItemInHand(handIn);
+            boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
+            boolean notHasHoe = !(player.getMainHandItem().getItem() instanceof HoeItem) &&
+                                !(player.getOffhandItem().getItem() instanceof HoeItem);
             if (notHasSapling && notHasHoe) {
-                if (!worldIn.isClient) {
-                    player.openHandledScreen(planterTile);
+                if (!worldIn.isClientSide) {
+                    player.openMenu(planterTile);
                 }
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return super.onUse(state, worldIn, pos, player, handIn, hit);
+        return super.use(state, worldIn, pos, player, handIn, hit);
     }
 
     @Override
-    public final PlanterTile createBlockEntity(BlockPos pos, BlockState state) {
-        return getEntityType().instantiate(pos, state);
+    public final PlanterTile newBlockEntity(BlockPos pos, BlockState state) {
+        return getEntityType().create(pos, state);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorOutput(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos));
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onStateReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.isOf(newState.getBlock())) {
-            if (!worldIn.isClient) {
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            if (!worldIn.isClientSide) {
                 if (worldIn.getBlockEntity(pos) instanceof PlanterTile inventory) {
-                    ItemScatterer.spawn(worldIn, pos, inventory);
-                    worldIn.updateComparators(pos, state.getBlock());
+                    Containers.dropContents(worldIn, pos, inventory);
+                    worldIn.updateNeighbourForOutputSignal(pos, state.getBlock());
                 }
             }
-            super.onStateReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborUpdate(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        super.neighborUpdate(state, worldIn, pos, blockIn, fromPos, isMoving);
-        if (!worldIn.isClient) {
+    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
+        if (!worldIn.isClientSide) {
             worldIn.getBlockEntity(pos, getEntityType())
                 .ifPresent(PlanterTile::plantSapling);
         }

@@ -7,10 +7,10 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,20 +26,20 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.Normal.name), Holder.PLANTER_BLOCK);
-        Registry.register(Registry.BLOCK, new Identifier(AUTO_PLANTER, PlanterBlock.Upgraded.name), Holder.PLANTER_UPGRADED_BLOCK);
-        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.Normal.name), Holder.PLANTER_BLOCK.blockItem);
-        Registry.register(Registry.ITEM, new Identifier(AUTO_PLANTER, PlanterBlock.Upgraded.name), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
+        Registry.register(Registry.BLOCK, new ResourceLocation(AUTO_PLANTER, PlanterBlock.Normal.name), Holder.PLANTER_BLOCK);
+        Registry.register(Registry.BLOCK, new ResourceLocation(AUTO_PLANTER, PlanterBlock.Upgraded.name), Holder.PLANTER_UPGRADED_BLOCK);
+        Registry.register(Registry.ITEM, new ResourceLocation(AUTO_PLANTER, PlanterBlock.Normal.name), Holder.PLANTER_BLOCK.blockItem);
+        Registry.register(Registry.ITEM, new ResourceLocation(AUTO_PLANTER, PlanterBlock.Upgraded.name), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.Normal.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, PlanterTile.Upgraded.TILE_ID, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
-        Registry.register(Registry.SCREEN_HANDLER, new Identifier(PlanterContainer.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
+        Registry.register(Registry.MENU, new ResourceLocation(PlanterContainer.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
         LOGGER.debug("Registered misc in mod Auto Planter");
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
-        HandledScreens.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
+        MenuScreens.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
     }
 
     public static class Holder {

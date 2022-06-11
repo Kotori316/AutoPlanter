@@ -1,11 +1,10 @@
 package com.kotori316.auto_planter.mixin;
 
-import java.util.Random;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,15 +16,15 @@ import com.kotori316.auto_planter.AutoPlanter;
 @Mixin(SaplingBlock.class)
 public class MixinSaplingGrow {
     @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
-    public void growOnPlanter(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-        if (world.getBlockState(pos.down()).isOf(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
-            if (world.getLightLevel(pos.up()) >= 9)  // Check light level only. Random check is skipped.
-                generate(world, pos, state, random);
+    public void growOnPlanter(BlockState state, ServerLevel world, BlockPos pos, RandomSource random, CallbackInfo ci) {
+        if (world.getBlockState(pos.below()).is(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
+            if (world.getMaxLocalRawBrightness(pos.above()) >= 9)  // Check light level only. Random check is skipped.
+                advanceTree(world, pos, state, random);
             ci.cancel();
         }
     }
 
     @Shadow
-    public void generate(ServerWorld world, BlockPos pos, BlockState state, Random random) {
+    public void advanceTree(ServerLevel world, BlockPos pos, BlockState state, RandomSource random) {
     }
 }
