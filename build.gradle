@@ -21,7 +21,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-version = '19.0'
+version = project.modVersion
 group = 'com.kotori316' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'AutoPlanter'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
