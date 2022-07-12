@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,11 +40,12 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.Nullable;
 
 import com.kotori316.auto_planter.AutoPlanter;
 
@@ -89,7 +89,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
             if (notHasSapling) {
                 if (!worldIn.isClientSide)
-                    NetworkHooks.openGui(((ServerPlayer) player), planterTile, pos);
+                    NetworkHooks.openScreen(((ServerPlayer) player), planterTile, pos);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -191,7 +191,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
 
         @SubscribeEvent
         public void grow(BlockEvent.CropGrowEvent.Pre event) {
-            if (event.getWorld().getBlockState(event.getPos().below()).is(this))
+            if (event.getLevel().getBlockState(event.getPos().below()).is(this))
                 event.setResult(Event.Result.ALLOW);
         }
     }
