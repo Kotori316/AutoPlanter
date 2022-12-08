@@ -17,7 +17,6 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +59,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         super(Block.Properties.of(Material.DIRT).strength(0.6f, 100).sound(SoundType.GRAVEL));
         this.name = name;
         this.blockType = blockType;
-        blockItem = new BlockItem(this, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+        blockItem = new BlockItem(this, new Item.Properties());
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
         try {
             // temporal way to handle hoe activation.

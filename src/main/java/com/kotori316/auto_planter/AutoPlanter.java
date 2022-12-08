@@ -2,14 +2,16 @@ package com.kotori316.auto_planter;
 
 import com.mojang.datafixers.DSL;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -41,10 +43,10 @@ public final class AutoPlanter {
     public static final class RegistryEvents {
         @SubscribeEvent
         public static void register(RegisterEvent event) {
-            event.register(Registry.BLOCK_REGISTRY, RegistryEvents::onBlocksRegistry);
-            event.register(Registry.ITEM_REGISTRY, RegistryEvents::onItemsRegistry);
-            event.register(Registry.BLOCK_ENTITY_TYPE_REGISTRY, RegistryEvents::tiles);
-            event.register(Registry.MENU_REGISTRY, RegistryEvents::containers);
+            event.register(Registries.BLOCK, RegistryEvents::onBlocksRegistry);
+            event.register(Registries.ITEM, RegistryEvents::onItemsRegistry);
+            event.register(Registries.BLOCK_ENTITY_TYPE, RegistryEvents::tiles);
+            event.register(Registries.MENU, RegistryEvents::containers);
         }
 
         public static void onBlocksRegistry(final RegisterEvent.RegisterHelper<Block> helper) {
@@ -72,6 +74,12 @@ public final class AutoPlanter {
         @SubscribeEvent
         public static void clientInit(FMLClientSetupEvent event) {
             MenuScreens.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
+        }
+
+        @SubscribeEvent
+        public static void creativeTab(CreativeModeTabEvent.BuildContents event) {
+            event.registerSimple(CreativeModeTabs.FUNCTIONAL_BLOCKS, Holder.PLANTER_BLOCK);
+            event.registerSimple(CreativeModeTabs.FUNCTIONAL_BLOCKS, Holder.PLANTER_UPGRADED_BLOCK);
         }
     }
 

@@ -1,6 +1,6 @@
 {
   "parent": "auto_planter:block/planter_base",
   "textures": {
-    "side": "auto_planter:planter_upgraded"
+    "side": "auto_planter:block/planter_upgraded"
   }
 }
