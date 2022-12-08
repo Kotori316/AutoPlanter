@@ -28,10 +28,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set Forge version
-      run: |
-        CI_FORGE=$(java -jar $(find / -maxdepth 1 -name "fictional*.jar") 1.19)
-        sed -i -e "s/forgeVersion=.*/forgeVersion=${CI_FORGE}/" gradle.properties
+    # - name: Set Forge version
+    #   run: |
+    #     CI_FORGE=$(java -jar $(find / -maxdepth 1 -name "fictional*.jar") 1.19)
+    #     sed -i -e "s/forgeVersion=.*/forgeVersion=${CI_FORGE}/" gradle.properties
     - name: Set executable
       run: chmod +x ./gradlew
     - name: Build with Gradle
