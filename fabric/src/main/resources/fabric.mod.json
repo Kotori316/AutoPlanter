@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "auto_planter",
+  "version": "${version}",
+  "name": "AutoPlanter",
+  "description": "Adds dirt that automatically plants sapling.",
+  "authors": [
+    "Kotori316"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/planting-dirt-for-saplings",
+    "sources": "https://github.com/Kotori316/AutoPlanter",
+    "issues": "https://github.com/Kotori316/AutoPlanter/issues"
+  },
+  "license": "All rights reserved",
+  "icon": "assets/auto_planter/textures/planter_big.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.kotori316.auto_planter.fabric.AutoPlanter"
+    ],
+    "client": [
+      "com.kotori316.auto_planter.fabric.AutoPlanter"
+    ]
+  },
+  "mixins": [
+    "auto_planter.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11",
+    "fabric": "*",
+    "minecraft": "1.19.x"
+  }
+}
