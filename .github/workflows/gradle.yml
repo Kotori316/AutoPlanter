@@ -34,7 +34,7 @@ jobs:
     #     sed -i -e "s/forgeVersion=.*/forgeVersion=${CI_FORGE}/" gradle.properties
     - name: Set executable
       run: chmod +x ./gradlew
-    - name: Build with Gradle
+    - name: javaToolchains
       uses: gradle/gradle-build-action@v2
       with:
         arguments: :forge:javaToolchains
@@ -55,7 +55,7 @@ jobs:
         java-version: '17'
     - name: Set executable
       run: chmod +x ./gradlew
-    - name: Build with Gradle
+    - name: javaToolchains
       uses: gradle/gradle-build-action@v2
       with:
         arguments: :fabric:javaToolchains
