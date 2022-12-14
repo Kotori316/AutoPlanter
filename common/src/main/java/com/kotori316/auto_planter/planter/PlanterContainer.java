@@ -2,6 +2,7 @@ package com.kotori316.auto_planter.planter;
 
 import java.util.Objects;
 
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,30 +19,21 @@ public abstract class PlanterContainer<T extends PlanterTile> extends AbstractCo
 
     protected PlanterContainer(int id, Player player, BlockPos pos, MenuType<?> type) {
         super(type, id);
-        //noinspection unchecked
-        this.tile = Objects.requireNonNull((T) player.level.getBlockEntity(pos));
-        this.size = tile.blockType().storageSize;
+        this.tile = cast(player.level.getBlockEntity(pos));
+        var blockType = tile.blockType();
+        this.size = blockType.storageSize;
         checkContainerSize(tile, size);
         tile.startOpen(player);
 
-        switch (tile.blockType().rowColumn) {
-            case 3:
-            default:
-                for (int i = 0; i < 3; ++i) {
-                    for (int j = 0; j < 3; ++j) {
-                        this.addSlot(createSlot(tile, j + i * 3, 62 + j * 18, 17 + i * 18));
-                    }
-                }
-                break;
-            case 4:
-                for (int i = 0; i < 4; ++i) {
-                    for (int j = 0; j < 4; ++j) {
-                        this.addSlot(createSlot(tile, j + i * 4, 53 + j * 18, 8 + i * 18));
-                    }
-                }
-                break;
+        var startXY = switch (blockType) {
+            case NORMAL -> IntIntPair.of(62, 17);
+            case UPGRADED -> IntIntPair.of(53, 8);
+        };
+        for (int i = 0; i < blockType.rowColumn; ++i) {
+            for (int j = 0; j < blockType.rowColumn; ++j) {
+                this.addSlot(createSlot(tile, j + i * blockType.rowColumn, startXY.leftInt() + j * 18, startXY.rightInt() + i * 18));
+            }
         }
-
         for (int k = 0; k < 3; ++k) {
             for (int i1 = 0; i1 < 9; ++i1) {
                 this.addSlot(new Slot(player.getInventory(), i1 + k * 9 + 9, 8 + i1 * 18, 84 + k * 18));
@@ -96,5 +88,10 @@ public abstract class PlanterContainer<T extends PlanterTile> extends AbstractCo
     public void removed(Player playerIn) {
         super.removed(playerIn);
         this.tile.stopOpen(playerIn);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends PlanterTile> T cast(Object o) {
+        return (T) Objects.requireNonNull(o);
     }
 }
