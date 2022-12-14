@@ -15,6 +15,7 @@ buildscript {
     }
 }
 plugins {
+    id "java"
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: "net.minecraftforge.gradle"
@@ -58,8 +59,8 @@ minecraft {
 
             mods {
                 create(project.mod_id as String) {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
+                    source(sourceSets.main as SourceSet)
+                    source(project(":common").sourceSets.main as SourceSet)
                 }
             }
         }
@@ -76,8 +77,8 @@ minecraft {
 
             mods {
                 create(project.mod_id as String) {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
+                    source(sourceSets.main as SourceSet)
+                    source(project(":common").sourceSets.main as SourceSet)
                 }
             }
         }
@@ -96,8 +97,8 @@ minecraft {
 
             mods {
                 create(project.mod_id as String) {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
+                    source(sourceSets.main as SourceSet)
+                    source(project(":common").sourceSets.main as SourceSet)
                 }
             }
         }
@@ -153,18 +154,18 @@ jar {
 // we define a custom artifact that is sourced from the reobfJar output task
 // and then declare that to be published
 // Note you'll need to add a repository here
-def reobfFile = file("$buildDir/reobfJar/output.jar")
+/*def reobfFile = file("$buildDir/reobfJar/output.jar")
 def reobfArtifact = artifacts.add("default", reobfFile) {
     type "jar"
     builtBy "reobfJar"
-}
+}*/
 
-task srcJar(type: Jar) {
+tasks.register('srcJar', Jar) {
     from sourceSets.main.allSource
     archiveClassifier.set("sources")
 }
 
-task deobfJar(type: Jar) {
+tasks.register('deobfJar', Jar) {
     from sourceSets.main.output
     archiveClassifier.set("deobf")
 }
