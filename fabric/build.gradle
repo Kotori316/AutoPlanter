@@ -1,12 +1,17 @@
 plugins {
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
-    id 'fabric-loom' version "0.13-SNAPSHOT"
+    id "fabric-loom" version "0.13-SNAPSHOT"
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 archivesBaseName = "${rootProject.name}-Fabric-${project.minecraftVersion}"
 version = project.modVersion
-group = 'com.kotori316'
+group = "com.kotori316"
+
+println("Java: " + System.getProperty("java.version") +
+        " JVM: " + System.getProperty("java.vm.version") +
+        "(" + System.getProperty("java.vendor") + ")" +
+        " Arch: " + System.getProperty("os.arch"))
 
 dependencies {
     // To change the versions see the gradle.properties file
@@ -47,12 +52,12 @@ java {
 curseforge {
     apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
     project {
-        id = '289078'
-        changelogType = 'markdown'
+        id = "289078"
+        changelogType = "markdown"
         changelog = "For Minecraft ${project.minecraftVersion} with Fabric ${project.fabric_version}"
         addGameVersion(project.minecraftVersion)
-        addGameVersion 'Fabric'
-        releaseType = 'beta'
+        addGameVersion "Fabric"
+        releaseType = "beta"
         mainArtifact remapJar
     }
     options {
