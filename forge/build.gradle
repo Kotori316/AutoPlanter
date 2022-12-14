@@ -60,7 +60,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                auto_planter {
+                create(project.mod_id as String) {
                     source sourceSets.main
                     source project(":common").sourceSets.main
                 }
@@ -80,7 +80,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                auto_planter {
+                create(project.mod_id as String) {
                     source sourceSets.main
                     source project(":common").sourceSets.main
                 }
@@ -96,10 +96,10 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'auto_planter', '--all', '--output', file('src/generated/resources/')
+            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/')
 
             mods {
-                auto_planter {
+                create(project.mod_id as String) {
                     source sourceSets.main
                     source project(":common").sourceSets.main
                 }
