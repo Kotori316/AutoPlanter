@@ -13,10 +13,23 @@ println("Java: " + System.getProperty("java.version") +
         "(" + System.getProperty("java.vendor") + ")" +
         " Arch: " + System.getProperty("os.arch"))
 
+repositories {
+    maven {
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org'
+    }
+}
+
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
-    mappings loom.officialMojangMappings()
+    mappings loom.layered {
+        it.officialMojangMappings()
+        String[] parchmentVersion = String.valueOf(project.parchmentMapping).split("-")
+        String parchmentMC = parchmentVersion[0]
+        String parchmentDate = parchmentVersion[1]
+        it.parchment("org.parchmentmc.data:parchment-$parchmentMC:$parchmentDate@zip")
+    }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     compileOnly project(":common")
 
