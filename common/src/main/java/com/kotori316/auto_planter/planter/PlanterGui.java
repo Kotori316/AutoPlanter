@@ -45,6 +45,6 @@ public class PlanterGui extends AbstractContainerScreen<PlanterContainer<?>> {
             case NORMAL -> RenderSystem.setShaderTexture(0, LOCATION);
             case UPGRADED -> RenderSystem.setShaderTexture(0, PLANTER4_GUI_TEXTURES);
         }
-        this.blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 }
