@@ -1,26 +1,16 @@
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-buildscript {
-    repositories {
-        maven { url = "https://maven.minecraftforge.net/" }
-        maven { url = "https://repo.spongepowered.org/maven" }
-        maven { url = "https://maven.parchmentmc.org" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
-        classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
-        classpath "org.parchmentmc:librarian:1.+"
-    }
-}
 plugins {
-    id "java"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id("maven-publish")
+    id("signing")
+    id("java")
+    id("net.minecraftforge.gradle") version("[6.0,6.2)")
+    id("org.spongepowered.mixin") version("0.7.+")
+    id("org.parchmentmc.librarian.forgegradle") version("1.+")
+    id("com.matthewprenger.cursegradle") version("1.4.0")
+    id("com.modrinth.minotaur").version("2.+")
 }
-apply plugin: "net.minecraftforge.gradle"
-apply plugin: "org.spongepowered.mixin"
-apply plugin: "org.parchmentmc.librarian.forgegradle"
 
 version = project.modVersion
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -52,7 +42,7 @@ minecraft {
 
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            property("forge.logging.markers", "REGISTRIES")
+            property("forge.logging.markers", "")
             property("forge.logging.console.level", "debug")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
@@ -70,7 +60,7 @@ minecraft {
 
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            property("forge.logging.markers", "REGISTRIES")
+            property("forge.logging.markers", "")
             property("forge.logging.console.level", "debug")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
@@ -88,7 +78,7 @@ minecraft {
 
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            property("forge.logging.markers", "REGISTRIES")
+            property("forge.logging.markers", "")
             property("forge.logging.console.level", "debug")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
