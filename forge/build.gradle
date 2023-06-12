@@ -149,6 +149,27 @@ def reobfArtifact = artifacts.add("default", reobfFile) {
     type "jar"
     builtBy "reobfJar"
 }*/
+jar.finalizedBy("jksSignJar")
+
+tasks.register("jksSignJar") {
+    dependsOn("reobfJar")
+    boolean executeCondition = project.hasProperty("jarSign.keyAlias") &&
+            project.hasProperty("jarSign.keyLocation") &&
+            project.hasProperty("jarSign.storePass")
+    onlyIf { executeCondition }
+    doLast {
+        //noinspection HttpUrlsUsage
+        ant.signjar(
+                jar: jar.archiveFile.get(),
+                alias: project.findProperty("jarSign.keyAlias") ?: "",
+                keystore: project.findProperty("jarSign.keyLocation") ?: "",
+                storepass: project.findProperty("jarSign.storePass") ?: "",
+                sigalg: "Ed25519",
+                digestalg: "SHA-256",
+                tsaurl: "http://timestamp.digicert.com",
+        )
+    }
+}
 
 tasks.register('srcJar', Jar) {
     from sourceSets.main.allSource
@@ -165,8 +186,31 @@ artifacts {
     archives srcJar, deobfJar
 }
 
+signing {
+    sign(publishing.publications)
+    sign(tasks.jar, tasks.deobfJar, tasks.srcJar)
+}
+
+boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
+        project.hasProperty("signing.password") &&
+        project.hasProperty("signing.secretKeyRingFile")
+
+tasks.withType(Sign).configureEach {
+    it.onlyIf {
+        hasGpgSignature
+    }
+}
+
+tasks.withType(AbstractPublishToMaven).configureEach {
+    if (hasGpgSignature) {
+        it.dependsOn(":signJar")
+        it.dependsOn(":signSrcJar")
+        it.dependsOn(":signDeobfJar")
+    }
+}
+
 curseforge {
-    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
         id = "289078"
         changelogType = "markdown"
@@ -177,7 +221,53 @@ curseforge {
         mainArtifact jar
     }
     options {
-        curseGradleOptions.debug = false // defaults to false
+        curseGradleOptions.debug = true // defaults to false
         javaVersionAutoDetect = false
+    }
+}
+
+modrinth {
+    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
+    projectId = "auto-planter"
+    versionType = "release"
+    versionName = "${project.version}-forge"
+    versionNumber.set(project.version.toString())
+    uploadFile = tasks.jar
+    getAdditionalFiles().set([
+            tasks.deobfJar,
+            tasks.srcJar,
+    ])
+    getGameVersions().set([project.minecraftVersion])
+    getLoaders().set(["forge"])
+    changelog = "For Minecraft ${project.minecraftVersion} with Forge ${project.forgeVersion}"
+    debugMode = true
+    dependencies {
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "AzureRepository"
+            url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+            credentials {
+                username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.archivesBaseName.toLowerCase()
+            from components.java
+            artifact(tasks.deobfJar)
+            artifact(tasks.srcJar)
+            pom {
+                name = archivesBaseName
+                description = "AutoPlanter for Minecraft ${project.minecraftVersion} and Forge ${project.forgeVersion}"
+                url = "https://github.com/Kotori316/AutoPlanter"
+                packaging = "jar"
+            }
+        }
     }
 }
