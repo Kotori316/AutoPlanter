@@ -7,7 +7,7 @@ plugins {
     id("com.modrinth.minotaur") version("2.+")
 }
 
-archivesBaseName = "${rootProject.name}-Fabric-${project.minecraftVersion}"
+archivesBaseName = "${project.baseName}-Fabric-${project.minecraftVersion}"
 version = project.modVersion
 group = "com.kotori316"
 
@@ -157,13 +157,5 @@ boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
 tasks.withType(Sign).configureEach {
     it.onlyIf {
         hasGpgSignature
-    }
-}
-
-tasks.withType(AbstractPublishToMaven).configureEach {
-    if (hasGpgSignature) {
-        it.dependsOn(":signJar")
-        it.dependsOn(":signSourcesJar")
-        it.dependsOn(":signRemapJar")
     }
 }
