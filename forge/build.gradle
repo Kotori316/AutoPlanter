@@ -200,7 +200,7 @@ curseforge {
         mainArtifact jar
     }
     options {
-        curseGradleOptions.debug = true // defaults to false
+        curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode) // defaults to false
         javaVersionAutoDetect = false
     }
 }
@@ -219,19 +219,21 @@ modrinth {
     getGameVersions().set([project.minecraftVersion])
     getLoaders().set(["forge"])
     changelog = "For Minecraft ${project.minecraftVersion} with Forge ${project.forgeVersion}"
-    debugMode = true
+    debugMode = !Boolean.parseBoolean(project.releaseMode)
     dependencies {
     }
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "AzureRepository"
-            url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
-            credentials {
-                username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
-                password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+    if (Boolean.parseBoolean(project.releaseMode)) {
+        repositories {
+            maven {
+                name = "AzureRepository"
+                url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+                credentials {
+                    username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                    password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+                }
             }
         }
     }

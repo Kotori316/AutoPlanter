@@ -91,12 +91,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: Release-${{ github.run_number }}
+          name: AutoPlanter-Release-${{ github.run_number }}
+          retention-days: 7
           path: |
             */build/*libs/*.jar
       - name: Upload Local Maven
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: Maven-${{ github.run_number }}
+          name: AutoPlanter-Maven-${{ github.run_number }}
+          retention-days: 1
           path: ~/.m2
