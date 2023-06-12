@@ -19,7 +19,7 @@ public abstract class PlanterContainer<T extends PlanterTile> extends AbstractCo
 
     protected PlanterContainer(int id, Player player, BlockPos pos, MenuType<?> type) {
         super(type, id);
-        this.tile = cast(player.level.getBlockEntity(pos));
+        this.tile = cast(player.level().getBlockEntity(pos));
         var blockType = tile.blockType();
         this.size = blockType.storageSize;
         checkContainerSize(tile, size);

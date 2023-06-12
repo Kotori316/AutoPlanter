@@ -1,7 +1,6 @@
 package com.kotori316.auto_planter.planter;
 
-import java.util.function.Supplier;
-
+import com.kotori316.auto_planter.AutoPlanterCommon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -22,10 +21,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 
-import com.kotori316.auto_planter.AutoPlanterCommon;
+import java.util.function.Supplier;
 
 public abstract class PlanterBlock extends BaseEntityBlock {
     public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
@@ -34,7 +33,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     final String name;
 
     protected PlanterBlock(PlanterBlockType blockType, String name) {
-        super(BlockBehaviour.Properties.of(Material.DIRT).strength(0.6f, 100).sound(SoundType.GRAVEL));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.6f, 100).sound(SoundType.GRAVEL));
         this.blockType = blockType;
         this.name = name;
         this.blockItem = new BlockItem(this, new Item.Properties());
