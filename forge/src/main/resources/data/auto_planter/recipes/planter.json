@@ -9,9 +9,11 @@
     "p": {
       "item": "minecraft:dirt"
     },
-    "d": {
-      "tag": "forge:ingots"
-    },
+    "d": [
+      {
+        "tag": "forge:ingots"
+      }
+    ],
     "g": {
       "tag": "minecraft:saplings"
     },
