@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ggg",
+    "dDd",
+    "ppp"
+  ],
+  "key": {
+    "p": {
+      "item": "minecraft:dirt"
+    },
+    "d": [
+      {
+        "tag": "c:iron_ingots"
+      },
+      {
+        "tag": "c:gold_ingots"
+      },
+      {
+        "tag": "c:copper_ingots"
+      }
+    ],
+    "g": {
+      "tag": "minecraft:saplings"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result": {
+    "item": "auto_planter:planter",
+    "count": 1
+  }
+}
