@@ -17,6 +17,10 @@ pluginManagement {
             name = "Sponge Snapshots"
             url = "https://repo.spongepowered.org/repository/maven-public/"
         }
+        maven {
+            name = "Kotori316 Plugin"
+            url = "https://storage.googleapis.com/kotori316-maven-storage/maven/"
+        }
     }
 }
 
