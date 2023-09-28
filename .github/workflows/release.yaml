@@ -69,6 +69,8 @@ jobs:
           AZURE_TOKEN: ${{steps.get-secrets.outputs.azure_token}}
           CURSE_TOKEN: ${{steps.get-secrets.outputs.curseforge_token}}
           MODRINTH_TOKEN: ${{steps.get-secrets.outputs.modrinth_token}}
+          VERSION_FUNCTION_ENDPOINT: ${{ secrets.GCP_VERSION_FUNCTION_ENDPOINT }}
+          SERVICE_ACCOUNT: ${{ secrets.GCP_FUNCTION_EXECUTION_ACCOUNT }}
       - name: Verify Build Files
         run: |
           for f in $(find ./ -name "*.asc") ; do
