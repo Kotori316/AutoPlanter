@@ -18,7 +18,7 @@ public class PlanterGui extends AbstractContainerScreen<PlanterContainer<?>> {
 
     @Override
     public void render(GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTicks) {
-        this.renderBackground(graphics);// background
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);// background
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY); // render tooltip
     }

@@ -1,5 +1,8 @@
 package com.kotori316.auto_planter.forge.planter;
 
+import com.kotori316.auto_planter.AutoPlanterCommon;
+import com.kotori316.auto_planter.planter.PlanterBlock;
+import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,12 +24,7 @@ import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
-
-import com.kotori316.auto_planter.AutoPlanterCommon;
-import com.kotori316.auto_planter.planter.PlanterBlock;
-import com.kotori316.auto_planter.planter.PlanterTile;
 
 public sealed abstract class PlanterBlockForge extends PlanterBlock {
 
@@ -45,7 +43,7 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
             if (notHasSapling) {
                 if (!worldIn.isClientSide)
-                    NetworkHooks.openScreen(((ServerPlayer) player), planterTile, pos);
+                    ((ServerPlayer) player).openMenu(planterTile, pos);
                 return InteractionResult.SUCCESS;
             }
         }
