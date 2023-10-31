@@ -1,3 +1,6 @@
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     id("java")
     id("maven-publish")
@@ -53,5 +56,27 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
+}
+
+mixin {
+    config("mixins.${project.mod_id}.refmap.json")
+}
+
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    String vendor = "Kotori316"
+    manifest {
+        attributes([
+                "Specification-Title"     : project.name,
+                "Specification-Vendor"    : vendor,
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.version.toString(),
+                "Implementation-Vendor"   : vendor,
+                "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "MixinConfigs"            : "${project.mod_id}.mixins.json",
+                "Automatic-Module-Name"   : project.mod_id,
+        ])
+    }
 }
 
