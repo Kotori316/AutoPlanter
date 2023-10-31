@@ -31,6 +31,7 @@ runs {
     configureEach {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
         systemProperty 'forge.logging.console.level', 'debug'
+        jvmArguments.add("-XstartOnFirstThread")
 
         modSource project.sourceSets.main
     }
@@ -80,3 +81,76 @@ jar {
     }
 }
 
+jar.finalizedBy("jksSignJar")
+
+tasks.register("jksSignJar") {
+    dependsOn("jar")
+    boolean executeCondition = project.hasProperty("jarSign.keyAlias") &&
+            project.hasProperty("jarSign.keyLocation") &&
+            project.hasProperty("jarSign.storePass")
+    onlyIf { executeCondition }
+    doLast {
+        //noinspection HttpUrlsUsage
+        ant.signjar(
+                jar: jar.archiveFile.get(),
+                alias: project.findProperty("jarSign.keyAlias") ?: "",
+                keystore: project.findProperty("jarSign.keyLocation") ?: "",
+                storepass: project.findProperty("jarSign.storePass") ?: "",
+                sigalg: "Ed25519",
+                digestalg: "SHA-256",
+                tsaurl: "http://timestamp.digicert.com",
+        )
+    }
+}
+
+tasks.register('srcJar', Jar) {
+    from sourceSets.main.allSource
+    archiveClassifier.set("sources")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Tell the artifact system about our extra jars
+artifacts {
+    archives srcJar
+}
+
+signing {
+    sign(publishing.publications)
+    sign(tasks.jar, tasks.srcJar)
+}
+
+boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
+        project.hasProperty("signing.password") &&
+        project.hasProperty("signing.secretKeyRingFile")
+
+tasks.withType(Sign).configureEach {
+    it.onlyIf {
+        hasGpgSignature
+    }
+}
+
+tasks.withType(AbstractPublishToMaven).configureEach {
+    if (hasGpgSignature) {
+        it.dependsOn(":neoforge:signJar")
+        it.dependsOn(":neoforge:signSrcJar")
+    }
+}
+
+import com.kotori316.plugin.cf.CallVersionFunctionTask
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+
+tasks.register("registerVersion", CallVersionFunctionTask.class) {
+    functionEndpoint = readVersionFunctionEndpoint(project)
+    gameVersion = project.findProperty("minecraftVersion")
+    platform = "neoforge"
+    modName = project.findProperty("mod_id")
+    changelog = "For ${project.findProperty("minecraftVersion")}"
+}
+
+tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
+    gameVersion = project.findProperty("minecraftVersion")
+    platform = "neoforge"
+    modName = project.findProperty("mod_id")
+    version = project.version
+    failIfExists = true
+}

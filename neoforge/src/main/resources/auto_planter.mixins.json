@@ -11,6 +11,5 @@
   "server": [ ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "refmap": "mixins.auto_planter.refmap.json"
+  }
 }
