@@ -34,12 +34,12 @@ plugins {
 
 rootProject.name = "AutoPlanter-1.20"
 include("common")
-if (!Boolean.parseBoolean(System.getenv("FABRIC_ONLY"))) {
+if (!Boolean.parseBoolean(System.getenv("DISABLE_FORGE"))) {
     include("forge")
 }
-if (!Boolean.parseBoolean(System.getenv("FORGE_ONLY"))) {
+if (!Boolean.parseBoolean(System.getenv("DISABLE_FABRIC"))) {
     include("fabric")
 }
-if (!Boolean.parseBoolean(System.getenv("NEOFORGE_ONLY"))) {
+if (!Boolean.parseBoolean(System.getenv("DISABLE_NEOFORGE"))) {
     include("neoforge")
 }
