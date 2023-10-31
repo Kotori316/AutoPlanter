@@ -145,6 +145,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     platform = "neoforge"
     modName = project.findProperty("mod_id")
     changelog = "For ${project.findProperty("minecraftVersion")}"
+    homepage = "https://modrinth.com/mod/auto-planter"
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
@@ -152,5 +153,5 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     platform = "neoforge"
     modName = project.findProperty("mod_id")
     version = project.version
-    failIfExists = true
+    failIfExists = Boolean.parseBoolean(System.getenv("FAIL_IF_EXISTS"))
 }

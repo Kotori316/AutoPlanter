@@ -286,6 +286,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     platform = "forge"
     modName = project.findProperty("mod_id")
     changelog = "For ${project.findProperty("minecraftVersion")}"
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/planting-dirt-for-saplings"
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
@@ -293,5 +294,5 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     platform = "forge"
     modName = project.findProperty("mod_id")
     version = project.version
-    failIfExists = true
+    failIfExists = Boolean.parseBoolean(System.getenv("FAIL_IF_EXISTS"))
 }

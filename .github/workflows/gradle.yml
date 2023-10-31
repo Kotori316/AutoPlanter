@@ -37,6 +37,8 @@ jobs:
         gradle-home-cache-cleanup: true
     - name: javaToolchains
       run: ./gradlew :forge:javaToolchains
+    - name: Check version
+      run: ./gradlew :forge:checkReleaseVersion
     - name: Build with Gradle
       run: ./gradlew :forge:build
 
@@ -60,6 +62,8 @@ jobs:
         gradle-home-cache-cleanup: true
     - name: javaToolchains
       run: ./gradlew :fabric:javaToolchains
+    - name: Check version
+      run: ./gradlew :fabric:checkReleaseVersion
     - name: Build with Gradle
       run: ./gradlew :fabric:build
 
@@ -83,5 +87,7 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: javaToolchains
         run: ./gradlew :neoforge:javaToolchains
+      - name: Check version
+        run: ./gradlew :neoforge:checkReleaseVersion
       - name: Build with Gradle
         run: ./gradlew :neoforge:build
