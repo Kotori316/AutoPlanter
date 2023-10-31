@@ -22,7 +22,7 @@ jobs:
     env:
       FORGE_ONLY: true
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
@@ -43,7 +43,7 @@ jobs:
     env:
       FABRIC_ONLY: true
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
@@ -58,3 +58,24 @@ jobs:
       run: ./gradlew :fabric:javaToolchains
     - name: Build with Gradle
       run: ./gradlew :fabric:build
+
+  neoforge-build:
+    runs-on: ubuntu-latest
+    env:
+      NEOFORGE_ONLY: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Set executable
+        run: chmod +x ./gradlew
+      - uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: false
+          gradle-home-cache-cleanup: true
+      - name: javaToolchains
+        run: ./gradlew :neoforge:javaToolchains
+      - name: Build with Gradle
+        run: ./gradlew :neoforge:build
