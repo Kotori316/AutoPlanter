@@ -1,0 +1,57 @@
+plugins {
+    id("java")
+    id("maven-publish")
+    id("signing")
+    id("net.neoforged.gradle.userdev").version("7.+")
+    id("net.neoforged.gradle.mixin").version("7.+")
+    id("com.matthewprenger.cursegradle") version("1.4.0")
+    id("com.modrinth.minotaur").version("2.+")
+    id("com.kotori316.plugin.cf").version("1.+")
+}
+
+version = project.modVersion
+group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+base {
+    archivesName = "${project.baseName}-NeoForge-${project.minecraftVersion}"
+}
+
+minecraft {
+    mappings {
+        channel = official()
+        version.put("minecraft", project.minecraftVersion)
+    }
+}
+
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+
+        modSource project.sourceSets.main
+    }
+    client {
+        workingDirectory = file("run")
+        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+repositories {
+}
+
+dependencies {
+    implementation("net.neoforged:neoforge:${project.neo_version}")
+    compileOnly project(":common")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+
