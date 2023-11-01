@@ -1,15 +1,11 @@
 plugins {
     id "java"
-    id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT"
+    id "net.neoforged.gradle.vanilla" version "7.+"
 }
 
 archivesBaseName = "${project.baseName}-Common-${project.minecraftVersion}"
 
-minecraft {
-    version(project.minecraftVersion)
-}
-
 dependencies {
-    compileOnly(group: "org.spongepowered", name: "mixin", version: "0.8.5")
-    implementation(group: "com.google.code.findbugs", name: "jsr305", version: "3.0.1")
+    implementation(group: "net.minecraft", name: "client", version: project.minecraftVersion)
+    implementation(group: 'org.jetbrains', name: 'annotations', version: '24.0.1')
 }
