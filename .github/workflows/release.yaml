@@ -31,8 +31,6 @@ jobs:
         run: ./gradlew checkReleaseVersion
         env:
           FAIL_IF_EXISTS: true
-      - name: Clean
-        run: ./gradlew clean
       - uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: ${{secrets.GCP_IDENTITY_PROVIDER}}
