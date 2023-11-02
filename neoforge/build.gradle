@@ -1,3 +1,6 @@
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+import com.kotori316.plugin.cf.CallVersionFunctionTask
+
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -28,22 +31,22 @@ minecraft {
 }
 
 runs {
-    configureEach {
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-        systemProperty 'forge.logging.console.level', 'debug'
-        jvmArguments.add("-XstartOnFirstThread")
+    configureEach { net.neoforged.gradle.dsl.common.runs.run.Run run ->
+        run.systemProperties.put("forge.logging.markers", "REGISTRIES")
+        run.systemProperties.put("forge.logging.console.level", "debug")
     }
     client {
-        workingDirectory = file("run")
+        workingDirectory.set(file("run"))
         // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-        systemProperty("mixin.debug.export", "true")
-        modSource project.sourceSets.main
+        systemProperties.put("forge.enabledGameTestNamespaces", project.mod_id as String)
+        systemProperties.put("mixin.debug.export", "true")
+        jvmArguments.add("-XstartOnFirstThread")
+        modSources.add(project.sourceSets.main)
     }
     gameTestServer {
-        workingDirectory = file("run-server")
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-        modSource project.sourceSets.test
+        workingDirectory.set(file("run-server"))
+        systemProperties.put("forge.enabledGameTestNamespaces", project.mod_id as String)
+        modSources.add(project.sourceSets.main)
     }
 }
 
@@ -140,9 +143,6 @@ tasks.withType(AbstractPublishToMaven).configureEach {
         it.dependsOn(":neoforge:signSrcJar")
     }
 }
-
-import com.kotori316.plugin.cf.CallVersionFunctionTask
-import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 
 tasks.register("registerVersion", CallVersionFunctionTask.class) {
     functionEndpoint = readVersionFunctionEndpoint(project)
