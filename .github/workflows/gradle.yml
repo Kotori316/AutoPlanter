@@ -91,3 +91,5 @@ jobs:
         run: ./gradlew :neoforge:checkReleaseVersion
       - name: Build with Gradle
         run: ./gradlew :neoforge:build
+      - name: Run GameTest
+        run: ./gradlew :neoforge:runGameTest

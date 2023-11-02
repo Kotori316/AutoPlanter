@@ -32,13 +32,18 @@ runs {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
         systemProperty 'forge.logging.console.level', 'debug'
         jvmArguments.add("-XstartOnFirstThread")
-
-        modSource project.sourceSets.main
     }
     client {
         workingDirectory = file("run")
         // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
         systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        systemProperty("mixin.debug.export", "true")
+        modSource project.sourceSets.main
+    }
+    gameTestServer {
+        workingDirectory = file("run-server")
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        modSource project.sourceSets.test
     }
 }
 
@@ -55,12 +60,12 @@ dependencies {
     compileOnly project(":common")
 }
 
-tasks.withType(JavaCompile).configureEach {
+tasks.named("compileJava", JavaCompile).configure {
     source(project(":common").sourceSets.main.allSource)
 }
 
 mixin {
-    config("mixins.${project.mod_id}.refmap.json")
+    config("${project.mod_id}.mixins.json")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
