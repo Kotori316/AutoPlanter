@@ -31,6 +31,8 @@ jobs:
         run: ./gradlew checkReleaseVersion
         env:
           FAIL_IF_EXISTS: true
+      - name: Clean
+        run: ./gradlew clean
       - uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: ${{secrets.GCP_IDENTITY_PROVIDER}}
@@ -63,7 +65,7 @@ jobs:
           -PjarSign.keyLocation="${HOME}/kotori316_keystore.jks"
           -PjarSign.keyAlias="ko316"
           -PjarSign.storePass="${JAR_PASSWORD}"
-          clean build publishToMavenLocal registerVersion curseforge modrinth publish
+          build publishToMavenLocal registerVersion curseforge modrinth publish
         env:
           KEY_PASSWORD: ${{steps.get-secrets.outputs.key_password}}
           KEY_ID: ${{steps.get-secrets.outputs.key_id}}

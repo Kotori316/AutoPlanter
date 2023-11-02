@@ -127,6 +127,69 @@ signing {
     sign(tasks.jar, tasks.srcJar)
 }
 
+curseforge {
+    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
+    project {
+        id = "289078"
+        changelogType = "markdown"
+        changelog = "For Minecraft ${project.minecraftVersion} with NeoForge ${project.neo_version}"
+        addGameVersion(project.minecraftVersion)
+        addGameVersion "NeoForge"
+        releaseType = "release"
+        mainArtifact jar
+    }
+    options {
+        curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode) // defaults to false
+        javaVersionAutoDetect = false
+    }
+}
+
+modrinth {
+    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
+    projectId = "auto-planter"
+    versionType = "release"
+    versionName = "${project.version}-forge"
+    versionNumber.set(project.version.toString())
+    uploadFile = tasks.jar
+    getAdditionalFiles().set([
+            tasks.srcJar,
+    ])
+    getGameVersions().set([project.minecraftVersion])
+    getLoaders().set(["neoforge"])
+    changelog = "For Minecraft ${project.minecraftVersion} with NeoForge ${project.neo_version}"
+    debugMode = !Boolean.parseBoolean(project.releaseMode)
+    dependencies {
+    }
+}
+
+publishing {
+    if (Boolean.parseBoolean(project.releaseMode)) {
+        repositories {
+            maven {
+                name = "AzureRepository"
+                url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+                credentials {
+                    username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                    password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+                }
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.archivesBaseName.toLowerCase()
+            from components.java
+            artifact(tasks.srcJar)
+            pom {
+                name = archivesBaseName
+                description = "AutoPlanter for Minecraft ${project.minecraftVersion} and NeoForge ${project.neo_version}"
+                url = "https://github.com/Kotori316/AutoPlanter"
+                packaging = "jar"
+            }
+        }
+    }
+}
+
 boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
         project.hasProperty("signing.password") &&
         project.hasProperty("signing.secretKeyRingFile")
