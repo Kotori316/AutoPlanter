@@ -134,7 +134,7 @@ curseforge {
         changelogType = "markdown"
         changelog = "For Minecraft ${project.minecraftVersion} with NeoForge ${project.neo_version}"
         addGameVersion(project.minecraftVersion)
-        addGameVersion "NeoForge"
+        addGameVersion("NeoForge")
         releaseType = "release"
         mainArtifact jar
     }
@@ -148,7 +148,7 @@ modrinth {
     token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
     projectId = "auto-planter"
     versionType = "release"
-    versionName = "${project.version}-forge"
+    versionName = "${project.version}-neoforge"
     versionNumber.set(project.version.toString())
     uploadFile = tasks.jar
     getAdditionalFiles().set([
