@@ -186,5 +186,5 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     platform = "fabric"
     modName = project.findProperty("mod_id")
     version = project.version
-    failIfExists = Boolean.parseBoolean(project.releaseMode)
+    failIfExists = Boolean.parseBoolean(System.getenv("FAIL_IF_EXISTS"))
 }
