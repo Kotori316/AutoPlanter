@@ -221,5 +221,5 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     platform = "neoforge"
     modName = project.findProperty("mod_id")
     version = project.version
-    failIfExists = Boolean.parseBoolean(System.getenv("FAIL_IF_EXISTS"))
+    failIfExists = Boolean.parseBoolean(project.releaseMode)
 }

@@ -18,7 +18,7 @@ modId = "auto_planter" #mandatory
 version = "${file.jarVersion}" #mandatory
 # A display name for the mod
 displayName = "Auto Planter" #mandatory
-updateJSONURL = "https://version.kotori316.com/get-version/1.20.2/forge/auto_planter"
+updateJSONURL = "https://version.kotori316.com/get-version/1.20.2/neoforge/auto_planter"
 # A file name (in the root of the mod JAR) containing a logo for display
 #logoFile="test_mod.png" #optional
 # A text field displayed in the mod UI
@@ -36,7 +36,7 @@ modId = "neoforge" #mandatory
 # Does this dependency have to exist - if not, ordering below must be specified
 mandatory = true #mandatory
 # The version range of the dependency
-versionRange = "[1,)" #mandatory
+versionRange = "[20.2,)" #mandatory
 # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
 ordering = "NONE"
 # Side this dependency is applied on - BOTH, CLIENT or SERVER
