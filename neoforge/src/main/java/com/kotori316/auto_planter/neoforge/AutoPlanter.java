@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -73,17 +75,23 @@ public final class AutoPlanter {
                 event.accept(Holder.PLANTER_UPGRADED_BLOCK);
             }
         }
+
+        @SubscribeEvent
+        public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Holder.PLANTER_TILE_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
+        }
     }
 
     public static class Holder implements AutoPlanterCommon.TypeAccessor {
         public static final PlanterBlockNeoForge PLANTER_BLOCK = new PlanterBlockNeoForge.Normal();
         public static final PlanterBlockNeoForge PLANTER_UPGRADED_BLOCK = new PlanterBlockNeoForge.Upgraded();
         public static final BlockEntityType<PlanterTileNeoForge.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
-                BlockEntityType.Builder.of(PlanterTileNeoForge.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+            BlockEntityType.Builder.of(PlanterTileNeoForge.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final BlockEntityType<PlanterTileNeoForge.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
-                BlockEntityType.Builder.of(PlanterTileNeoForge.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
+            BlockEntityType.Builder.of(PlanterTileNeoForge.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
         public static final MenuType<PlanterContainerNeoForge> PLANTER_CONTAINER_TYPE =
-                IMenuTypeExtension.create((id, inv, data) -> new PlanterContainerNeoForge(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
+            IMenuTypeExtension.create((id, inv, data) -> new PlanterContainerNeoForge(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
 
         @Override
         public BlockEntityType<PlanterTileNeoForge.Normal> normalType() {
