@@ -19,6 +19,7 @@ permissions:
 jobs:
   forge-build:
     runs-on: ubuntu-latest
+    if: false
     env:
       DISABLE_FORGE: false
       DISABLE_FABRIC: true
