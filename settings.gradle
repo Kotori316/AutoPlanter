@@ -23,19 +23,19 @@ pluginManagement {
         }
         maven {
             name = "Kotori316 Plugin"
-            url = "https://storage.googleapis.com/kotori316-maven-storage/maven/"
+            url = "https://maven.kotori316.com/"
         }
     }
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
 }
 
 rootProject.name = "AutoPlanter-1.20"
 include("common")
 if (!Boolean.parseBoolean(System.getenv("DISABLE_FORGE"))) {
-    include("forge")
+    // include("forge")
 }
 if (!Boolean.parseBoolean(System.getenv("DISABLE_FABRIC"))) {
     include("fabric")

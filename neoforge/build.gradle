@@ -17,7 +17,7 @@ plugins {
 
 version = project.modVersion
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 base {
     archivesName = "${project.baseName}-NeoForge-${project.minecraftVersion}"

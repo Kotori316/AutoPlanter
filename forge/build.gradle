@@ -19,7 +19,7 @@ plugins {
 version = project.modVersion
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "${project.baseName}-Forge-${project.minecraftVersion}"
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println("Java: " + System.getProperty("java.version") +
         " JVM: " + System.getProperty("java.vm.version") +
