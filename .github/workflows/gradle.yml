@@ -19,6 +19,7 @@ permissions:
 jobs:
   forge-build:
     runs-on: ubuntu-latest
+    if: false
     env:
       DISABLE_FORGE: false
       DISABLE_FABRIC: true
@@ -28,7 +29,7 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '21'
     - name: Set executable
       run: chmod +x ./gradlew
     - uses: gradle/gradle-build-action@v2
@@ -53,7 +54,7 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '21'
     - name: Set executable
       run: chmod +x ./gradlew
     - uses: gradle/gradle-build-action@v2
@@ -78,7 +79,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - name: Set executable
         run: chmod +x ./gradlew
       - uses: gradle/gradle-build-action@v2
