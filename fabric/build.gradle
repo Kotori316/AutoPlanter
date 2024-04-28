@@ -22,6 +22,10 @@ repositories {
         name = 'ParchmentMC'
         url = 'https://maven.parchmentmc.org'
     }
+    maven {
+        name = "Kotori316 Plugin"
+        url = uri("https://maven.kotori316.com/")
+    }
 }
 
 dependencies {
@@ -39,6 +43,10 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
+        transitive(false)
+    }
 }
 
 processResources {
@@ -76,6 +84,10 @@ curseforge {
         addGameVersion "Fabric"
         releaseType = "beta"
         mainArtifact remapJar
+
+        relations {
+            requiredDependency("automatic-potato")
+        }
     }
     options {
         curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode) // defaults to false
@@ -96,6 +108,7 @@ modrinth {
     changelog = "For Minecraft ${project.minecraftVersion} with Fabric ${project.fabric_version}"
     debugMode = !Boolean.parseBoolean(project.releaseMode)
     dependencies {
+        required.project("automatic-potato")
     }
 }
 
@@ -187,18 +200,18 @@ import com.kotori316.plugin.cf.CallVersionFunctionTask
 
 tasks.register("registerVersion", CallVersionFunctionTask.class) {
     functionEndpoint = readVersionFunctionEndpoint(project)
-    gameVersion = project.findProperty("minecraftVersion")
+    gameVersion = project.findProperty("minecraftVersion") as String
     platform = "fabric"
-    platformVersion = project.findProperty("fabric_version")
-    modName = project.findProperty("mod_id")
+    platformVersion = project.findProperty("fabric_version") as String
+    modName = project.findProperty("mod_id") as String
     changelog = "For ${project.findProperty("minecraftVersion")}"
     homepage = "https://modrinth.com/mod/auto-planter"
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
-    gameVersion = project.findProperty("minecraftVersion")
+    gameVersion = project.findProperty("minecraftVersion") as String
     platform = "fabric"
-    modName = project.findProperty("mod_id")
+    modName = project.findProperty("mod_id") as String
     version = project.version
     failIfExists = Boolean.parseBoolean(System.getenv("FAIL_IF_EXISTS"))
 }
