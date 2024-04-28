@@ -5,7 +5,7 @@ plugins {
     id("fabric-loom") version("1.6-SNAPSHOT")
     id("com.matthewprenger.cursegradle") version("1.4.0")
     id("com.modrinth.minotaur") version("2.+")
-    id("com.kotori316.plugin.cf").version("1.+")
+    id("com.kotori316.plugin.cf").version("3.+")
 }
 
 archivesBaseName = "${project.baseName}-Fabric-${project.minecraftVersion}"
@@ -189,6 +189,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     functionEndpoint = readVersionFunctionEndpoint(project)
     gameVersion = project.findProperty("minecraftVersion")
     platform = "fabric"
+    platformVersion = project.findProperty("fabric_version")
     modName = project.findProperty("mod_id")
     changelog = "For ${project.findProperty("minecraftVersion")}"
     homepage = "https://modrinth.com/mod/auto-planter"
