@@ -1,19 +1,16 @@
 package com.kotori316.auto_planter.fabric.planter;
 
+import com.kotori316.auto_planter.AutoPlanterCommon;
+import com.kotori316.auto_planter.planter.PlanterBlock;
+import com.kotori316.auto_planter.planter.PlanterTile;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.kotori316.auto_planter.AutoPlanterCommon;
-import com.kotori316.auto_planter.planter.PlanterBlock;
-import com.kotori316.auto_planter.planter.PlanterContainer;
-import com.kotori316.auto_planter.planter.PlanterTile;
-
-public sealed abstract class PlanterTileFabric extends PlanterTile implements ExtendedScreenHandlerFactory {
+public sealed abstract class PlanterTileFabric extends PlanterTile implements ExtendedScreenHandlerFactory<BlockPos> {
 
     protected PlanterTileFabric(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(pos, state, blockType);
@@ -25,8 +22,8 @@ public sealed abstract class PlanterTileFabric extends PlanterTile implements Ex
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-        buf.writeBlockPos(worldPosition);
+    public BlockPos getScreenOpeningData(ServerPlayer player) {
+        return worldPosition;
     }
 
     public static final class Normal extends PlanterTileFabric {

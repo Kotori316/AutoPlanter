@@ -1,22 +1,5 @@
 package com.kotori316.auto_planter.fabric;
 
-import com.mojang.datafixers.DSL;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import org.slf4j.Logger;
-
 import com.kotori316.auto_planter.AutoPlanterCommon;
 import com.kotori316.auto_planter.fabric.planter.PlanterBlockFabric;
 import com.kotori316.auto_planter.fabric.planter.PlanterContainerFabric;
@@ -24,6 +7,23 @@ import com.kotori316.auto_planter.fabric.planter.PlanterTileFabric;
 import com.kotori316.auto_planter.planter.PlanterContainer;
 import com.kotori316.auto_planter.planter.PlanterGui;
 import com.kotori316.auto_planter.planter.PlanterTile;
+import com.mojang.datafixers.DSL;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.slf4j.Logger;
 
 public final class AutoPlanter implements ModInitializer, ClientModInitializer {
     private static final Logger LOGGER = AutoPlanterCommon.LOGGER;
@@ -51,11 +51,11 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         public static final PlanterBlockFabric PLANTER_BLOCK = new PlanterBlockFabric.Normal();
         public static final PlanterBlockFabric PLANTER_UPGRADED_BLOCK = new PlanterBlockFabric.Upgraded();
         public static final BlockEntityType<PlanterTileFabric.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
-            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+            BlockEntityType.Builder.of(PlanterTileFabric.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final BlockEntityType<PlanterTileFabric.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
-            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Upgraded::new, PLANTER_BLOCK).build(DSL.emptyPartType());
-        public static final ExtendedScreenHandlerType<PlanterContainerFabric> PLANTER_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(
-            (i, player, buf) -> new PlanterContainerFabric(i, player.player, buf.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
+            BlockEntityType.Builder.of(PlanterTileFabric.Upgraded::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+        public static final ExtendedScreenHandlerType<PlanterContainerFabric, BlockPos> PLANTER_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(
+            (i, player, pos) -> new PlanterContainerFabric(i, player.player, pos, Holder.PLANTER_CONTAINER_TYPE), BlockPos.STREAM_CODEC.mapStream(RegistryFriendlyByteBuf::asByteBuf));
 
         static {
             ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS)

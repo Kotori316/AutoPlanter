@@ -1,5 +1,6 @@
 package com.kotori316.auto_planter.fabric.mixin;
 
+import com.kotori316.auto_planter.fabric.planter.PlanterBlockFabric;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.context.UseOnContext;
@@ -8,10 +9,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.kotori316.auto_planter.fabric.planter.PlanterBlockFabric;
-
 @Mixin(HoeItem.class)
-public class MixinHoeUsed {
+public abstract class MixinHoeUsed {
     @Inject(method = "useOn", at = @At("HEAD"), cancellable = true)
     public void hoeUsed(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
         var world = context.getLevel();

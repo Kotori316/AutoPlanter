@@ -1,5 +1,6 @@
 package com.kotori316.auto_planter.fabric.mixin;
 
+import com.kotori316.auto_planter.fabric.AutoPlanter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -9,11 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.kotori316.auto_planter.fabric.AutoPlanter;
-
 
 @Mixin(CropBlock.class)
-public class MixinGetAvailableMoisture {
+public abstract class MixinGetAvailableMoisture {
 
     @Inject(method = "getGrowthSpeed", at = @At("HEAD"), cancellable = true)
     private static void planterMoisture(Block block, BlockGetter world, BlockPos pos, CallbackInfoReturnable<Float> cir) {

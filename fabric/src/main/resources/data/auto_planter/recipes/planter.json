@@ -11,13 +11,7 @@
     },
     "d": [
       {
-        "tag": "c:iron_ingots"
-      },
-      {
-        "tag": "c:gold_ingots"
-      },
-      {
-        "tag": "c:copper_ingots"
+        "tag": "c:ingots"
       }
     ],
     "g": {
@@ -28,7 +22,7 @@
     }
   },
   "result": {
-    "item": "auto_planter:planter",
+    "id": "auto_planter:planter",
     "count": 1
   }
 }

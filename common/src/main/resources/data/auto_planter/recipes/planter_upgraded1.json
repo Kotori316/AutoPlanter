@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "auto_planter:planter_upgraded",
+    "id": "auto_planter:planter_upgraded",
     "count": 1
   }
 }

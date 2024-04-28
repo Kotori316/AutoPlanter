@@ -2,6 +2,7 @@ package com.kotori316.auto_planter.planter;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -53,15 +54,15 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
-        ContainerHelper.saveAllItems(compound, inventoryContents);
-        super.saveAdditional(compound);
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        ContainerHelper.saveAllItems(compound, inventoryContents, provider);
+        super.saveAdditional(compound, provider);
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-        ContainerHelper.loadAllItems(compound, inventoryContents);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
+        ContainerHelper.loadAllItems(compound, inventoryContents, provider);
     }
 
     @Override
