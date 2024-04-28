@@ -6,7 +6,6 @@ import com.kotori316.auto_planter.neoforge.planter.PlanterContainerNeoForge;
 import com.kotori316.auto_planter.neoforge.planter.PlanterTileNeoForge;
 import com.kotori316.auto_planter.planter.PlanterGui;
 import com.mojang.datafixers.DSL;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
@@ -15,10 +14,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -33,7 +34,7 @@ public final class AutoPlanter {
         LOGGER.info("{} initialization", AutoPlanterCommon.AUTO_PLANTER);
     }
 
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = AutoPlanterCommon.AUTO_PLANTER)
+    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = AutoPlanterCommon.AUTO_PLANTER)
     public static final class RegistryEvents {
         @SubscribeEvent
         public static void register(RegisterEvent event) {
@@ -65,7 +66,6 @@ public final class AutoPlanter {
 
         @SubscribeEvent
         public static void clientInit(FMLClientSetupEvent event) {
-            MenuScreens.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
         }
 
         @SubscribeEvent
@@ -80,6 +80,11 @@ public final class AutoPlanter {
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Holder.PLANTER_TILE_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
+        }
+
+        @SubscribeEvent
+        public static void registerMenu(RegisterMenuScreensEvent event) {
+            event.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
         }
     }
 

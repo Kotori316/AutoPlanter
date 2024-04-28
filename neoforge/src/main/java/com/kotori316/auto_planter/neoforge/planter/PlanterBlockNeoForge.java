@@ -5,11 +5,8 @@ import com.kotori316.auto_planter.planter.PlanterBlock;
 import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -24,7 +21,6 @@ import net.neoforged.neoforge.common.PlantType;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
@@ -34,21 +30,21 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
     }
 
     @Override
-    public final InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player.getMainHandItem().canPerformAction(ToolActions.HOE_TILL) ||
             player.getOffhandItem().canPerformAction(ToolActions.HOE_TILL)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
-            ItemStack stack = player.getItemInHand(handIn);
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
             if (notHasSapling) {
-                if (!worldIn.isClientSide)
-                    NetworkHooks.openScreen((ServerPlayer) player, planterTile, pos);
-                return InteractionResult.SUCCESS;
+                if (!worldIn.isClientSide) {
+                    player.openMenu(planterTile, pos);
+                }
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable
@@ -74,11 +70,6 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
     @Override
     public final boolean isFertile(BlockState state, BlockGetter world, BlockPos pos) {
         return state.getValue(TRIGGERED);
-    }
-
-    @Override
-    public final boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
-        return false;
     }
 
     public static final class Normal extends PlanterBlockNeoForge {

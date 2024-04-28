@@ -1,52 +1,22 @@
-# This is an example neoforge.mods.toml file. It contains the data relating to the loading mods.
-# There are several mandatory fields (#mandatory), and many more that are optional (#optional).
-# The overall format is standard TOML format, v0.5.0.
-# Note that there are a couple of TOML lists in this file.
-# Find more information on toml format here:  https://github.com/toml-lang/toml
-# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
-modLoader = "javafml" #mandatory
-# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion = "[1,)" #mandatory
-# A URL to refer people to when problems occur with this mod
-issueTrackerURL = "https://github.com/Kotori316/AutoPlanter/issues/" #optional
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/Kotori316/AutoPlanter/issues/"
 license = "All Rights Reserved."
-# A list of mods - how many allowed here is determined by the individual mod loader
-[[mods]] #mandatory
-# The modid of the mod
-modId = "auto_planter" #mandatory
-# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version = "${file.jarVersion}" #mandatory
-# A display name for the mod
-displayName = "Auto Planter" #mandatory
-updateJSONURL = "https://version.kotori316.com/get-version/1.20.4/neoforge/auto_planter"
-# A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="test_mod.png" #optional
-# A text field displayed in the mod UI
-credits = "Saplings" #optional
-# A text field displayed in the mod UI
-authors = "Kotori316" #optional
-# The description text for the mod (multi line!) (#mandatory)
+[[mods]]
+modId = "auto_planter"
+version = "${file.jarVersion}"
+displayName = "Auto Planter"
+updateJSONURL = "https://version.kotori316.com/get-version/1.20.5/neoforge/auto_planter"
+credits = "Saplings"
+authors = "Kotori316"
 description = '''
 Auto Planter
 '''
 [[mixins]]
 config = "auto_planter.mixins.json"
-# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.auto_planter]] #optional
-# the modid of the dependency
-modId = "neoforge" #mandatory
-# Does this dependency have to exist - if not, ordering below must be specified
-mandatory = true #mandatory
-# The version range of the dependency
-versionRange = "[20.3,)" #mandatory
-# An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
-ordering = "NONE"
-# Side this dependency is applied on - BOTH, CLIENT or SERVER
-side = "BOTH"
-# Here's another dependency
 [[dependencies.auto_planter]]
-modId = "minecraft"
-mandatory = true
-versionRange = "[1.20.3,)"
+modId = "neoforge"
+type = "required"
+versionRange = "[20.5.0-beta,)"
 ordering = "NONE"
 side = "BOTH"

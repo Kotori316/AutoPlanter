@@ -36,7 +36,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     protected final MapCodec<? extends PlanterBlock> planterCodec;
 
     protected PlanterBlock(PlanterBlockType blockType, String name) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.6f, 100).sound(SoundType.GRAVEL));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.6f, 100).sound(SoundType.GRAVEL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false));
         this.blockType = blockType;
         this.name = name;
         this.blockItem = new BlockItem(this, new Item.Properties());
