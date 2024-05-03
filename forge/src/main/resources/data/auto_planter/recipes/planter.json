@@ -22,7 +22,7 @@
     }
   },
   "result": {
-    "item": "auto_planter:planter",
+    "id": "auto_planter:planter",
     "count": 1
   }
 }

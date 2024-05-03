@@ -8,7 +8,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("java")
-    id("net.minecraftforge.gradle") version("[6.0,6.2)")
+    id("net.minecraftforge.gradle") version("[6.0.16,6.2)")
     id("org.spongepowered.mixin") version("0.7.+")
     id("org.parchmentmc.librarian.forgegradle") version("1.+")
     id("com.matthewprenger.cursegradle") version("1.4.0")
@@ -54,7 +54,7 @@ minecraft {
             mods {
                 create(project.mod_id as String) {
                     source(sourceSets.main as SourceSet)
-                    source(project(":common").sourceSets.main as SourceSet)
+                    // source(project(":common").sourceSets.main as SourceSet)
                 }
             }
         }
@@ -72,7 +72,7 @@ minecraft {
             mods {
                 create(project.mod_id as String) {
                     source(sourceSets.main as SourceSet)
-                    source(project(":common").sourceSets.main as SourceSet)
+                    // source(project(":common").sourceSets.main as SourceSet)
                 }
             }
         }
@@ -92,7 +92,7 @@ minecraft {
             mods {
                 create(project.mod_id as String) {
                     source(sourceSets.main as SourceSet)
-                    source(project(":common").sourceSets.main as SourceSet)
+                    // source(project(":common").sourceSets.main as SourceSet)
                 }
             }
         }
@@ -116,6 +116,14 @@ dependencies {
     compileOnly project(":common")
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+
+    // Since 1.20.6
+    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+
+    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") {
+        version {
+            strictly("5.0.4")
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -296,6 +304,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     functionEndpoint = readVersionFunctionEndpoint(project)
     gameVersion = project.findProperty("minecraftVersion")
     platform = "forge"
+    platformVersion = project.findProperty("forgeVersion") as String
     modName = project.findProperty("mod_id")
     changelog = "For ${project.findProperty("minecraftVersion")}"
     homepage = "https://www.curseforge.com/minecraft/mc-mods/planting-dirt-for-saplings"
@@ -307,4 +316,14 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     modName = project.findProperty("mod_id")
     version = project.version
     failIfExists = Boolean.parseBoolean(System.getenv("FAIL_IF_EXISTS"))
+}
+
+// Merge the resources and classes into the same directory.
+// This is done because java expects modules to be in a single directory.
+// And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
+// This will eventually be migrated to ForgeGradle so modders don't need to manually do it. But that is later.
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
 }

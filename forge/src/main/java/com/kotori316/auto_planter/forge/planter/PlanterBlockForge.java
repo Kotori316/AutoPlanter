@@ -7,9 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -33,21 +31,19 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
     }
 
     @Override
-    public final InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (player.getMainHandItem().canPerformAction(ToolActions.HOE_TILL) ||
-            player.getOffhandItem().canPerformAction(ToolActions.HOE_TILL)) {
-            return InteractionResult.PASS;
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (stack.canPerformAction(ToolActions.HOE_TILL)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
-            ItemStack stack = player.getItemInHand(handIn);
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
             if (notHasSapling) {
                 if (!worldIn.isClientSide)
                     ((ServerPlayer) player).openMenu(planterTile, pos);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable
@@ -73,11 +69,6 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
     @Override
     public final boolean isFertile(BlockState state, BlockGetter world, BlockPos pos) {
         return state.getValue(TRIGGERED);
-    }
-
-    @Override
-    public final boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
-        return false;
     }
 
     public static final class Normal extends PlanterBlockForge {

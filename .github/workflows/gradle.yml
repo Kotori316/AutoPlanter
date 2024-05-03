@@ -19,7 +19,6 @@ permissions:
 jobs:
   forge-build:
     runs-on: ubuntu-latest
-    if: false
     env:
       DISABLE_FORGE: false
       DISABLE_FABRIC: true
@@ -32,7 +31,7 @@ jobs:
         java-version: '21'
     - name: Set executable
       run: chmod +x ./gradlew
-    - uses: gradle/gradle-build-action@v2
+    - uses: gradle/actions/setup-gradle@v3
       with:
         cache-read-only: false
         gradle-home-cache-cleanup: true
@@ -57,7 +56,7 @@ jobs:
         java-version: '21'
     - name: Set executable
       run: chmod +x ./gradlew
-    - uses: gradle/gradle-build-action@v2
+    - uses: gradle/actions/setup-gradle@v3
       with:
         cache-read-only: false
         gradle-home-cache-cleanup: true
@@ -82,7 +81,7 @@ jobs:
           java-version: '21'
       - name: Set executable
         run: chmod +x ./gradlew
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
           gradle-home-cache-cleanup: true
