@@ -17,65 +17,23 @@ permissions:
   contents: read
 
 jobs:
-  forge-build:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - forge
+          - fabric
+          - neoforge
+      fail-fast: false
     env:
-      DISABLE_FORGE: false
-      DISABLE_FABRIC: true
-      DISABLE_NEOFORGE: true
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '21'
-    - name: Set executable
-      run: chmod +x ./gradlew
-    - uses: gradle/actions/setup-gradle@v3
-      with:
-        cache-read-only: false
-        gradle-home-cache-cleanup: true
-    - name: javaToolchains
-      run: ./gradlew :forge:javaToolchains
-    - name: Check version
-      run: ./gradlew :forge:checkReleaseVersion
-    - name: Build with Gradle
-      run: ./gradlew :forge:build
-
-  fabric-build:
-    runs-on: ubuntu-latest
-    env:
-      DISABLE_FORGE: true
-      DISABLE_FABRIC: false
-      DISABLE_NEOFORGE: true
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '21'
-    - name: Set executable
-      run: chmod +x ./gradlew
-    - uses: gradle/actions/setup-gradle@v3
-      with:
-        cache-read-only: false
-        gradle-home-cache-cleanup: true
-    - name: javaToolchains
-      run: ./gradlew :fabric:javaToolchains
-    - name: Check version
-      run: ./gradlew :fabric:checkReleaseVersion
-    - name: Build with Gradle
-      run: ./gradlew :fabric:build
-
-  neoforge-build:
-    runs-on: ubuntu-latest
-    env:
-      DISABLE_FORGE: true
-      DISABLE_FABRIC: true
-      DISABLE_NEOFORGE: false
+      DISABLE_FORGE: ${{ matrix.platform != 'forge' }}
+      DISABLE_FABRIC: ${{ matrix.platform != 'fabric' }}
+      DISABLE_NEOFORGE: ${{ matrix.platform != 'neoforge' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v3
+      - uses: gradle/actions/wrapper-validation@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -86,10 +44,11 @@ jobs:
           cache-read-only: false
           gradle-home-cache-cleanup: true
       - name: javaToolchains
-        run: ./gradlew :neoforge:javaToolchains
+        run: ./gradlew :${{ matrix.platform }}:javaToolchains
       - name: Check version
-        run: ./gradlew :neoforge:checkReleaseVersion
+        run: ./gradlew :${{ matrix.platform }}:checkReleaseVersion
       - name: Build with Gradle
-        run: ./gradlew :neoforge:build
+        run: ./gradlew :${{ matrix.platform }}:build
       - name: Run GameTest
-        run: ./gradlew :neoforge:runGameTest
+        if: ${{ matrix.platform == 'neoforge' }}
+        run: ./gradlew :${{ matrix.platform }}:runGameTest
