@@ -63,6 +63,18 @@ runs {
 processResources {
     from project(":common").sourceSets.main.resources
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    inputs.property("version", project.version)
+    inputs.property("mcVersion", project.property("minecraftVersion"))
+
+    ["fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml"].forEach { fileName ->
+        filesMatching(fileName) {
+            expand([
+                    "version"  : project.version,
+                    "mcVersion": project.property("minecraftVersion"),
+            ])
+        }
+    }
 }
 
 repositories {

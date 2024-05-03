@@ -32,6 +32,6 @@
     "minecraft": "1.20.x"
   },
   "custom": {
-    "kotori316_version_checker": "https://version.kotori316.com/get-version/1.20.5/fabric/auto_planter"
+    "kotori316_version_checker": "https://version.kotori316.com/get-version/${mcVersion}/fabric/auto_planter"
   }
 }
