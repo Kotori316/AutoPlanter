@@ -42,23 +42,23 @@ public final class AutoPlanter {
         }
 
         public static void onBlocksRegistry(final RegisterEvent.RegisterHelper<Block> helper) {
-            helper.register(new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK);
-            helper.register(new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK);
+            helper.register(ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK);
+            helper.register(ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK);
             MinecraftForge.EVENT_BUS.register(Holder.PLANTER_UPGRADED_BLOCK);
         }
 
         public static void onItemsRegistry(final RegisterEvent.RegisterHelper<Item> helper) {
-            helper.register(new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK.blockItem);
-            helper.register(new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
+            helper.register(ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK.blockItem);
+            helper.register(ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
         }
 
         public static void tiles(RegisterEvent.RegisterHelper<BlockEntityType<?>> helper) {
-            helper.register(new ResourceLocation(PlanterTileForge.Normal.TILE_ID), Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
-            helper.register(new ResourceLocation(PlanterTileForge.Upgraded.TILE_ID), Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
+            helper.register(ResourceLocation.parse(PlanterTileForge.Normal.TILE_ID), Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
+            helper.register(ResourceLocation.parse(PlanterTileForge.Upgraded.TILE_ID), Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
         }
 
         public static void containers(RegisterEvent.RegisterHelper<MenuType<?>> helper) {
-            helper.register(new ResourceLocation(PlanterContainerForge.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
+            helper.register(ResourceLocation.parse(PlanterContainerForge.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
         }
 
         @SubscribeEvent

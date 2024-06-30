@@ -30,13 +30,13 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK.blockItem);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
+        Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK);
+        Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK.blockItem);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK.blockItem);
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, PlanterTileFabric.Normal.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, PlanterTileFabric.Upgraded.TILE_ID, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
-        Registry.register(BuiltInRegistries.MENU, new ResourceLocation(PlanterContainer.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
+        Registry.register(BuiltInRegistries.MENU, ResourceLocation.parse(PlanterContainer.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
         LOGGER.debug("Registered misc in mod Auto Planter");
         AutoPlanterCommon.accessor = new Holder();
     }

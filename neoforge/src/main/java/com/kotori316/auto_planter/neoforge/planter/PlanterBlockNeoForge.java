@@ -12,15 +12,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.IPlantable;
-import net.neoforged.neoforge.common.PlantType;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.level.block.CropGrowEvent;
 import org.jetbrains.annotations.Nullable;
 
 public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
@@ -31,8 +31,8 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (player.getMainHandItem().canPerformAction(ToolActions.HOE_TILL) ||
-            player.getOffhandItem().canPerformAction(ToolActions.HOE_TILL)) {
+        if (player.getMainHandItem().canPerformAction(ItemAbilities.HOE_TILL) ||
+            player.getOffhandItem().canPerformAction(ItemAbilities.HOE_TILL)) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
@@ -47,24 +47,27 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    @Nullable
     @Override
-    public final BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
-        if (toolAction == ToolActions.HOE_TILL && state.is(this) && !state.getValue(TRIGGERED)) {
+    public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate) {
+        if (itemAbility == ItemAbilities.HOE_TILL && state.is(this) && !state.getValue(TRIGGERED)) {
             return state.setValue(TRIGGERED, Boolean.TRUE);
         } else {
-            return super.getToolModifiedState(state, context, toolAction, simulate);
+            return super.getToolModifiedState(state, context, itemAbility, simulate);
         }
     }
 
     @Override
-    public final boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
-        PlantType type = plantable.getPlantType(world, pos.relative(facing));
-        if (state.getValue(TRIGGERED)) {
-            return type == PlantType.PLAINS || type == PlantType.CROP;
-        } else {
-            return type == PlantType.PLAINS;
+    public TriState canSustainPlant(BlockState state, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
+        var block = plant.getBlock();
+        if (block instanceof SaplingBlock) {
+            return TriState.TRUE;
         }
+        if (block instanceof CropBlock) {
+            if (state.getValue(TRIGGERED)) {
+                return TriState.TRUE;
+            }
+        }
+        return super.canSustainPlant(state, level, soilPosition, facing, plant);
     }
 
     @Override
@@ -86,9 +89,9 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
         }
 
         @SubscribeEvent
-        public void grow(BlockEvent.CropGrowEvent.Pre event) {
+        public void grow(CropGrowEvent.Pre event) {
             if (event.getLevel().getBlockState(event.getPos().below()).is(this))
-                event.setResult(Event.Result.ALLOW);
+                event.setResult(CropGrowEvent.Pre.Result.GROW);
         }
     }
 
