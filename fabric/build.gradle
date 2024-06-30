@@ -33,9 +33,8 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings loom.layered {
         it.officialMojangMappings()
-        String[] parchmentVersion = String.valueOf(project.parchmentMapping).split("-")
-        String parchmentMC = parchmentVersion[0]
-        String parchmentDate = parchmentVersion[1]
+        String parchmentMC = project.property("parchment_mapping_mc")
+        String parchmentDate = project.property("parchment_mapping_version")
         it.parchment("org.parchmentmc.data:parchment-$parchmentMC:$parchmentDate@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"

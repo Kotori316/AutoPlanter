@@ -32,13 +32,12 @@ idea {
     }
 }
 
-/*subsystems {
-    String parchment = project.property("parchmentMapping")
+subsystems {
     parchment {
-        minecraftVersion = parchment.split("-")[0]
-        mappingsVersion = parchment.split("-")[1]
+        minecraftVersion = project.property("parchment_mapping_mc")
+        mappingsVersion = project.property("parchment_mapping_version")
     }
-}*/
+}
 
 runs {
     configureEach { net.neoforged.gradle.dsl.common.runs.run.Run run ->
