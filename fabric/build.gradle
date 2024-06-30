@@ -47,6 +47,7 @@ dependencies {
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
         transitive(false)
     }
+    modLocalRuntime("com.kotori316:debug-utility-fabric:${project.property("debug_util_version")}")
 }
 
 processResources {
