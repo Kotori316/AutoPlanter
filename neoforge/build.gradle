@@ -75,12 +75,24 @@ processResources {
 }
 
 repositories {
+    mavenCentral()
+    maven {
+        name = "Kotori316Plugin"
+        url = uri("https://maven.kotori316.com/")
+        content {
+            includeGroup("com.kotori316")
+        }
+    }
 }
 
 dependencies {
     implementation("net.neoforged:neoforge:${project.neo_version}")
     compileOnly project(":common")
     testImplementation(project(":common"))
+
+    testImplementation(platform("org.junit:junit-bom:${project.property("jupiter")}"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named("compileJava", JavaCompile).configure {
