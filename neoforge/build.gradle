@@ -46,16 +46,14 @@ runs {
     }
     client {
         workingDirectory.set(file("run"))
-        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperties.put("forge.enabledGameTestNamespaces", project.mod_id as String)
         systemProperties.put("mixin.debug.export", "true")
         jvmArguments.add("-XstartOnFirstThread")
         modSources.add(project.sourceSets.main)
     }
     gameTestServer {
         workingDirectory.set(file("run-server"))
-        systemProperties.put("forge.enabledGameTestNamespaces", project.mod_id as String)
-        modSources.add(project.sourceSets.main)
+        systemProperties.put("neoforge.enabledGameTestNamespaces", "${project.property("mod_id")},minecraft")
+        modSources.add(project.sourceSets.test)
     }
 }
 
@@ -82,6 +80,7 @@ repositories {
 dependencies {
     implementation("net.neoforged:neoforge:${project.neo_version}")
     compileOnly project(":common")
+    testImplementation(project(":common"))
 }
 
 tasks.named("compileJava", JavaCompile).configure {
