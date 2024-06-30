@@ -5,6 +5,7 @@ import com.kotori316.auto_planter.planter.PlanterBlock;
 import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -12,9 +13,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.ItemAbilities;
@@ -22,6 +25,8 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.level.block.CropGrowEvent;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiConsumer;
 
 public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
 
@@ -68,6 +73,12 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
             }
         }
         return super.canSustainPlant(state, level, soilPosition, facing, plant);
+    }
+
+    @Override
+    public boolean onTreeGrow(BlockState state, LevelReader level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeConfiguration config) {
+        // No action is needed in TrunkPlacer#setDirtAt
+        return false;
     }
 
     @Override
