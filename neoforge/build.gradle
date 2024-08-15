@@ -87,6 +87,7 @@ repositories {
 
 dependencies {
     implementation("net.neoforged:neoforge:${project.neo_version}")
+    testImplementation("net.neoforged:testframework:${project.neo_version}")
     compileOnly project(":common")
     testImplementation(project(":common"))
 
