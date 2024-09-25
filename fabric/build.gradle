@@ -17,6 +17,27 @@ println("Java: " + System.getProperty("java.version") +
         "(" + System.getProperty("java.vendor") + ")" +
         " Arch: " + System.getProperty("os.arch"))
 
+loom {
+    runs {
+        named("client") {
+            configName = "Client"
+            runDir = "run"
+        }
+        create("gameTestServer") {
+            configName = "GameTestServer"
+            server()
+            //noinspection SpellCheckingInspection
+            vmArgs(
+                    "-ea",
+                    "-Dfabric-api.gametest",
+                    "-Dfabric-api.gametest.report-file=game_test/test-results/test/game_test.xml"
+            )
+            runDir = "run-server"
+            source(sourceSets.getAt("test"))
+        }
+    }
+}
+
 repositories {
     maven {
         name = 'ParchmentMC'
@@ -47,6 +68,8 @@ dependencies {
         transitive(false)
     }
     modLocalRuntime("com.kotori316:debug-utility-fabric:${project.property("debug_util_version")}")
+
+    testImplementation(project(":common"))
 }
 
 processResources {

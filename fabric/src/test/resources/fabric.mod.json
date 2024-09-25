@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "auto-planter-test",
+  "name": "AutoPlanter GameTest",
+  "version": "1.0.0",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "com.kotori316.auto_planter.fabric.AutoPlanterGameTest"
+    ]
+  }
+}
