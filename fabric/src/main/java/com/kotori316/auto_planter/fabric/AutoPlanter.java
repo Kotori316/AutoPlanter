@@ -53,7 +53,7 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         public static final BlockEntityType<PlanterTileFabric.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
             BlockEntityType.Builder.of(PlanterTileFabric.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final BlockEntityType<PlanterTileFabric.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
-            BlockEntityType.Builder.of(PlanterTileFabric.Upgraded::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+            BlockEntityType.Builder.of(PlanterTileFabric.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
         public static final ExtendedScreenHandlerType<PlanterContainerFabric, BlockPos> PLANTER_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(
             (i, player, pos) -> new PlanterContainerFabric(i, player.player, pos, Holder.PLANTER_CONTAINER_TYPE), BlockPos.STREAM_CODEC.mapStream(RegistryFriendlyByteBuf::asByteBuf));
 
