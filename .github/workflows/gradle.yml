@@ -50,5 +50,5 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :${{ matrix.platform }}:build
       - name: Run GameTest
-        if: ${{ matrix.platform == 'neoforge' }}
+        if: ${{ matrix.platform != 'forge' }}
         run: ./gradlew :${{ matrix.platform }}:runGameTestServer
