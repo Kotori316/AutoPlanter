@@ -3,6 +3,9 @@ package com.kotori316.auto_planter.planter;
 import com.kotori316.auto_planter.AutoPlanterCommon;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,10 +41,16 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     protected final MapCodec<? extends PlanterBlock> planterCodec;
 
     protected PlanterBlock(PlanterBlockType blockType, String name) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.6f, 100).sound(SoundType.GRAVEL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false));
+        super(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.DIRT)
+            .strength(0.6f, 100)
+            .sound(SoundType.GRAVEL)
+            .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false)
+            .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name)))
+        );
         this.blockType = blockType;
         this.name = name;
-        this.blockItem = new BlockItem(this, new Item.Properties());
+        this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name))).useBlockDescriptionPrefix());
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
         this.planterCodec = this.createCodec();
     }
