@@ -6,20 +6,10 @@
     "ppp"
   ],
   "key": {
-    "p": {
-      "item": "minecraft:dirt"
-    },
-    "d": [
-      {
-        "tag": "c:ingots"
-      }
-    ],
-    "g": {
-      "tag": "minecraft:saplings"
-    },
-    "D": {
-      "item": "minecraft:dispenser"
-    }
+    "p": "minecraft:dirt",
+    "d": "#c:ingots",
+    "g": "#minecraft:saplings",
+    "D": "minecraft:dispenser"
   },
   "result": {
     "id": "auto_planter:planter",

@@ -6,18 +6,10 @@
     "ppp"
   ],
   "key": {
-    "p": {
-      "item": "minecraft:dirt"
-    },
-    "d": {
-      "item": "minecraft:diamond"
-    },
-    "g": {
-      "tag": "minecraft:saplings"
-    },
-    "D": {
-      "item": "minecraft:dispenser"
-    }
+    "p": "minecraft:dirt",
+    "d": "minecraft:diamond",
+    "g": "#minecraft:saplings",
+    "D": "minecraft:dispenser"
   },
   "result": {
     "id": "auto_planter:planter_upgraded",

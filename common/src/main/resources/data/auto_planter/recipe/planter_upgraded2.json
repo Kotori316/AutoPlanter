@@ -4,12 +4,8 @@
     "dDd"
   ],
   "key": {
-    "d": {
-      "item": "minecraft:diamond"
-    },
-    "D": {
-      "item": "auto_planter:planter"
-    }
+    "d": "minecraft:diamond",
+    "D": "auto_planter:planter"
   },
   "result": {
     "id": "auto_planter:planter_upgraded",
