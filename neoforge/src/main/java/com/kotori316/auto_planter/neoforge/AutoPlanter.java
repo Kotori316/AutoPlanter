@@ -5,7 +5,6 @@ import com.kotori316.auto_planter.neoforge.planter.PlanterBlockNeoForge;
 import com.kotori316.auto_planter.neoforge.planter.PlanterContainerNeoForge;
 import com.kotori316.auto_planter.neoforge.planter.PlanterTileNeoForge;
 import com.kotori316.auto_planter.planter.PlanterGui;
-import com.mojang.datafixers.DSL;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
@@ -92,9 +91,9 @@ public final class AutoPlanter {
         public static final PlanterBlockNeoForge PLANTER_BLOCK = new PlanterBlockNeoForge.Normal();
         public static final PlanterBlockNeoForge PLANTER_UPGRADED_BLOCK = new PlanterBlockNeoForge.Upgraded();
         public static final BlockEntityType<PlanterTileNeoForge.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
-            BlockEntityType.Builder.of(PlanterTileNeoForge.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+            new BlockEntityType<>(PlanterTileNeoForge.Normal::new, PLANTER_BLOCK);
         public static final BlockEntityType<PlanterTileNeoForge.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
-            BlockEntityType.Builder.of(PlanterTileNeoForge.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
+            new BlockEntityType<>(PlanterTileNeoForge.Upgraded::new, PLANTER_UPGRADED_BLOCK);
         public static final MenuType<PlanterContainerNeoForge> PLANTER_CONTAINER_TYPE =
             IMenuTypeExtension.create((id, inv, data) -> new PlanterContainerNeoForge(id, inv.player, data.readBlockPos(), Holder.PLANTER_CONTAINER_TYPE));
 

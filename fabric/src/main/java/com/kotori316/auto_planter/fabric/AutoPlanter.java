@@ -13,6 +13,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
@@ -51,9 +52,9 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         public static final PlanterBlockFabric PLANTER_BLOCK = new PlanterBlockFabric.Normal();
         public static final PlanterBlockFabric PLANTER_UPGRADED_BLOCK = new PlanterBlockFabric.Upgraded();
         public static final BlockEntityType<PlanterTileFabric.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
-            BlockEntityType.Builder.of(PlanterTileFabric.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
         public static final BlockEntityType<PlanterTileFabric.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
-            BlockEntityType.Builder.of(PlanterTileFabric.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
+            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
         public static final ExtendedScreenHandlerType<PlanterContainerFabric, BlockPos> PLANTER_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(
             (i, player, pos) -> new PlanterContainerFabric(i, player.player, pos, Holder.PLANTER_CONTAINER_TYPE), BlockPos.STREAM_CODEC.mapStream(RegistryFriendlyByteBuf::asByteBuf));
 
