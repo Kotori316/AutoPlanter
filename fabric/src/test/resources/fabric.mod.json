@@ -5,8 +5,11 @@
   "version": "1.0.0",
   "environment": "*",
   "entrypoints": {
-    "fabric-gametest": [
+    "main": [
       "com.kotori316.auto_planter.fabric.AutoPlanterGameTest"
+    ],
+    "fabric-gametest": [
+      "com.kotori316.auto_planter.fabric.DummyGameTest"
     ]
   }
 }
