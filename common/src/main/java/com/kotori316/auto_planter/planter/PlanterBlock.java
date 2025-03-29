@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -84,16 +85,9 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected final void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            if (!worldIn.isClientSide) {
-                if (worldIn.getBlockEntity(pos) instanceof PlanterTile inventory) {
-                    Containers.dropContents(worldIn, pos, inventory);
-                    worldIn.updateNeighbourForOutputSignal(pos, state.getBlock());
-                }
-            }
-            super.onRemove(state, worldIn, pos, newState, isMoving);
-        }
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
+        Containers.updateNeighboursAfterDestroy(state, level, pos);
     }
 
     @Override
