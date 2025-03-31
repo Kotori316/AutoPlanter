@@ -3,18 +3,12 @@ package com.kotori316.auto_planter.fabric;
 import com.google.common.base.CaseFormat;
 import com.kotori316.auto_planter.AutoPlanterCommon;
 import com.kotori316.auto_planter.planter.PlanterBlock;
-import com.mojang.serialization.MapCodec;
+import com.kotori316.testutil.common.TestFunction;
+import com.kotori316.testutil.common.TestFunctionRegister;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.GameTestInstance;
-import net.minecraft.gametest.framework.TestData;
-import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -30,51 +24,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public final class AutoPlanterGameTest implements ModInitializer {
 
-    private record TestFunction(
-        String name,
-        String structureName,
-        int maxTicks,
-        int setupTicks,
-        boolean required,
-        Consumer<GameTestHelper> testFunction
-    ) {
-        ResourceLocation getTestFunctionName() {
-            return ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name);
-        }
-    }
-
-    private static class AutoPlanterGameTestInstance extends GameTestInstance {
-        private final TestFunction testFunction;
-
-        public AutoPlanterGameTestInstance(TestEnvironmentDefinition definition, TestFunction testFunction) {
-            super(new TestData<>(Holder.direct(definition), ResourceLocation.parse(testFunction.structureName()), testFunction.maxTicks(), testFunction.setupTicks(), testFunction.required()));
-            this.testFunction = testFunction;
-        }
-
-        @Override
-        public void run(GameTestHelper helper) {
-            this.testFunction.testFunction.accept(helper);
-        }
-
-        @Override
-        public MapCodec<? extends GameTestInstance> codec() {
-            return MapCodec.unit(this);
-        }
-
-        @Override
-        protected MutableComponent typeDescription() {
-            return Component.empty();
-        }
-    }
-
     @Override
     public void onInitialize() {
-
+        createTests().forEach(TestFunctionRegister::registerTestFunction);
+        TestFunctionRegister.addFunctionsToRegistry(AutoPlanterCommon.AUTO_PLANTER, TestFunctionRegister::vanillaTestFunctionRegister);
     }
 
     private static List<TestFunction> createTests() {
@@ -89,7 +46,7 @@ public final class AutoPlanterGameTest implements ModInitializer {
 
         return blocks.flatMap(
             b -> tests.entrySet().stream()
-                .map(f -> new TestFunction(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getKey() + b.getKey()), "minecraft:trail_ruins/tower/one_room_1", 100, 0, true,
+                .map(f -> TestFunction.createWithStructure(AutoPlanterCommon.AUTO_PLANTER, "default", CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getKey() + b.getKey()), "minecraft:trail_ruins/tower/one_room_1",
                     g -> f.getValue().accept(g, b.getValue())
                 ))
         ).toList();
