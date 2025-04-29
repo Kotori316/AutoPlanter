@@ -46,7 +46,7 @@ public final class AutoPlanterGameTest implements ModInitializer {
 
         return blocks.flatMap(
             b -> tests.entrySet().stream()
-                .map(f -> TestFunction.createWithStructure(AutoPlanterCommon.AUTO_PLANTER, "default", CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getKey() + b.getKey()), "minecraft:trail_ruins/tower/one_room_1",
+                .map(f -> TestFunction.createWithStructure(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.AUTO_PLANTER + ":test", CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getKey() + b.getKey()), "minecraft:trail_ruins/tower/one_room_1",
                     g -> f.getValue().accept(g, b.getValue())
                 ))
         ).toList();
