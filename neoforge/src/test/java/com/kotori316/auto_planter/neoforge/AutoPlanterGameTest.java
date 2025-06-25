@@ -72,7 +72,7 @@ public final class AutoPlanterGameTest {
         }
     }
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = AutoPlanterCommon.AUTO_PLANTER)
+    @EventBusSubscriber(modid = AutoPlanterCommon.AUTO_PLANTER)
     public static final class Register {
         @SubscribeEvent
         public static void registerGameTest(RegisterGameTestsEvent event) {

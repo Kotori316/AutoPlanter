@@ -33,7 +33,7 @@ public final class AutoPlanter {
         LOGGER.info("{} initialization", AutoPlanterCommon.AUTO_PLANTER);
     }
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = AutoPlanterCommon.AUTO_PLANTER)
+    @EventBusSubscriber(modid = AutoPlanterCommon.AUTO_PLANTER)
     public static final class RegistryEvents {
         @SubscribeEvent
         public static void register(RegisterEvent event) {

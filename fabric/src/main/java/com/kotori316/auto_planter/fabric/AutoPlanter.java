@@ -7,7 +7,6 @@ import com.kotori316.auto_planter.fabric.planter.PlanterTileFabric;
 import com.kotori316.auto_planter.planter.PlanterContainer;
 import com.kotori316.auto_planter.planter.PlanterGui;
 import com.kotori316.auto_planter.planter.PlanterTile;
-import com.mojang.datafixers.DSL;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -52,9 +51,9 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         public static final PlanterBlockFabric PLANTER_BLOCK = new PlanterBlockFabric.Normal();
         public static final PlanterBlockFabric PLANTER_UPGRADED_BLOCK = new PlanterBlockFabric.Upgraded();
         public static final BlockEntityType<PlanterTileFabric.Normal> PLANTER_TILE_TILE_ENTITY_TYPE =
-            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Normal::new, PLANTER_BLOCK).build(DSL.emptyPartType());
+            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Normal::new, PLANTER_BLOCK).build();
         public static final BlockEntityType<PlanterTileFabric.Upgraded> PLANTER_UPGRADED_TILE_ENTITY_TYPE =
-            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Upgraded::new, PLANTER_UPGRADED_BLOCK).build(DSL.emptyPartType());
+            FabricBlockEntityTypeBuilder.create(PlanterTileFabric.Upgraded::new, PLANTER_UPGRADED_BLOCK).build();
         public static final ExtendedScreenHandlerType<PlanterContainerFabric, BlockPos> PLANTER_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(
             (i, player, pos) -> new PlanterContainerFabric(i, player.player, pos, Holder.PLANTER_CONTAINER_TYPE), BlockPos.STREAM_CODEC.mapStream(RegistryFriendlyByteBuf::asByteBuf));
 

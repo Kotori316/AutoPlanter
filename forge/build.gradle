@@ -32,8 +32,8 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: "parchment", version: ("${project.property("parchment_mapping_mc")}-${project.property("parchment_mapping_version")}-${project.property("minecraftVersion")}" as String)
-    // mappings channel: "official", version: "1.18.2"
+    // mappings channel: "parchment", version: ("${project.property("parchment_mapping_mc")}-${project.property("parchment_mapping_version")}-${project.property("minecraftVersion")}" as String)
+    mappings(channel: "official", version: project.property("minecraftVersion") as String)
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
     // accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
@@ -49,6 +49,7 @@ minecraft {
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
             property("forge.logging.markers", "")
             property("forge.logging.console.level", "debug")
+            property("eventbus.api.strictRuntimeChecks", "true")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
 
@@ -67,6 +68,7 @@ minecraft {
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
             property("forge.logging.markers", "")
             property("forge.logging.console.level", "debug")
+            property("eventbus.api.strictRuntimeChecks", "true")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
 
@@ -85,6 +87,7 @@ minecraft {
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
             property("forge.logging.markers", "")
             property("forge.logging.console.level", "debug")
+            property("eventbus.api.strictRuntimeChecks", "true")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
 
@@ -128,6 +131,7 @@ dependencies {
     compileOnly project(":common")
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0-beta.7")
 
     // Since 1.20.6
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+

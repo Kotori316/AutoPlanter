@@ -13,10 +13,9 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegisterEvent;
@@ -45,7 +44,6 @@ public final class AutoPlanter {
         public static void onBlocksRegistry(final RegisterEvent.RegisterHelper<Block> helper) {
             helper.register(ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_NORMAL), Holder.PLANTER_BLOCK);
             helper.register(ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, AutoPlanterCommon.BLOCK_UPGRADED), Holder.PLANTER_UPGRADED_BLOCK);
-            MinecraftForge.EVENT_BUS.register(Holder.PLANTER_UPGRADED_BLOCK);
         }
 
         public static void onItemsRegistry(final RegisterEvent.RegisterHelper<Item> helper) {

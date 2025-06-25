@@ -19,9 +19,8 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
+import net.minecraftforge.common.util.Result;
 import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.Nullable;
 
 public sealed abstract class PlanterBlockForge extends PlanterBlock {
@@ -82,12 +81,13 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
 
         public Upgraded() {
             super(PlanterBlockType.UPGRADED, AutoPlanterCommon.BLOCK_UPGRADED);
+            BlockEvent.CropGrowEvent.Pre.BUS.addListener(this::grow);
         }
 
-        @SubscribeEvent
         public void grow(BlockEvent.CropGrowEvent.Pre event) {
-            if (event.getLevel().getBlockState(event.getPos().below()).is(this))
-                event.setResult(Event.Result.ALLOW);
+            if (event.getLevel().getBlockState(event.getPos().below()).is(this)) {
+                event.setResult(Result.ALLOW);
+            }
         }
     }
 
