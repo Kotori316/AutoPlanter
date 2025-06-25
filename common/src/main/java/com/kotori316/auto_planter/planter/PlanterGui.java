@@ -3,7 +3,7 @@ package com.kotori316.auto_planter.planter;
 import com.kotori316.auto_planter.AutoPlanterCommon;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,6 +40,6 @@ public class PlanterGui extends AbstractContainerScreen<PlanterContainer<?>> {
             case NORMAL -> LOCATION;
             case UPGRADED -> PLANTER4_GUI_TEXTURES;
         };
-        graphics.blit(RenderType::guiTextured, texture, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
     }
 }

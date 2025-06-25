@@ -2,9 +2,7 @@ package com.kotori316.auto_planter.planter;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
@@ -19,6 +17,8 @@ import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class PlanterTile extends BlockEntity implements Container, MenuProvider {
@@ -54,15 +54,15 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        ContainerHelper.saveAllItems(compound, inventoryContents, provider);
-        super.saveAdditional(compound, provider);
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, this.inventoryContents);
+        super.saveAdditional(output);
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.loadAdditional(compound, provider);
-        ContainerHelper.loadAllItems(compound, inventoryContents, provider);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        ContainerHelper.loadAllItems(input, this.inventoryContents);
     }
 
     @Override
