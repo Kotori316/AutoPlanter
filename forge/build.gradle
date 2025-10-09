@@ -131,7 +131,7 @@ dependencies {
     compileOnly project(":common")
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
-    annotationProcessor("net.minecraftforge:eventbus-validator:7.0-beta.10")
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0-beta.12")
 
     // Since 1.20.6
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+
