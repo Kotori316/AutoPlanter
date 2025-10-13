@@ -3,6 +3,7 @@ package com.kotori316.auto_planter.planter;
 import com.kotori316.auto_planter.AutoPlanterCommon;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -80,7 +81,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected final int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos) {
+    protected final int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos, Direction direction) {
         return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(worldIn.getBlockEntity(pos));
     }
 
@@ -93,7 +94,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     @Override
     protected final void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, @Nullable Orientation orientation, boolean isMoving) {
         super.neighborChanged(state, worldIn, pos, blockIn, orientation, isMoving);
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             if (worldIn.getBlockEntity(pos) instanceof PlanterTile tile) {
                 tile.plantSapling();
             }

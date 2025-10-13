@@ -8,6 +8,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -32,7 +33,7 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     }
 
     public void plantSapling() {
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             BlockPos upPos = getBlockPos().above();
             BlockState state = level.getBlockState(upPos);
             if (level.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
@@ -121,8 +122,8 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     }
 
     @Override
-    public void stopOpen(Player player) {
-        if (level != null && !level.isClientSide) plantSapling();
+    public void stopOpen(ContainerUser user) {
+        if (level != null && !level.isClientSide()) plantSapling();
     }
 
     @Override

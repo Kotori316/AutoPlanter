@@ -26,7 +26,7 @@ public sealed abstract class PlanterBlockFabric extends PlanterBlock {
             boolean notHasHoe = !(player.getMainHandItem().getItem() instanceof HoeItem) &&
                                 !(player.getOffhandItem().getItem() instanceof HoeItem);
             if (notHasSapling && notHasHoe) {
-                if (!worldIn.isClientSide) {
+                if (!worldIn.isClientSide()) {
                     player.openMenu(planterTile);
                 }
                 return InteractionResult.SUCCESS;
