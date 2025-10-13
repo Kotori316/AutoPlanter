@@ -77,8 +77,8 @@ public final class AutoPlanter {
 
         @SubscribeEvent
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Holder.PLANTER_TILE_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
+            event.registerBlockEntity(Capabilities.Item.BLOCK, Holder.PLANTER_TILE_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
+            event.registerBlockEntity(Capabilities.Item.BLOCK, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE, PlanterTileNeoForge::getItemHandler);
         }
 
         @SubscribeEvent

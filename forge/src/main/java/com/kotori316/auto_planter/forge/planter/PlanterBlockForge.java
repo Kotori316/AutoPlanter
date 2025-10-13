@@ -37,7 +37,7 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
             if (notHasSapling) {
-                if (!worldIn.isClientSide)
+                if (!worldIn.isClientSide())
                     ((ServerPlayer) player).openMenu(planterTile, pos);
                 return InteractionResult.SUCCESS;
             }
