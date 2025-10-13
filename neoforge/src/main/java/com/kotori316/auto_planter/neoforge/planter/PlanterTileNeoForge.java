@@ -8,19 +8,20 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public abstract sealed class PlanterTileNeoForge extends PlanterTile {
-    public final IItemHandlerModifiable handler = new InvWrapper(this);
+    public final ResourceHandler<ItemResource> handler = VanillaContainerWrapper.of(this);
 
     PlanterTileNeoForge(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(pos, state, blockType);
     }
 
     @NotNull
-    public IItemHandlerModifiable getItemHandler(Direction ignored) {
+    public ResourceHandler<ItemResource> getItemHandler(Direction ignored) {
         return this.handler;
     }
 
