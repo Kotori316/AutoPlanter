@@ -29,6 +29,7 @@ public final class AutoPlanter {
 
     public AutoPlanter() {
         LOGGER.info("{} initialization", AutoPlanterCommon.AUTO_PLANTER);
+        BuildCreativeModeTabContentsEvent.BUS.addListener(AutoPlanter::creativeTab);
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = AutoPlanterCommon.AUTO_PLANTER)
@@ -64,13 +65,12 @@ public final class AutoPlanter {
         public static void clientInit(FMLClientSetupEvent event) {
             MenuScreens.register(Holder.PLANTER_CONTAINER_TYPE, PlanterGui::new);
         }
+    }
 
-        @SubscribeEvent
-        public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
-            if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
-                event.accept(Holder.PLANTER_BLOCK);
-                event.accept(Holder.PLANTER_UPGRADED_BLOCK);
-            }
+    public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
+            event.accept(Holder.PLANTER_BLOCK);
+            event.accept(Holder.PLANTER_UPGRADED_BLOCK);
         }
     }
 
