@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -48,11 +48,11 @@ public abstract class PlanterBlock extends BaseEntityBlock {
             .strength(0.6f, 100)
             .sound(SoundType.GRAVEL)
             .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false)
-            .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name)))
+            .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name)))
         );
         this.blockType = blockType;
         this.name = name;
-        this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name))).useBlockDescriptionPrefix());
+        this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name))).useBlockDescriptionPrefix());
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
         this.planterCodec = this.createCodec();
     }

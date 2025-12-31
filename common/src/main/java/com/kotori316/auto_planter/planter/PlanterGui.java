@@ -5,12 +5,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class PlanterGui extends AbstractContainerScreen<PlanterContainer<?>> {
-    private static final ResourceLocation LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/container/dispenser.png");
-    private static final ResourceLocation PLANTER4_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, "textures/gui/planter.png");
+    private static final Identifier LOCATION = Identifier.withDefaultNamespace("textures/gui/container/dispenser.png");
+    private static final Identifier PLANTER4_GUI_TEXTURES = Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, "textures/gui/planter.png");
 
     public PlanterGui(PlanterContainer c, Inventory inv, Component t) {
         super(c, inv, t);

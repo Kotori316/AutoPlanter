@@ -13,7 +13,7 @@ import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -39,8 +39,8 @@ public final class AutoPlanterGameTest {
         boolean required,
         Consumer<GameTestHelper> testFunction
     ) {
-        ResourceLocation getTestFunctionName() {
-            return ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name);
+        Identifier getTestFunctionName() {
+            return Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name);
         }
 
         AutoPlanterGameTestInstance createTestInstance(Holder<TestEnvironmentDefinition> definition) {
@@ -52,7 +52,7 @@ public final class AutoPlanterGameTest {
         private final TestFunction testFunction;
 
         public AutoPlanterGameTestInstance(Holder<TestEnvironmentDefinition> definition, TestFunction testFunction) {
-            super(new TestData<>(definition, ResourceLocation.parse(testFunction.structureName()), testFunction.maxTicks(), testFunction.setupTicks(), testFunction.required()));
+            super(new TestData<>(definition, Identifier.parse(testFunction.structureName()), testFunction.maxTicks(), testFunction.setupTicks(), testFunction.required()));
             this.testFunction = testFunction;
         }
 
@@ -76,7 +76,7 @@ public final class AutoPlanterGameTest {
     public static final class Register {
         @SubscribeEvent
         public static void registerGameTest(RegisterGameTestsEvent event) {
-            var environmentDefinition = event.registerEnvironment(ResourceLocation.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, "test"));
+            var environmentDefinition = event.registerEnvironment(Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, "test"));
             var tests = createTests();
             for (TestFunction test : tests) {
                 event.registerTest(test.getTestFunctionName(), test.createTestInstance(environmentDefinition));
