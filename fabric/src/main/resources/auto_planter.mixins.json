@@ -1,7 +1,8 @@
 {
   "required": true,
+  "minVersion": "0.8.5",
   "package": "com.kotori316.auto_planter.fabric.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MixinCanPlantOnSapling",
     "MixinCanPlantOnSeed",
@@ -10,8 +11,8 @@
     "MixinTrunkPlacer",
     "MixinSaplingGrow"
   ],
-  "client": [
-  ],
+  "client": [ ],
+  "server": [ ],
   "injectors": {
     "defaultRequire": 1
   }

@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8.5",
   "package": "com.kotori316.auto_planter.neoforge.mixin",
-  "compatibilityLevel": "JAVA_11",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MixinSaplingGrow",
     "MixinTrunkPlacer"
