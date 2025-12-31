@@ -53,6 +53,7 @@ runs {
     gameTestServer {
         workingDirectory.set(file("run-server"))
         systemProperties.put("neoforge.enabledGameTestNamespaces", "${project.property("mod_id")},minecraft")
+        systemProperties.put("forge.logging.console.level", "info")
         modSources.add(project.sourceSets.test)
     }
 }
