@@ -1,6 +1,6 @@
-package com.kotori316.auto_planter.fabric.mixin;
+package com.kotori316.auto_planter.neoforge.mixin;
 
-import com.kotori316.auto_planter.fabric.AutoPlanter;
+import com.kotori316.auto_planter.neoforge.AutoPlanter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;

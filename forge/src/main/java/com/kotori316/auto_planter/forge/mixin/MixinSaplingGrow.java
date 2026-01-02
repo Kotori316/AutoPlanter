@@ -1,5 +1,6 @@
 package com.kotori316.auto_planter.forge.mixin;
 
+import com.kotori316.auto_planter.MixinHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -28,7 +29,7 @@ public abstract class MixinSaplingGrow {
                     // Is this a real sapling? It might be a modified sapling.
                     newState = state;
                 }
-                ((SaplingBlock) (Object) this).advanceTree(worldIn, pos, newState, random);
+                MixinHelper.cast(this, SaplingBlock.class).advanceTree(worldIn, pos, newState, random);
                 // AutoPlanter.LOGGER.debug("Tree was grown in #growOnPlanter. {}, {}", state, pos);
             }
             ci.cancel();
