@@ -16,6 +16,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -95,7 +96,8 @@ public final class AutoPlanterGameTest {
             "placeSaplingTest1", AutoPlanterGameTest::placeSaplingTest1,
             "placeSaplingTest2", AutoPlanterGameTest::placeSaplingTest2,
             "placeSeedTest1", AutoPlanterGameTest::placeSeedTest1,
-            "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2
+            "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2,
+            "canPlaceSapling", AutoPlanterGameTest::canPlaceSapling
         );
         var blocks = Stream.of(Map.entry("Normal", AutoPlanter.Holder.PLANTER_BLOCK), Map.entry("Advanced", AutoPlanter.Holder.PLANTER_BLOCK));
 
@@ -153,6 +155,14 @@ public final class AutoPlanterGameTest {
         helper.setBlock(pos, block.defaultBlockState().setValue(PlanterBlock.TRIGGERED, true));
         helper.useBlock(pos, helper.makeMockPlayer(GameType.CREATIVE), new ItemStack(seed), Direction.UP);
         helper.assertBlockPresent(Blocks.WHEAT, pos.above());
+        helper.succeed();
+    }
+
+    static void canPlaceSapling(ExtendedGameTestHelper helper, PlanterBlock planterBlock) {
+        var state = planterBlock.canSustainPlant(
+            planterBlock.defaultBlockState(), EmptyBlockGetter.INSTANCE, BlockPos.ZERO, Direction.UP, Blocks.OAK_SAPLING.defaultBlockState()
+        );
+        helper.assertTrue(state.isTrue(), "Must canPlaceSapling be true");
         helper.succeed();
     }
 }
