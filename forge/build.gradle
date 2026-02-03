@@ -264,6 +264,11 @@ tasks.withType(AbstractPublishToMaven).configureEach {
     }
 }
 
+test {
+    // Files in test are GameTest, so the test task do nothing.
+    failOnNoDiscoveredTests = false
+}
+
 tasks.register("registerVersion", CallVersionFunctionTask.class) {
     functionEndpoint = readVersionFunctionEndpoint(project)
     gameVersion = project.findProperty("minecraftVersion")
