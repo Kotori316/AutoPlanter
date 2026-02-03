@@ -46,7 +46,9 @@ runs {
     client {
         workingDirectory.set(file("run"))
         systemProperties.put("mixin.debug.export", "true")
-        jvmArguments.add("-XstartOnFirstThread")
+        if (System.getProperty("os.name").startsWith("Mac")) {
+            jvmArguments.add("-XstartOnFirstThread")
+        }
         modSources.add(project.sourceSets.main)
     }
     gameTestServer {

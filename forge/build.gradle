@@ -48,6 +48,9 @@ minecraft {
             systemProperty("eventbus.api.strictRuntimeChecks", "true")
             systemProperty("mixin.debug.export", "true")
             systemProperty("terminal.ansi", "true")
+            if (System.getProperty("os.name").startsWith("Mac")) {
+                jvmArgs("-XstartOnFirstThread")
+            }
         }
 
         register("client") {
