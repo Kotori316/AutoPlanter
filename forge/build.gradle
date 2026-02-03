@@ -8,9 +8,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("java")
-    id("net.minecraftforge.gradle") version("[6.0.16,8.0)")
-    id("org.spongepowered.mixin") version("0.7.+")
-    id("org.parchmentmc.librarian.forgegradle") version("1.+")
+    id("net.minecraftforge.gradle") version("[7.0, 8.0)")
     id("com.matthewprenger.cursegradle") version("1.4.0")
     id("com.modrinth.minotaur").version("2.+")
     id("com.kotori316.plugin.cf").version("3.+")
@@ -18,7 +16,9 @@ plugins {
 
 version = project.modVersion
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "${project.baseName}-Forge-${project.minecraftVersion}"
+base {
+    archivesName = "${project.baseName}-Forge-${project.minecraftVersion}"
+}
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println("Java: " + System.getProperty("java.version") +
@@ -37,68 +37,27 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
     // accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
-    reobf = false
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
-        client {
-            setWorkingDirectory("run")
-
-            property("mixin.env.remapRefMap", "true")
-            property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            property("forge.logging.markers", "")
-            property("forge.logging.console.level", "debug")
-            property("eventbus.api.strictRuntimeChecks", "true")
-            property("mixin.debug.export", "true")
-            property("terminal.ansi", "true")
-
-            mods {
-                create(project.mod_id as String) {
-                    source(sourceSets.main as SourceSet)
-                    // source(project(":common").sourceSets.main as SourceSet)
-                }
-            }
+        configureEach {
+            workingDir.convention(layout.projectDirectory.dir("run"))
+            systemProperty("forge.logging.markers", "")
+            systemProperty("forge.logging.console.level", "debug")
+            systemProperty("eventbus.api.strictRuntimeChecks", "true")
+            systemProperty("mixin.debug.export", "true")
+            systemProperty("terminal.ansi", "true")
         }
 
-        server {
-            setWorkingDirectory("run")
-
-            property("mixin.env.remapRefMap", "true")
-            property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            property("forge.logging.markers", "")
-            property("forge.logging.console.level", "debug")
-            property("eventbus.api.strictRuntimeChecks", "true")
-            property("mixin.debug.export", "true")
-            property("terminal.ansi", "true")
-
-            mods {
-                create(project.mod_id as String) {
-                    source(sourceSets.main as SourceSet)
-                    // source(project(":common").sourceSets.main as SourceSet)
-                }
-            }
+        register("client") {
         }
 
-        data {
-            setWorkingDirectory("run")
+        register("server") {
+        }
 
-            property("mixin.env.remapRefMap", "true")
-            property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            property("forge.logging.markers", "")
-            property("forge.logging.console.level", "debug")
-            property("eventbus.api.strictRuntimeChecks", "true")
-            property("mixin.debug.export", "true")
-            property("terminal.ansi", "true")
-
-            args "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/")
-
-            mods {
-                create(project.mod_id as String) {
-                    source(sourceSets.main as SourceSet)
-                    // source(project(":common").sourceSets.main as SourceSet)
-                }
-            }
+        register("data") {
+            args "--mod", project.mod_id, "--all", "--output", layout.projectDirectory.dir("src/generated/resources/"), "--existing", layout.projectDirectory.dir("src/main/resources")
         }
     }
 }
@@ -120,17 +79,26 @@ processResources {
 }
 
 repositories {
-    maven {
-        name = "Mixin"
-        url = "https://repo.spongepowered.org/maven"
+    maven(minecraft.mavenizer)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Sponge'
+                url = 'https://repo.spongepowered.org/repository/maven-public'
+            }
+        }
+        filter {
+            includeGroupAndSubgroups('org.spongepowered')
+        }
     }
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:${project.forgeVersion}")
-    compileOnly project(":common")
+    implementation(minecraft.dependency("net.minecraftforge:forge:${project.forgeVersion}"))
+    compileOnly(project(":common"))
     // Mixin
-    annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
     annotationProcessor("net.minecraftforge:eventbus-validator:7.0.1")
 
     // Since 1.20.6
@@ -144,10 +112,6 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
-}
-
-mixin {
-    add sourceSets.main, "mixins.${project.mod_id}.refmap.json"
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -263,12 +227,12 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
-            artifactId = project.archivesBaseName.toLowerCase()
+            artifactId = project.base.archivesName.get().toLowerCase()
             from components.java
             artifact(tasks.deobfJar)
             artifact(tasks.srcJar)
             pom {
-                name = archivesBaseName
+                name = project.base.archivesName.get()
                 description = "AutoPlanter for Minecraft ${project.minecraftVersion} and Forge ${project.forgeVersion}"
                 url = "https://github.com/Kotori316/AutoPlanter"
                 packaging = "jar"

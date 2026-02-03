@@ -3,7 +3,9 @@ plugins {
     id "org.spongepowered.gradle.vanilla" version "0.2.2"
 }
 
-archivesBaseName = "${project.baseName}-Common-${project.minecraftVersion}"
+base {
+    archivesName = "${project.baseName}-Common-${project.minecraftVersion}"
+}
 
 minecraft {
     version(project.minecraftVersion)

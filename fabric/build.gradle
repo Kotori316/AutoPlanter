@@ -8,7 +8,9 @@ plugins {
     id("com.kotori316.plugin.cf").version("3.+")
 }
 
-archivesBaseName = "${project.baseName}-Fabric-${project.minecraftVersion}"
+base {
+    archivesName = "${project.baseName}-Fabric-${project.minecraftVersion}"
+}
 version = project.modVersion
 group = "com.kotori316"
 
@@ -65,7 +67,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
-        transitive(false)
+        transitive = false
     }
     modImplementation("com.kotori316:debug-utility-fabric:${project.property("debug_util_version")}")
 
@@ -90,6 +92,11 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     source(project(":common").sourceSets.main.allSource)
+}
+
+test {
+    // Files in test are GameTest, so the test task do nothing.
+    failOnNoDiscoveredTests = false
 }
 
 java {
@@ -158,10 +165,10 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
-            artifactId = project.archivesBaseName.toLowerCase()
+            artifactId = project.base.archivesName.get().toLowerCase()
             from components.java
             pom {
-                name = archivesBaseName
+                name = project.base.archivesName.get()
                 description = "AutoPlanter for Minecraft ${project.minecraftVersion} and Fabric ${project.fabric_version}"
                 url = "https://github.com/Kotori316/AutoPlanter"
                 packaging = "jar"

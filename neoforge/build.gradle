@@ -219,11 +219,11 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
-            artifactId = project.archivesBaseName.toLowerCase()
+            artifactId = project.base.archivesName.get().toLowerCase()
             from components.java
             artifact(tasks.srcJar)
             pom {
-                name = archivesBaseName
+                name = project.base.archivesName.get()
                 description = "AutoPlanter for Minecraft ${project.minecraftVersion} and NeoForge ${project.neo_version}"
                 url = "https://github.com/Kotori316/AutoPlanter"
                 packaging = "jar"
@@ -265,4 +265,8 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     modName = project.findProperty("mod_id")
     version = project.version
     failIfExists = Boolean.parseBoolean(System.getenv("FAIL_IF_EXISTS"))
+}
+
+test {
+    useJUnitPlatform()
 }
