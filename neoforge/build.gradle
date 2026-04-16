@@ -9,7 +9,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("idea")
-    id("net.neoforged.gradle.userdev").version("7.1.21")
+    id("net.neoforged.gradle.userdev").version("7.1.22")
     id("com.matthewprenger.cursegradle") version("1.4.0")
     id("com.modrinth.minotaur").version("2.+")
     id("com.kotori316.plugin.cf").version("3.+")
