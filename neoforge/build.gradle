@@ -10,8 +10,7 @@ plugins {
     id("signing")
     id("idea")
     id("net.neoforged.gradle.userdev").version("7.1.22")
-    id("com.matthewprenger.cursegradle") version("1.4.0")
-    id("com.modrinth.minotaur").version("2.+")
+    id("me.modmuss50.mod-publish-plugin") version("1.1.0")
     id("com.kotori316.plugin.cf").version("3.5")
 }
 
@@ -153,38 +152,25 @@ signing {
     sign(publishing.publications)
 }
 
-curseforge {
-    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
-    project {
-        id = "289078"
-        changelogType = "markdown"
-        changelog = "For Minecraft ${project.minecraftVersion} with NeoForge ${project.neo_version}"
-        addGameVersion(project.minecraftVersion)
-        addGameVersion("NeoForge")
-        releaseType = "release"
-        mainArtifact jar
-    }
-    options {
-        curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode) // defaults to false
-        javaVersionAutoDetect = false
-    }
-}
-
-modrinth {
-    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
-    projectId = "auto-planter"
-    versionType = "release"
-    versionName = "${project.version}-neoforge"
-    versionNumber.set(project.version.toString())
-    uploadFile = tasks.jar
-    getAdditionalFiles().set([
-            tasks.sourcesJar,
-    ])
-    getGameVersions().set([project.minecraftVersion])
-    getLoaders().set(["neoforge"])
+publishMods {
+    dryRun = !Boolean.parseBoolean(project.releaseMode)
+    type = STABLE
+    file = tasks.jar.archiveFile
+    additionalFiles.from(tasks.named("sourcesJar"))
+    modLoaders.add("neoforge")
+    displayName = "${project.version}-neoforge"
     changelog = "For Minecraft ${project.minecraftVersion} with NeoForge ${project.neo_version}"
-    debugMode = !Boolean.parseBoolean(project.releaseMode)
-    dependencies {
+
+    curseforge {
+        accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: "") as String
+        projectId = "289078"
+        minecraftVersions.add(project.minecraftVersion)
+    }
+
+    modrinth {
+        accessToken = (project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String
+        projectId = "auto-planter"
+        minecraftVersions.add(project.minecraftVersion)
     }
 }
 

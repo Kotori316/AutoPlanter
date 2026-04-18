@@ -25,6 +25,10 @@ pluginManagement {
             name = "Kotori316 Plugin"
             url = "https://maven.kotori316.com/"
         }
+        maven {
+            name = "ModPublishPlugin"
+            url = "https://maven.modmuss50.me/"
+        }
     }
 }
 

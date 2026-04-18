@@ -2,8 +2,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("net.fabricmc.fabric-loom") version("1.16.1")
-    id("com.matthewprenger.cursegradle") version("1.4.0")
-    id("com.modrinth.minotaur") version("2.+")
+    id("me.modmuss50.mod-publish-plugin") version("1.1.0")
     id("com.kotori316.plugin.cf").version("3.5")
 }
 
@@ -100,41 +99,27 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(25)
 }
 
-curseforge {
-    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
-    project {
-        id = "289078"
-        changelogType = "markdown"
-        changelog = "For Minecraft ${project.minecraftVersion} with Fabric ${project.fabric_version}"
-        addGameVersion(project.minecraftVersion)
-        addGameVersion "Fabric"
-        releaseType = "beta"
-        mainArtifact jar
-
-        relations {
-            requiredDependency("automatic-potato")
-        }
-    }
-    options {
-        curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode) // defaults to false
-        forgeGradleIntegration = false
-        javaVersionAutoDetect = false
-    }
-}
-
-modrinth {
-    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
-    projectId = "auto-planter"
-    versionType = "release"
-    versionName = "${project.version}-fabric"
-    versionNumber.set(project.version.toString())
-    uploadFile = tasks.jar
-    getGameVersions().set([project.minecraftVersion])
-    getLoaders().set(["fabric"])
+publishMods {
+    dryRun = !Boolean.parseBoolean(project.releaseMode)
+    type = STABLE
+    file = tasks.jar.archiveFile
+    additionalFiles.from(tasks.named("sourcesJar"))
+    modLoaders.add("fabric")
+    displayName = "${project.version}-fabric"
     changelog = "For Minecraft ${project.minecraftVersion} with Fabric ${project.fabric_version}"
-    debugMode = !Boolean.parseBoolean(project.releaseMode)
-    dependencies {
-        required.project("automatic-potato")
+
+    curseforge {
+        accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: "") as String
+        projectId = "289078"
+        minecraftVersions.add(project.minecraftVersion)
+        requires("automatic-potato")
+    }
+
+    modrinth {
+        accessToken = (project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String
+        projectId = "auto-planter"
+        minecraftVersions.add(project.minecraftVersion)
+        requires("automatic-potato")
     }
 }
 
