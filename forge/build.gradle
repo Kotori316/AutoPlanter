@@ -20,6 +20,7 @@ base {
     archivesName = "${project.baseName}-Forge-${project.minecraftVersion}"
 }
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.withSourcesJar()
 
 println("Java: " + System.getProperty("java.version") +
         " JVM: " + System.getProperty("java.vm.version") +
@@ -82,7 +83,7 @@ processResources {
 }
 
 repositories {
-    maven(minecraft.mavenizer)
+    minecraft.mavenizer(it)
     maven(fg.forgeMaven)
     maven(fg.minecraftLibsMaven)
     exclusiveContent {
@@ -101,16 +102,7 @@ repositories {
 dependencies {
     implementation(minecraft.dependency("net.minecraftforge:forge:${project.forgeVersion}"))
     compileOnly(project(":common"))
-    // Mixin
     annotationProcessor("net.minecraftforge:eventbus-validator:7.0.4")
-
-    // Since 1.20.6
-    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+
-    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") {
-        version {
-            strictly("5.0.4")
-        }
-    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -157,23 +149,6 @@ tasks.register("jksSignJar") {
     }
 }
 
-tasks.register('srcJar', Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier.set("sources")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-tasks.register('deobfJar', Jar) {
-    from sourceSets.main.output
-    archiveClassifier.set("deobf")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-// Tell the artifact system about our extra jars
-artifacts {
-    archives srcJar, deobfJar
-}
-
 curseforge {
     apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
@@ -199,8 +174,7 @@ modrinth {
     versionNumber.set(project.version.toString())
     uploadFile = tasks.jar
     getAdditionalFiles().set([
-            tasks.deobfJar,
-            tasks.srcJar,
+            tasks.sourcesJar,
     ])
     getGameVersions().set([project.minecraftVersion])
     getLoaders().set(["forge"])
@@ -232,8 +206,6 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = project.base.archivesName.get().toLowerCase()
             from components.java
-            artifact(tasks.deobfJar)
-            artifact(tasks.srcJar)
             pom {
                 name = project.base.archivesName.get()
                 description = "AutoPlanter for Minecraft ${project.minecraftVersion} and Forge ${project.forgeVersion}"
@@ -246,7 +218,6 @@ publishing {
 
 signing {
     sign(publishing.publications)
-    sign(tasks.jar, tasks.deobfJar, tasks.srcJar)
 }
 
 boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -262,8 +233,6 @@ tasks.withType(Sign).configureEach {
 tasks.withType(AbstractPublishToMaven).configureEach {
     if (hasGpgSignature) {
         it.dependsOn(":forge:signJar")
-        it.dependsOn(":forge:signSrcJar")
-        it.dependsOn(":forge:signDeobfJar")
     }
 }
 
