@@ -17,6 +17,6 @@ config = "auto_planter.mixins.json"
 [[dependencies.auto_planter]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.3.0-beta,)"
+versionRange = "[26.1.2.7-beta,)"
 ordering = "NONE"
 side = "BOTH"

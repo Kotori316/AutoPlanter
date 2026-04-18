@@ -1,7 +1,7 @@
 package com.kotori316.auto_planter.planter;
 
 import com.kotori316.auto_planter.AutoPlanterCommon;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -16,25 +16,12 @@ public class PlanterGui extends AbstractContainerScreen<PlanterContainer<?>> {
         super(c, inv, t);
     }
 
-    @Override
-    public void render(GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTicks) {
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(graphics, mouseX, mouseY); // render tooltip
-    }
-
-    /**
-     * Draw the foreground layer for the GuiContainer (everything in front of the items)
-     */
-    @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        super.renderLabels(graphics, mouseX, mouseY);
-    }
-
     /**
      * Draws the background layer of this container (behind the items).
      */
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
         var texture = switch (getMenu().tile.blockType()) {
             case NORMAL -> LOCATION;
             case UPGRADED -> PLANTER4_GUI_TEXTURES;

@@ -3,27 +3,29 @@ package com.kotori316.auto_planter.fabric.planter;
 import com.kotori316.auto_planter.AutoPlanterCommon;
 import com.kotori316.auto_planter.planter.PlanterBlock;
 import com.kotori316.auto_planter.planter.PlanterTile;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
-public sealed abstract class PlanterTileFabric extends PlanterTile implements ExtendedScreenHandlerFactory<BlockPos> {
+public sealed abstract class PlanterTileFabric extends PlanterTile implements ExtendedMenuProvider<BlockPos> {
 
     protected PlanterTileFabric(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(pos, state, blockType);
     }
 
     @Override
-    public PlanterContainerFabric createMenu(int id, Inventory inv, Player p) {
+    public PlanterContainerFabric createMenu(int id, @NotNull Inventory inv, @NotNull Player p) {
         return new PlanterContainerFabric(id, p, getBlockPos(), AutoPlanterCommon.accessor.planterMenuType());
     }
 
+    @NotNull
     @Override
-    public BlockPos getScreenOpeningData(ServerPlayer player) {
-        return worldPosition;
+    public BlockPos getScreenOpeningData(@NotNull ServerPlayer player) {
+        return getBlockPos();
     }
 
     public static final class Normal extends PlanterTileFabric {

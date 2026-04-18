@@ -44,7 +44,7 @@ public final class AutoPlanterGameTest {
             return Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name);
         }
 
-        AutoPlanterGameTestInstance createTestInstance(Holder<TestEnvironmentDefinition> definition) {
+        AutoPlanterGameTestInstance createTestInstance(Holder<TestEnvironmentDefinition<?>> definition) {
             return new AutoPlanterGameTestInstance(definition, this);
         }
     }
@@ -52,7 +52,7 @@ public final class AutoPlanterGameTest {
     private static class AutoPlanterGameTestInstance extends GameTestInstance {
         private final TestFunction testFunction;
 
-        public AutoPlanterGameTestInstance(Holder<TestEnvironmentDefinition> definition, TestFunction testFunction) {
+        public AutoPlanterGameTestInstance(Holder<TestEnvironmentDefinition<?>> definition, TestFunction testFunction) {
             super(new TestData<>(definition, Identifier.parse(testFunction.structureName()), testFunction.maxTicks(), testFunction.setupTicks(), testFunction.required()));
             this.testFunction = testFunction;
         }
