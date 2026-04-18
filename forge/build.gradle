@@ -159,13 +159,13 @@ publishMods {
 
     curseforge {
         accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: "") as String
-        projectId = "289078"
+        projectId = project.curseforge_id
         minecraftVersions.add(project.minecraftVersion)
     }
 
     modrinth {
         accessToken = (project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String
-        projectId = "auto-planter"
+        projectId = project.modrinth_id
         minecraftVersions.add(project.minecraftVersion)
     }
 }
