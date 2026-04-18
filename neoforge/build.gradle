@@ -18,6 +18,7 @@ plugins {
 version = project.modVersion
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.withSourcesJar()
 
 base {
     archivesName = "${project.baseName}-NeoForge-${project.minecraftVersion}"
@@ -138,20 +139,8 @@ tasks.register("jksSignJar") {
     }
 }
 
-tasks.register('srcJar', Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier.set("sources")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-// Tell the artifact system about our extra jars
-artifacts {
-    archives srcJar
-}
-
 signing {
     sign(publishing.publications)
-    sign(tasks.jar, tasks.srcJar)
 }
 
 curseforge {
@@ -179,7 +168,7 @@ modrinth {
     versionNumber.set(project.version.toString())
     uploadFile = tasks.jar
     getAdditionalFiles().set([
-            tasks.srcJar,
+            tasks.sourcesJar,
     ])
     getGameVersions().set([project.minecraftVersion])
     getLoaders().set(["neoforge"])
@@ -211,7 +200,6 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = project.base.archivesName.get().toLowerCase()
             from components.java
-            artifact(tasks.srcJar)
             pom {
                 name = project.base.archivesName.get()
                 description = "AutoPlanter for Minecraft ${project.minecraftVersion} and NeoForge ${project.neo_version}"
@@ -229,13 +217,6 @@ boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
 tasks.withType(Sign).configureEach {
     it.onlyIf {
         hasGpgSignature
-    }
-}
-
-tasks.withType(AbstractPublishToMaven).configureEach {
-    if (hasGpgSignature) {
-        it.dependsOn(":neoforge:signJar")
-        it.dependsOn(":neoforge:signSrcJar")
     }
 }
 

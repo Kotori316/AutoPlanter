@@ -194,7 +194,6 @@ tasks.register("jksSignJar") {
 
 signing {
     sign(publishing.publications)
-    sign(tasks.jar, tasks.sourcesJar)
 }
 
 boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -206,13 +205,6 @@ tasks.withType(Sign).configureEach {
         hasGpgSignature
     }
 }
-
-tasks.withType(AbstractPublishToMaven).configureEach {
-    if (hasGpgSignature) {
-        it.dependsOn(":fabric:signJar")
-    }
-}
-
 
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
