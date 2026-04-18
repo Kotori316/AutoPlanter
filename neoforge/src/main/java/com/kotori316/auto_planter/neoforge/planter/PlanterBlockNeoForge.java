@@ -77,7 +77,7 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
 
     @Override
     public boolean onTreeGrow(BlockState state, WorldGenLevel level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeConfiguration config) {
-        // No action is needed in TrunkPlacer#setDirtAt
+        // No action is needed in TrunkPlacer#placeBelowTrunkBlock
         return false;
     }
 

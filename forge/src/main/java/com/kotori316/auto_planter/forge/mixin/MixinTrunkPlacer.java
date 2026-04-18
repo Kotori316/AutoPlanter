@@ -1,10 +1,9 @@
 package com.kotori316.auto_planter.forge.mixin;
 
-import java.util.function.BiConsumer;
-
+import com.kotori316.auto_planter.forge.AutoPlanter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
@@ -13,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.kotori316.auto_planter.forge.AutoPlanter;
+import java.util.function.BiConsumer;
 
 @Mixin(TrunkPlacer.class)
 public abstract class MixinTrunkPlacer {
-    @Inject(method = "setDirtAt", at = @At("HEAD"), cancellable = true)
-    private static void cancelPlaceDirt(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> setter, RandomSource random, BlockPos pos, TreeConfiguration config, CallbackInfo ci) {
+    @Inject(method = "placeBelowTrunkBlock", at = @At("HEAD"), cancellable = true)
+    private static void cancelPlaceDirt(WorldGenLevel level, BiConsumer<BlockPos, BlockState> trunkSetter, RandomSource random, BlockPos pos, TreeConfiguration config, CallbackInfo ci) {
         if (level.isStateAtPosition(pos, state ->
             state.getBlock() == AutoPlanter.Holder.PLANTER_BLOCK ||
             state.getBlock() == AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {

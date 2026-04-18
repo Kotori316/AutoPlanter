@@ -6,6 +6,7 @@ import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +14,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
@@ -22,6 +25,8 @@ import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.Result;
 import net.minecraftforge.event.level.BlockEvent;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiConsumer;
 
 public sealed abstract class PlanterBlockForge extends PlanterBlock {
 
@@ -63,6 +68,12 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
         } else {
             return type == PlantType.PLAINS;
         }
+    }
+
+    @Override
+    public boolean onTreeGrow(BlockState state, LevelReader level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeConfiguration config) {
+        // No action is needed in TrunkPlacer#placeBelowTrunkBlock
+        return false;
     }
 
     @Override
