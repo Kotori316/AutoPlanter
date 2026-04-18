@@ -102,7 +102,7 @@ dependencies {
     implementation(minecraft.dependency("net.minecraftforge:forge:${project.forgeVersion}"))
     compileOnly(project(":common"))
     // Mixin
-    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.1")
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.4")
 
     // Since 1.20.6
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+
