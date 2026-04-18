@@ -19,7 +19,7 @@ group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conv
 base {
     archivesName = "${project.baseName}-Forge-${project.minecraftVersion}"
 }
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 println("Java: " + System.getProperty("java.version") +
         " JVM: " + System.getProperty("java.vm.version") +

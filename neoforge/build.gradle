@@ -17,7 +17,7 @@ plugins {
 
 version = project.modVersion
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 base {
     archivesName = "${project.baseName}-NeoForge-${project.minecraftVersion}"
@@ -32,10 +32,6 @@ idea {
 }
 
 subsystems {
-    parchment {
-        minecraftVersion = project.property("parchment_mapping_mc")
-        mappingsVersion = project.property("parchment_mapping_version")
-    }
 }
 
 runs {
