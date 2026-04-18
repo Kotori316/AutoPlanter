@@ -16,5 +16,4 @@ jobs:
       release_command: 'build publishToMavenLocal registerVersion curseforge modrinth publish'
       enable_signature_check: true
       java_version: '25'
-      use_attestation: true
     secrets: inherit
