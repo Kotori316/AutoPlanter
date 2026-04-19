@@ -10,7 +10,7 @@ plugins {
     id("java")
     id("net.minecraftforge.gradle") version("7.0.20")
     id("me.modmuss50.mod-publish-plugin") version("1.1.0")
-    id("com.kotori316.plugin.cf").version("3.5")
+    id("com.kotori316.plugin.cf").version("4.0")
 }
 
 version = project.modVersion
