@@ -101,7 +101,7 @@ repositories {
 dependencies {
     implementation(minecraft.dependency("net.minecraftforge:forge:${project.forgeVersion}"))
     compileOnly(project(":common"))
-    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.4")
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.5")
 }
 
 tasks.withType(JavaCompile).configureEach {
