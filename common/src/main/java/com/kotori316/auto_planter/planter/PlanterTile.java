@@ -41,6 +41,7 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
                         DirectionalPlaceContext context = new DirectionalPlaceContext(level, upPos, Direction.DOWN, maybeSapling, Direction.UP);
                         if (state.canBeReplaced(context)) {
                             ((BlockItem) maybeSapling.getItem()).place(context);
+                            setChanged();
                         }
                     }
                 }
