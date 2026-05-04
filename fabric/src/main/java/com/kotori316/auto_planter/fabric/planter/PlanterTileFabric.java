@@ -6,7 +6,6 @@ import com.kotori316.auto_planter.planter.PlanterTile;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,10 +26,6 @@ public sealed abstract class PlanterTileFabric extends PlanterTile implements Ex
     @Override
     public BlockPos getScreenOpeningData(@NotNull ServerPlayer player) {
         return getBlockPos();
-    }
-
-    protected Container getContainer() {
-        return this.container;
     }
 
     public static final class Normal extends PlanterTileFabric {

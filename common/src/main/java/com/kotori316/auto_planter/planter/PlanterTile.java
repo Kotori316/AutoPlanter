@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.function.Consumer;
 
@@ -97,6 +99,11 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
 
     @Override
     public abstract PlanterContainer<?> createMenu(int id, Inventory inv, Player p);
+
+    @VisibleForTesting
+    public final Container getContainer() {
+        return this.container;
+    }
 
     protected void onInventoryOpen(ServerPlayer player) {
     }

@@ -3,6 +3,7 @@ package com.kotori316.auto_planter.fabric;
 import com.google.common.base.CaseFormat;
 import com.kotori316.auto_planter.AutoPlanterCommon;
 import com.kotori316.auto_planter.planter.PlanterBlock;
+import com.kotori316.auto_planter.planter.PlanterTile;
 import com.kotori316.testutil.common.TestFunction;
 import com.kotori316.testutil.common.TestFunctionRegister;
 import net.fabricmc.api.ModInitializer;
@@ -40,7 +41,8 @@ public final class AutoPlanterGameTest implements ModInitializer {
             "placeSaplingTest1", AutoPlanterGameTest::placeSaplingTest1,
             "placeSaplingTest2", AutoPlanterGameTest::placeSaplingTest2,
             "placeSeedTest1", AutoPlanterGameTest::placeSeedTest1,
-            "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2
+            "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2,
+            "placeSaplingItemTest", AutoPlanterGameTest::placeSaplingItemTest
         );
         var blocks = Stream.of(Map.entry("Normal", AutoPlanter.Holder.PLANTER_BLOCK), Map.entry("Advanced", AutoPlanter.Holder.PLANTER_BLOCK));
 
@@ -98,6 +100,22 @@ public final class AutoPlanterGameTest implements ModInitializer {
         helper.setBlock(pos, block.defaultBlockState().setValue(PlanterBlock.TRIGGERED, true));
         useBlock(helper, pos, helper.makeMockPlayer(GameType.CREATIVE), new ItemStack(seed), Direction.UP);
         helper.assertBlockPresent(Blocks.WHEAT, pos.above());
+        helper.succeed();
+    }
+
+    static void placeSaplingItemTest(GameTestHelper helper, PlanterBlock block) {
+        var pos = new BlockPos(0, 1, 0);
+        helper.setBlock(pos, Blocks.AIR);
+        helper.setBlock(pos.above(), Blocks.AIR);
+        var sapling = Blocks.OAK_SAPLING;
+        helper.setBlock(pos, block.defaultBlockState().setValue(PlanterBlock.TRIGGERED, false));
+        var tile = helper.getBlockEntity(pos, PlanterTile.class);
+        tile.getContainer().setItem(0, new ItemStack(sapling));
+        tile.plantSapling();
+
+        helper.assertBlockPresent(sapling, pos.above());
+        helper.assertBlockState(pos, tile.getBlockState());
+        helper.assertTrue(tile.getContainer().countItem(sapling.asItem()) == 0, "Must be empty");
         helper.succeed();
     }
 
