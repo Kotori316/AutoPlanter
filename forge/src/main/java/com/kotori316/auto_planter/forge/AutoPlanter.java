@@ -30,6 +30,7 @@ public final class AutoPlanter {
     public AutoPlanter() {
         LOGGER.info("{} initialization", AutoPlanterCommon.AUTO_PLANTER);
         BuildCreativeModeTabContentsEvent.BUS.addListener(AutoPlanter::creativeTab);
+        PacketHandler.init();
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = AutoPlanterCommon.AUTO_PLANTER)

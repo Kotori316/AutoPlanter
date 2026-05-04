@@ -3,6 +3,7 @@ package com.kotori316.auto_planter.planter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+
 public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     protected final SimpleContainer container;
     private final PlanterBlock.PlanterBlockType blockType;
@@ -28,7 +31,7 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     protected PlanterTile(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(blockType.entityType.get(), pos, state);
         this.blockType = blockType;
-        this.container = new PlanterInventory(blockType.storageSize, this::plantSapling);
+        this.container = new PlanterInventory(blockType.storageSize, this::onInventoryOpen, this::onInventoryClose, this::onInventoryUpdate);
     }
 
     public void plantSapling() {
@@ -95,12 +98,35 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     @Override
     public abstract PlanterContainer<?> createMenu(int id, Inventory inv, Player p);
 
-    private static class PlanterInventory extends SimpleContainer {
-        private final Runnable onClose;
+    protected void onInventoryOpen(ServerPlayer player) {
+    }
 
-        private PlanterInventory(int size, Runnable onClose) {
+    protected void onInventoryClose() {
+        plantSapling();
+    }
+
+    protected void onInventoryUpdate() {
+        this.setChanged();
+    }
+
+    private static class PlanterInventory extends SimpleContainer {
+        private final Consumer<ServerPlayer> onOpen;
+        private final Runnable onClose;
+        private final Runnable onUpdate;
+
+        private PlanterInventory(int size, Consumer<ServerPlayer> onOpen, Runnable onClose, Runnable onUpdate) {
             super(size);
+            this.onOpen = onOpen;
             this.onClose = onClose;
+            this.onUpdate = onUpdate;
+        }
+
+        @Override
+        public void startOpen(ContainerUser containerUser) {
+            super.startOpen(containerUser);
+            if (containerUser instanceof ServerPlayer player) {
+                onOpen.accept(player);
+            }
         }
 
         @Override
@@ -112,6 +138,12 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
             return isPlantable(itemStack, true);
+        }
+
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            onUpdate.run();
         }
     }
 }
