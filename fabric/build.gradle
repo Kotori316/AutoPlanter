@@ -40,10 +40,6 @@ loom {
 
 repositories {
     maven {
-        name = 'ParchmentMC'
-        url = 'https://maven.parchmentmc.org'
-    }
-    maven {
         name = "Kotori316 Plugin"
         url = uri("https://maven.kotori316.com/")
     }
