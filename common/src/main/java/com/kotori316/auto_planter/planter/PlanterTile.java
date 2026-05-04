@@ -2,12 +2,11 @@ package com.kotori316.auto_planter.planter;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,14 +21,14 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class PlanterTile extends BlockEntity implements Container, MenuProvider {
-    public final NonNullList<ItemStack> inventoryContents;
+public abstract class PlanterTile extends BlockEntity implements MenuProvider {
+    protected final SimpleContainer container;
     private final PlanterBlock.PlanterBlockType blockType;
 
     protected PlanterTile(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(blockType.entityType.get(), pos, state);
         this.blockType = blockType;
-        this.inventoryContents = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+        this.container = new PlanterInventory(blockType.storageSize, this::plantSapling);
     }
 
     public void plantSapling() {
@@ -37,7 +36,7 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
             BlockPos upPos = getBlockPos().above();
             BlockState state = level.getBlockState(upPos);
             if (level.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
-                for (ItemStack maybeSapling : inventoryContents) {
+                for (ItemStack maybeSapling : this.container.getItems()) {
                     if (isPlantable(maybeSapling, getBlockState().getValue(PlanterBlock.TRIGGERED))) {
                         DirectionalPlaceContext context = new DirectionalPlaceContext(level, upPos, Direction.DOWN, maybeSapling, Direction.UP);
                         if (state.canBeReplaced(context)) {
@@ -56,84 +55,20 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
 
     @Override
     protected void saveAdditional(ValueOutput output) {
-        ContainerHelper.saveAllItems(output, this.inventoryContents);
+        ContainerHelper.saveAllItems(output, this.container.getItems());
         super.saveAdditional(output);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        ContainerHelper.loadAllItems(input, this.inventoryContents);
+        ContainerHelper.loadAllItems(input, this.container.getItems());
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
         // Invalidate handler
-    }
-
-    @Override
-    public int getContainerSize() {
-        return blockType().storageSize;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return inventoryContents.stream().allMatch(ItemStack::isEmpty);
-    }
-
-    @Override
-    public ItemStack getItem(int index) {
-        return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index) : ItemStack.EMPTY;
-    }
-
-    @Override
-    public ItemStack removeItem(int index, int count) {
-        ItemStack itemstack = ContainerHelper.removeItem(this.inventoryContents, index, count);
-        if (!itemstack.isEmpty()) {
-            this.setChanged();
-        }
-        return itemstack;
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int index) {
-        ItemStack itemstack = this.inventoryContents.get(index);
-        if (itemstack.isEmpty()) {
-            return ItemStack.EMPTY;
-        } else {
-            this.inventoryContents.set(index, ItemStack.EMPTY);
-            return itemstack;
-        }
-    }
-
-    @Override
-    public void setItem(int index, ItemStack stack) {
-        this.inventoryContents.set(index, stack);
-        if (!stack.isEmpty() && stack.getCount() > this.getMaxStackSize()) {
-            stack.setCount(this.getMaxStackSize());
-        }
-        this.setChanged();
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return player.distanceToSqr(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5) <= 64;
-    }
-
-    @Override
-    public void stopOpen(ContainerUser user) {
-        if (level != null && !level.isClientSide()) plantSapling();
-    }
-
-    @Override
-    public void clearContent() {
-        inventoryContents.clear();
-    }
-
-    @Override
-    public boolean canPlaceItem(int index, ItemStack stack) {
-        return isPlantable(stack, true);
     }
 
     public static boolean isPlantable(ItemStack stack, boolean triggered) {
@@ -159,4 +94,23 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     @Override
     public abstract PlanterContainer<?> createMenu(int id, Inventory inv, Player p);
 
+    private static class PlanterInventory extends SimpleContainer {
+        private final Runnable onClose;
+
+        private PlanterInventory(int size, Runnable onClose) {
+            super(size);
+            this.onClose = onClose;
+        }
+
+        @Override
+        public void stopOpen(ContainerUser containerUser) {
+            super.stopOpen(containerUser);
+            onClose.run();
+        }
+
+        @Override
+        public boolean canPlaceItem(int slot, ItemStack itemStack) {
+            return isPlantable(itemStack, true);
+        }
+    }
 }

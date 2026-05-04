@@ -1,13 +1,12 @@
 package com.kotori316.auto_planter.fabric.planter;
 
+import com.kotori316.auto_planter.planter.PlanterContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import com.kotori316.auto_planter.planter.PlanterContainer;
 
 public final class PlanterContainerFabric extends PlanterContainer<PlanterTileFabric> {
     public PlanterContainerFabric(int id, Player player, BlockPos pos, MenuType<?> type) {
@@ -16,7 +15,7 @@ public final class PlanterContainerFabric extends PlanterContainer<PlanterTileFa
 
     @Override
     protected Slot createSlot(PlanterTileFabric tile, int index, int x, int y) {
-        return new TileSlot(tile, index, x, y);
+        return new TileSlot(tile.getContainer(), index, x, y);
     }
 
     private static final class TileSlot extends Slot {

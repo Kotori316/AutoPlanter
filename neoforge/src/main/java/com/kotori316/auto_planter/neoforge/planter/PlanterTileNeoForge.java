@@ -5,6 +5,7 @@ import com.kotori316.auto_planter.planter.PlanterBlock;
 import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,10 +15,15 @@ import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public abstract sealed class PlanterTileNeoForge extends PlanterTile {
-    public final ResourceHandler<ItemResource> handler = VanillaContainerWrapper.of(this);
+    public final ResourceHandler<ItemResource> handler;
 
     PlanterTileNeoForge(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(pos, state, blockType);
+        handler = VanillaContainerWrapper.of(this.container);
+    }
+
+    protected Container getContainer() {
+        return this.container;
     }
 
     @NotNull

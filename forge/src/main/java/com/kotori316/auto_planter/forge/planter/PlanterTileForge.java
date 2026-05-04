@@ -1,7 +1,8 @@
 package com.kotori316.auto_planter.forge.planter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.kotori316.auto_planter.AutoPlanterCommon;
+import com.kotori316.auto_planter.planter.PlanterBlock;
+import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,16 +14,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-import com.kotori316.auto_planter.AutoPlanterCommon;
-import com.kotori316.auto_planter.planter.PlanterBlock;
-import com.kotori316.auto_planter.planter.PlanterTile;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract sealed class PlanterTileForge extends PlanterTile {
-    public final IItemHandlerModifiable handler = new InvWrapper(this);
-    private final LazyOptional<IItemHandlerModifiable> handlerLazyOptional = LazyOptional.of(() -> handler);
+    public final IItemHandlerModifiable handler;
+    private final LazyOptional<IItemHandlerModifiable> handlerLazyOptional;
 
     PlanterTileForge(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(pos, state, blockType);
+        handler = new InvWrapper(this.container);
+        handlerLazyOptional = LazyOptional.of(() -> handler);
     }
 
     @Nonnull

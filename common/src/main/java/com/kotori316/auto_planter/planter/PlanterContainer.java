@@ -1,7 +1,6 @@
 package com.kotori316.auto_planter.planter;
 
-import java.util.Objects;
-
+import com.kotori316.auto_planter.AutoPlanterCommon;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -10,7 +9,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import com.kotori316.auto_planter.AutoPlanterCommon;
+import java.util.Objects;
 
 public abstract class PlanterContainer<T extends PlanterTile> extends AbstractContainerMenu {
     public final T tile;
@@ -22,8 +21,8 @@ public abstract class PlanterContainer<T extends PlanterTile> extends AbstractCo
         this.tile = cast(player.level().getBlockEntity(pos));
         var blockType = tile.blockType();
         this.size = blockType.storageSize;
-        checkContainerSize(tile, size);
-        tile.startOpen(player);
+        checkContainerSize(tile.container, size);
+        tile.container.startOpen(player);
 
         var startXY = switch (blockType) {
             case NORMAL -> IntIntPair.of(62, 17);
@@ -50,7 +49,7 @@ public abstract class PlanterContainer<T extends PlanterTile> extends AbstractCo
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return tile.stillValid(playerIn);
+        return tile.container.stillValid(playerIn);
     }
 
     @Override
@@ -87,7 +86,7 @@ public abstract class PlanterContainer<T extends PlanterTile> extends AbstractCo
     @Override
     public void removed(Player playerIn) {
         super.removed(playerIn);
-        this.tile.stopOpen(playerIn);
+        this.tile.container.stopOpen(playerIn);
     }
 
     @SuppressWarnings("unchecked")

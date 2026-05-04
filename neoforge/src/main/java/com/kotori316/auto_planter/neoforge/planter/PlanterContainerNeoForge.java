@@ -14,6 +14,6 @@ public final class PlanterContainerNeoForge extends PlanterContainer<PlanterTile
 
     @Override
     protected Slot createSlot(PlanterTileNeoForge tile, int index, int x, int y) {
-        return new ResourceHandlerSlot(tile.handler, (i, resource, amount) -> tile.setItem(i, resource.toStack(amount)), index, x, y);
+        return new ResourceHandlerSlot(tile.handler, (i, resource, amount) -> tile.getContainer().setItem(i, resource.toStack(amount)), index, x, y);
     }
 }
