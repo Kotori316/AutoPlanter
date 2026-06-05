@@ -9,7 +9,7 @@ plugins {
     id("signing")
     id("java")
     id("net.minecraftforge.gradle") version("7.0.25")
-    id("me.modmuss50.mod-publish-plugin") version("1.1.0")
+    id("me.modmuss50.mod-publish-plugin") version("2.0.0")
     id("com.kotori316.plugin.cf").version("4.0")
 }
 
