@@ -8,7 +8,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("java")
-    id("net.minecraftforge.gradle") version("7.0.27")
+    id("net.minecraftforge.gradle") version("7.0.28")
     id("me.modmuss50.mod-publish-plugin") version("2.0.0")
     id("com.kotori316.plugin.cf").version("4.0")
 }
