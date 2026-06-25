@@ -10,7 +10,7 @@ plugins {
     id("signing")
     id("idea")
     id("net.neoforged.gradle.userdev").version("7.1.38")
-    id("me.modmuss50.mod-publish-plugin") version("2.0.1")
+    id("me.modmuss50.mod-publish-plugin") version("2.1.1")
     id("com.kotori316.plugin.cf").version("4.0")
 }
 
