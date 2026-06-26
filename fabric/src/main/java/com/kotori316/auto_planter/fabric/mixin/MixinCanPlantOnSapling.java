@@ -3,7 +3,7 @@ package com.kotori316.auto_planter.fabric.mixin;
 import com.kotori316.auto_planter.MixinHelper;
 import com.kotori316.auto_planter.fabric.planter.PlanterBlockFabric;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.VegetationBlock;
@@ -19,7 +19,7 @@ public abstract class MixinCanPlantOnSapling {
     protected void addPlanter(BlockState floor, BlockGetter view, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         if (floor.getBlock() instanceof PlanterBlockFabric) {
             Block block = MixinHelper.cast(this, Block.class);
-            if (block.defaultBlockState().is(BlockTags.SAPLINGS)) {
+            if (block.defaultBlockState().is(BlockItemTags.SAPLINGS.block())) {
                 cir.setReturnValue(Boolean.TRUE);
             }
         }
