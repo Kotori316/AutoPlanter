@@ -1,7 +1,7 @@
 plugins {
     id("maven-publish")
     id("signing")
-    id("net.fabricmc.fabric-loom") version("1.17.12")
+    id("net.fabricmc.fabric-loom") version("1.17.13")
     id("me.modmuss50.mod-publish-plugin") version("2.1.1")
     id("com.kotori316.plugin.cf").version("4.0")
 }
