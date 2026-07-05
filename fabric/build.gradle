@@ -109,6 +109,8 @@ publishMods {
         projectId = project.curseforge_id
         minecraftVersions.add(project.minecraftVersion)
         requires("automatic-potato")
+        server = true
+        client = true
     }
 
     modrinth {
