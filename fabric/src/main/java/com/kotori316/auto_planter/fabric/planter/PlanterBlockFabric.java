@@ -21,18 +21,21 @@ public sealed abstract class PlanterBlockFabric extends PlanterBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (stack.is(ItemTags.HOES)) {
+            if (!state.getValue(TRIGGERED) && !worldIn.isClientSide()) {
+                worldIn.setBlockAndUpdate(pos, state.setValue(TRIGGERED, Boolean.TRUE));
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
-            boolean notHasHoe = !player.getMainHandItem().is(ItemTags.HOES) &&
-                                !player.getOffhandItem().is(ItemTags.HOES);
-            if (notHasSapling && notHasHoe) {
+            if (notHasSapling) {
                 if (!worldIn.isClientSide()) {
                     player.openMenu(planterTile);
                 }
                 return InteractionResult.SUCCESS;
             }
         }
-
         return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 

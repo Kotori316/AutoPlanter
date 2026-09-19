@@ -22,8 +22,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.block.CropGrowEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
@@ -35,9 +36,11 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (player.getMainHandItem().is(ItemTags.HOES) ||
-            player.getOffhandItem().is(ItemTags.HOES)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (stack.is(ItemTags.HOES)) {
+            if (!state.getValue(TRIGGERED) && !worldIn.isClientSide()) {
+                worldIn.setBlockAndUpdate(pos, state.setValue(TRIGGERED, Boolean.TRUE));
+            }
+            return InteractionResult.SUCCESS;
         }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
