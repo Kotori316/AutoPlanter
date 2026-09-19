@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinSaplingGrow {
     @SuppressWarnings({"ConstantConditions"})
     @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
-    public void growOnPlanter(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random, CallbackInfo ci) {
-        if (worldIn.getBlockState(pos.below()).is(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
-            if (worldIn.getMaxLocalRawBrightness(pos.above()) >= 9 && worldIn.isAreaLoaded(pos, 1)) {
+    public void growOnPlanter(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
+        if (level.getBlockState(pos.below()).is(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
+            if (level.getMaxLocalRawBrightness(pos.above()) >= 9 && level.isAreaLoaded(pos, 1)) {
                 // Check light level only. Random check is skipped.
                 BlockState newState;
                 if (state.hasProperty(SaplingBlock.STAGE)) {
@@ -28,7 +28,7 @@ public abstract class MixinSaplingGrow {
                     // Is this a real sapling? It might be a modified sapling.
                     newState = state;
                 }
-                MixinHelper.cast(this, SaplingBlock.class).advanceTree(worldIn, pos, newState, random);
+                MixinHelper.cast(this, SaplingBlock.class).advanceTree(level, pos, newState, random);
                 // AutoPlanter.LOGGER.debug("Tree was grown in #growOnPlanter. {}, {}", state, pos);
             }
             ci.cancel();

@@ -16,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(VegetationBlock.class)
 public abstract class MixinCanPlantOnSapling {
     @Inject(method = "mayPlaceOn", at = @At("HEAD"), cancellable = true)
-    protected void addPlanter(BlockState floor, BlockGetter view, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (floor.getBlock() instanceof PlanterBlockFabric) {
+    protected void addPlanter(BlockState state, BlockGetter level, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        if (state.getBlock() instanceof PlanterBlockFabric) {
             Block block = MixinHelper.cast(this, Block.class);
             if (block.defaultBlockState().is(BlockItemTags.SAPLINGS.block())) {
                 cir.setReturnValue(Boolean.TRUE);

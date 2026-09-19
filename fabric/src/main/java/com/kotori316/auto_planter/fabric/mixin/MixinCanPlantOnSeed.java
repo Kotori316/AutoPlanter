@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinCanPlantOnSeed {
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "mayPlaceOn", at = @At("HEAD"), cancellable = true)
-    protected void addPlanter(BlockState floor, BlockGetter view, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (floor.getBlock() instanceof PlanterBlockFabric) {
-            if (floor.getValue(PlanterBlockFabric.TRIGGERED)) {
+    protected void addPlanter(BlockState state, BlockGetter level, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        if (state.getBlock() instanceof PlanterBlockFabric) {
+            if (state.getValue(PlanterBlockFabric.TRIGGERED)) {
                 Block block = MixinHelper.cast(this, Block.class);
                 if (block instanceof CropBlock) {
                     cir.setReturnValue(Boolean.TRUE);

@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
 @Mixin(TrunkPlacer.class)
 public abstract class MixinTrunkPlacer {
     @Inject(method = "placeBelowTrunkBlock", at = @At("HEAD"), cancellable = true)
-    private static void cancelPlaceDirt(WorldGenLevel level, BiConsumer<BlockPos, BlockState> trunkSetter, RandomSource random, BlockPos pos, TreeFeature config, CallbackInfo ci) {
+    private static void cancelPlaceDirt(WorldGenLevel level, BiConsumer<BlockPos, BlockState> trunkSetter, RandomSource random, BlockPos pos, TreeFeature tree, CallbackInfo ci) {
         if (level.isStateAtPosition(pos, state ->
             state.getBlock() == AutoPlanter.Holder.PLANTER_BLOCK ||
             state.getBlock() == AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {

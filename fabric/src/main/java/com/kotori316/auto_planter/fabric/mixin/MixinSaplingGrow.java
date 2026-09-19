@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(SaplingBlock.class)
 public abstract class MixinSaplingGrow {
     @Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
-    public void growOnPlanter(BlockState state, ServerLevel world, BlockPos pos, RandomSource random, CallbackInfo ci) {
-        if (world.getBlockState(pos.below()).is(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
-            if (world.getMaxLocalRawBrightness(pos.above()) >= 9)  // Check light level only. Random check is skipped.
-                advanceTree(world, pos, state, random);
+    public void growOnPlanter(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
+        if (level.getBlockState(pos.below()).is(AutoPlanter.Holder.PLANTER_UPGRADED_BLOCK)) {
+            if (level.getMaxLocalRawBrightness(pos.above()) >= 9)  // Check light level only. Random check is skipped.
+                advanceTree(level, pos, state, random);
             ci.cancel();
         }
     }
 
     @Shadow
-    public abstract void advanceTree(ServerLevel world, BlockPos pos, BlockState state, RandomSource random);
+    public abstract void advanceTree(ServerLevel level, BlockPos pos, BlockState state, RandomSource random);
 }
