@@ -41,16 +41,17 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     final String name;
 
     protected PlanterBlock(PlanterBlockType blockType, String name) {
+        var identifier = Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name);
         super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.DIRT)
             .strength(0.6f, 100)
             .sound(SoundType.GRAVEL)
-            .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false)
-            .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name)))
+            .isValidSpawn((_, _, _, _) -> false)
+            .setId(ResourceKey.create(Registries.BLOCK, identifier))
         );
         this.blockType = blockType;
         this.name = name;
-        this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name))).useBlockDescriptionPrefix());
+        this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, identifier)).useBlockDescriptionPrefix());
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
     }
 
