@@ -33,9 +33,10 @@ plugins {
 }
 
 include("common")
-if (!Boolean.parseBoolean(System.getenv("DISABLE_FORGE"))) {
-    include("forge")
-}
+// Forge does not support 26.3 yet
+// if (!Boolean.parseBoolean(System.getenv("DISABLE_FORGE"))) {
+//     include("forge")
+// }
 if (!Boolean.parseBoolean(System.getenv("DISABLE_FABRIC"))) {
     include("fabric")
 }

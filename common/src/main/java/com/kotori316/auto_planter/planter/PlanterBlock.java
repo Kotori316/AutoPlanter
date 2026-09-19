@@ -1,7 +1,6 @@
 package com.kotori316.auto_planter.planter;
 
 import com.kotori316.auto_planter.AutoPlanterCommon;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -40,7 +39,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     public final BlockItem blockItem;
     final PlanterBlockType blockType;
     final String name;
-    protected final MapCodec<? extends PlanterBlock> planterCodec;
 
     protected PlanterBlock(PlanterBlockType blockType, String name) {
         super(BlockBehaviour.Properties.of()
@@ -54,7 +52,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         this.name = name;
         this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name))).useBlockDescriptionPrefix());
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
-        this.planterCodec = this.createCodec();
     }
 
     @Override
@@ -99,31 +96,6 @@ public abstract class PlanterBlock extends BaseEntityBlock {
                 tile.plantSapling();
             }
         }
-    }
-
-    @Override
-    protected MapCodec<? extends PlanterBlock> codec() {
-        return planterCodec;
-    }
-
-    /**
-     * Override if the concrete class has constructor with some arguments.
-     *
-     * @return the codec to create instance of this block
-     */
-    protected MapCodec<? extends PlanterBlock> createCodec() {
-        return createCodec(getClass());
-    }
-
-    static MapCodec<? extends PlanterBlock> createCodec(Class<? extends PlanterBlock> clazz) {
-        return simpleCodec(p -> {
-            try {
-                var constructor = clazz.getConstructor();
-                return constructor.newInstance();
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 
     public enum PlanterBlockType {

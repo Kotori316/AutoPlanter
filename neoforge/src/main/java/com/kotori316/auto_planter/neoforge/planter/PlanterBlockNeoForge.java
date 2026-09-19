@@ -10,6 +10,7 @@ import net.minecraft.util.TriState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -18,11 +19,9 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.ItemAbilities;
-import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.block.CropGrowEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,8 +35,8 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (player.getMainHandItem().canPerformAction(ItemAbilities.HOE_TILL) ||
-            player.getOffhandItem().canPerformAction(ItemAbilities.HOE_TILL)) {
+        if (player.getMainHandItem().is(ItemTags.HOES) ||
+            player.getOffhandItem().is(ItemTags.HOES)) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
@@ -50,15 +49,6 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
             }
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
-
-    @Override
-    public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate) {
-        if (itemAbility == ItemAbilities.HOE_TILL && state.is(this) && !state.getValue(TRIGGERED)) {
-            return state.setValue(TRIGGERED, Boolean.TRUE);
-        } else {
-            return super.getToolModifiedState(state, context, itemAbility, simulate);
-        }
     }
 
     @Override
@@ -76,7 +66,7 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
     }
 
     @Override
-    public boolean onTreeGrow(BlockState state, WorldGenLevel level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeConfiguration config) {
+    public boolean onTreeGrow(BlockState state, WorldGenLevel level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeFeature config) {
         // No action is needed in TrunkPlacer#placeBelowTrunkBlock
         return false;
     }

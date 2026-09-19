@@ -7,7 +7,6 @@
     "MixinCanPlantOnSapling",
     "MixinCanPlantOnSeed",
     "MixinGetAvailableMoisture",
-    "MixinHoeUsed",
     "MixinTrunkPlacer",
     "MixinSaplingGrow"
   ],
