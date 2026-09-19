@@ -9,7 +9,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "auto_planter:planter_upgraded2"
+        "recipes": ["auto_planter:planter_upgraded2"]
       }
     },
     "has_planter": {
