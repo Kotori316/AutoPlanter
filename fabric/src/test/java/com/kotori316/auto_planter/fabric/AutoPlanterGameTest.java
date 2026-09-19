@@ -42,7 +42,8 @@ public final class AutoPlanterGameTest implements ModInitializer {
             "placeSaplingTest2", AutoPlanterGameTest::placeSaplingTest2,
             "placeSeedTest1", AutoPlanterGameTest::placeSeedTest1,
             "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2,
-            "placeSaplingItemTest", AutoPlanterGameTest::placeSaplingItemTest
+            "placeSaplingItemTest", AutoPlanterGameTest::placeSaplingItemTest,
+            "hoeTriggersTest", AutoPlanterGameTest::hoeTriggersTest
         );
         var blocks = Stream.of(Map.entry("Normal", AutoPlanter.Holder.PLANTER_BLOCK), Map.entry("Advanced", AutoPlanter.Holder.PLANTER_BLOCK));
 
@@ -119,19 +120,31 @@ public final class AutoPlanterGameTest implements ModInitializer {
         helper.succeed();
     }
 
+    static void hoeTriggersTest(GameTestHelper helper, PlanterBlock block) {
+        var pos = new BlockPos(0, 1, 0);
+        helper.setBlock(pos, block.defaultBlockState().setValue(PlanterBlock.TRIGGERED, false));
+        useBlock(helper, pos, helper.makeMockPlayer(GameType.CREATIVE), new ItemStack(Items.WOODEN_HOE), Direction.UP);
+        helper.assertBlockProperty(pos, PlanterBlock.TRIGGERED, true);
+        helper.succeed();
+    }
+
     /**
-     * Copied from ExtendedGameTestHelper in NeoForge
+     * Mirrors the real ServerPlayerGameMode.useItemOn order: blockState.useItemOn first,
+     * then useWithoutItem on TryEmptyHandInteraction, then itemStack.useOn.
      */
     private static void useBlock(GameTestHelper helper, BlockPos pos, Player player, ItemStack item, Direction direction) {
         player.setItemInHand(InteractionHand.MAIN_HAND, item);
-
         BlockPos blockpos = helper.absolutePos(pos);
         BlockState blockstate = helper.getLevel().getBlockState(blockpos);
         BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(blockpos), direction, blockpos, true);
-        InteractionResult interactionresult = blockstate.useWithoutItem(helper.getLevel(), player, hit);
-        if (!interactionresult.consumesAction()) {
-            UseOnContext useoncontext = new UseOnContext(player, InteractionHand.MAIN_HAND, hit);
-            player.getItemInHand(InteractionHand.MAIN_HAND).useOn(useoncontext);
+        InteractionResult blockResult = blockstate.useItemOn(item, helper.getLevel(), player, InteractionHand.MAIN_HAND, hit);
+        if (blockResult == InteractionResult.TRY_WITH_EMPTY_HAND) {
+            InteractionResult useResult = blockstate.useWithoutItem(helper.getLevel(), player, hit);
+            if (!useResult.consumesAction()) {
+                player.getItemInHand(InteractionHand.MAIN_HAND).useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+            }
+        } else if (!blockResult.consumesAction()) {
+            player.getItemInHand(InteractionHand.MAIN_HAND).useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
         }
     }
 }
