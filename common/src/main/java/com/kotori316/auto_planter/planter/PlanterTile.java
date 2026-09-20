@@ -15,7 +15,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.PitcherCropBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -139,16 +141,19 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     public static boolean isPlantable(ItemStack stack, boolean triggered) {
         if (stack.isEmpty()) return false;
         Item item = stack.getItem();
-        if (item instanceof BlockItem) {
+        if (item instanceof BlockItem blockItem) {
             if (stack.is(ItemTags.SAPLINGS)) {
                 return true;
             }
             if (triggered) {
-                // Seed and crops
-                return ((BlockItem) item).getBlock() instanceof CropBlock;
+                return isPlantableCrop(blockItem.getBlock());
             }
         }
         return false;
+    }
+
+    public static boolean isPlantableCrop(Block crop) {
+        return crop instanceof CropBlock || crop instanceof PitcherCropBlock;
     }
 
     @Override
