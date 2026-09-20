@@ -1,5 +1,6 @@
 package com.kotori316.auto_planter.planter;
 
+import com.kotori316.auto_planter.AutoPlanterCommon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class PlanterTile extends BlockEntity implements Container, MenuProvider {
     public final NonNullList<ItemStack> inventoryContents;
     private final PlanterBlock.PlanterBlockType blockType;
+    boolean plant = false;
 
     protected PlanterTile(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(blockType.entityType.get(), pos, state);
@@ -34,8 +36,17 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
         this.inventoryContents = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
     }
 
-    public void plantSapling() {
-        if (level != null && !level.isClientSide()) {
+    public void schedulePlantSapling() {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+
+        plant = true;
+    }
+
+    void plantSapling() {
+        if (level != null && !level.isClientSide() && plant) {
+            plant = false;
             BlockPos upPos = getBlockPos().above();
             BlockState state = level.getBlockState(upPos);
             if (level.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
@@ -44,6 +55,7 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
                         DirectionalPlaceContext context = new DirectionalPlaceContext(level, upPos, Direction.DOWN, maybeSapling, Direction.UP);
                         if (state.canBeReplaced(context)) {
                             ((BlockItem) maybeSapling.getItem()).place(context);
+                            break;
                         }
                     }
                 }
@@ -125,7 +137,7 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
 
     @Override
     public void stopOpen(ContainerUser user) {
-        if (level != null && !level.isClientSide()) plantSapling();
+        if (level != null && !level.isClientSide()) schedulePlantSapling();
     }
 
     @Override
