@@ -14,6 +14,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -37,6 +39,12 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, PlanterTileFabric.Normal.TILE_ID, Holder.PLANTER_TILE_TILE_ENTITY_TYPE);
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, PlanterTileFabric.Upgraded.TILE_ID, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
         Registry.register(BuiltInRegistries.MENU, Identifier.parse(PlanterContainer.GUI_ID), Holder.PLANTER_CONTAINER_TYPE);
+        ItemStorage.SIDED.registerForBlockEntities((blockEntity, side) -> {
+            if (blockEntity instanceof PlanterTile planterTile) {
+                return ContainerStorage.of(planterTile.getContainer(), side);
+            }
+            return null;
+        }, Holder.PLANTER_TILE_TILE_ENTITY_TYPE, Holder.PLANTER_UPGRADED_TILE_ENTITY_TYPE);
         LOGGER.debug("Registered misc in mod Auto Planter");
         AutoPlanterCommon.accessor = new Holder();
     }
