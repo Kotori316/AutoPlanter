@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
@@ -107,6 +108,7 @@ public final class AutoPlanterGameTest {
             "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2,
             "canPlaceSapling", AutoPlanterGameTest::canPlaceSapling,
             "placeSaplingItemTest", AutoPlanterGameTest::placeSaplingItemTest,
+            "hopperInsertTest", AutoPlanterGameTest::hopperInsertTest,
             "hoeTriggersTest", AutoPlanterGameTest::hoeTriggersTest
         );
         var blocks = Stream.of(Map.entry("Normal", AutoPlanter.Holder.PLANTER_BLOCK), Map.entry("Advanced", AutoPlanter.Holder.PLANTER_BLOCK));
@@ -174,6 +176,30 @@ public final class AutoPlanterGameTest {
         );
         helper.assertTrue(state.isTrue(), "Must canPlaceSapling be true");
         helper.succeed();
+    }
+
+    static void hopperInsertTest(ExtendedGameTestHelper helper, PlanterBlock block) {
+        var planterPos = new BlockPos(0, 1, 0);
+        var hopperPos = planterPos.above();
+
+        helper.setBlock(planterPos, Blocks.AIR);
+        helper.setBlock(hopperPos, Blocks.AIR);
+        helper.setBlock(hopperPos.above(), Blocks.AIR);
+
+        helper.setBlock(planterPos, block);
+        // FACING=DOWN by default — hopper ejects into the block below
+        helper.setBlock(hopperPos, Blocks.HOPPER.defaultBlockState());
+
+        var hopperTile = helper.getBlockEntity(hopperPos, HopperBlockEntity.class);
+        hopperTile.setItem(0, new ItemStack(Items.OAK_SAPLING));
+
+        helper.succeedWhen(() -> {
+            var planterTile = helper.getBlockEntity(planterPos, PlanterTile.class);
+            helper.assertTrue(
+                planterTile.getContainer().countItem(Blocks.OAK_SAPLING.asItem()) > 0,
+                "Hopper must insert sapling into planter"
+            );
+        });
     }
 
     static void hoeTriggersTest(ExtendedGameTestHelper helper, PlanterBlock block) {
