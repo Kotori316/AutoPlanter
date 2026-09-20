@@ -4,9 +4,10 @@
   "package": "com.kotori316.auto_planter.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MixinCanPlantOnSugarCane",
+    "MixinGetAvailableMoisture",
     "MixinSaplingGrow",
-    "MixinTrunkPlacer",
-    "MixinGetAvailableMoisture"
+    "MixinTrunkPlacer"
   ],
   "client": [ ],
   "server": [ ],

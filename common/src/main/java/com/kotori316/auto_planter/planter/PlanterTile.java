@@ -19,6 +19,7 @@ import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.PitcherCropBlock;
+import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -165,7 +166,8 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     }
 
     public static boolean isPlantableCrop(Block crop) {
-        return crop instanceof CropBlock || crop instanceof PitcherCropBlock || AutoPlanterCommon.accessor.isPlantableCropAddition(crop);
+        return crop instanceof CropBlock || crop instanceof PitcherCropBlock || crop instanceof SugarCaneBlock
+            || AutoPlanterCommon.accessor.isPlantableCropAddition(crop);
     }
 
     @Override
