@@ -1,0 +1,14 @@
+{
+  "required": false,
+  "minVersion": "0.8.5",
+  "package": "com.kotori316.auto_planter.fabric.mixin.compat",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinFishOfThievesPineapple"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

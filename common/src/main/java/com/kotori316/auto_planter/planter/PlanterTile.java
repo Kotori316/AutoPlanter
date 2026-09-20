@@ -165,7 +165,7 @@ public abstract class PlanterTile extends BlockEntity implements Container, Menu
     }
 
     public static boolean isPlantableCrop(Block crop) {
-        return crop instanceof CropBlock || crop instanceof PitcherCropBlock;
+        return crop instanceof CropBlock || crop instanceof PitcherCropBlock || AutoPlanterCommon.accessor.isPlantableCropAddition(crop);
     }
 
     @Override

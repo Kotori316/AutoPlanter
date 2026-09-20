@@ -1,12 +1,12 @@
 package com.kotori316.auto_planter;
 
+import com.kotori316.auto_planter.planter.PlanterContainer;
+import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.kotori316.auto_planter.planter.PlanterContainer;
-import com.kotori316.auto_planter.planter.PlanterTile;
 
 public final class AutoPlanterCommon {
     public static final String AUTO_PLANTER = "auto_planter";
@@ -23,5 +23,9 @@ public final class AutoPlanterCommon {
         BlockEntityType<? extends PlanterTile> upgradedType();
 
         MenuType<? extends PlanterContainer<?>> planterMenuType();
+
+        default boolean isPlantableCropAddition(Block crop) {
+            return false;
+        }
     }
 }

@@ -14,6 +14,8 @@ Auto Planter
 '''
 [[mixins]]
 config = "auto_planter.mixins.json"
+[[mixins]]
+config = "auto_planter_compat.mixins.json"
 [[dependencies.auto_planter]]
 modId = "neoforge"
 type = "required"

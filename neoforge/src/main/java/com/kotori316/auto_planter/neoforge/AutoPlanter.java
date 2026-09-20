@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -110,6 +111,17 @@ public final class AutoPlanter {
         @Override
         public MenuType<PlanterContainerNeoForge> planterMenuType() {
             return PLANTER_CONTAINER_TYPE;
+        }
+
+        @Override
+        public boolean isPlantableCropAddition(Block crop) {
+            // Fish of Thieves' pineapple (Issue #668): PineappleCropBlock extends DoublePlantBlock,
+            // not CropBlock/PitcherCropBlock, so it can't be recognized generically. The mod isn't
+            // a compile dependency, so it's identified by class name and only when actually loaded.
+            if (ModList.get().isLoaded("fishofthieves")) {
+                return crop.getClass().getName().equals("com.stevekung.fishofthieves.block.PineappleCropBlock");
+            }
+            return false;
         }
 
         static {
