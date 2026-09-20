@@ -20,19 +20,19 @@ println("Java: " + System.getProperty("java.version") +
 loom {
     runs {
         named("client") {
-            configName = "Client"
-            runDir = "run"
+            displayName = "Client"
+            runDirectory = file("run")
         }
         create("gameTestServer") {
-            configName = "GameTestServer"
+            displayName = "GameTestServer"
             server()
             //noinspection SpellCheckingInspection
-            vmArgs(
+            jvmArguments.addAll(
                     "-ea",
                     "-Dfabric-api.gametest",
                     "-Dfabric-api.gametest.report-file=game_test/test-results/test/game_test.xml"
             )
-            runDir = "run-server"
+            runDirectory = file("run-server")
             source(sourceSets.getAt("test"))
         }
     }
@@ -109,6 +109,8 @@ publishMods {
         projectId = project.curseforge_id
         minecraftVersions.add(project.minecraftVersion)
         requires("automatic-potato")
+        server = true
+        client = true
     }
 
     modrinth {

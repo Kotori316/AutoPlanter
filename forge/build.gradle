@@ -150,6 +150,8 @@ publishMods {
         accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: "") as String
         projectId = project.curseforge_id
         minecraftVersions.add(project.minecraftVersion)
+        server = true
+        client = true
     }
 
     modrinth {
