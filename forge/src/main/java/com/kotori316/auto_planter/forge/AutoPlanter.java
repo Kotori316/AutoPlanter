@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -102,7 +103,7 @@ public final class AutoPlanter {
 
         @Override
         public boolean isPlantableCropAddition(Block crop) {
-            return AutoPlanterCommon.TypeAccessor.super.isPlantableCropAddition(crop);
+            return crop instanceof SugarCaneBlock;
         }
 
         static {
