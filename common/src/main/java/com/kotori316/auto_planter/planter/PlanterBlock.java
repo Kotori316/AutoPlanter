@@ -48,7 +48,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
             .mapColor(MapColor.DIRT)
             .strength(0.6f, 100)
             .sound(SoundType.GRAVEL)
-            .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false)
+            .isValidSpawn((_, _, _, _) -> false)
             .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name)))
         );
         this.blockType = blockType;
@@ -105,7 +105,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         if (blockEntityType == AutoPlanterCommon.accessor.normalType() || blockEntityType == AutoPlanterCommon.accessor.upgradedType()) {
-            return (level1, blockPos, blockState, t) -> {
+            return (_, _, _, t) -> {
                 if (t instanceof PlanterTile tile) {
                     tile.plantSapling();
                 }
@@ -129,7 +129,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
     }
 
     static MapCodec<? extends PlanterBlock> createCodec(Class<? extends PlanterBlock> clazz) {
-        return simpleCodec(p -> {
+        return simpleCodec(_ -> {
             try {
                 var constructor = clazz.getConstructor();
                 return constructor.newInstance();

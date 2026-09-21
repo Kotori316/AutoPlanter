@@ -128,7 +128,7 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     }
 
     protected void onInventoryClose() {
-        plantSapling();
+        schedulePlantSapling();
     }
 
     protected void onInventoryUpdate() {
