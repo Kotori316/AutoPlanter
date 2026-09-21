@@ -12,6 +12,8 @@ authors = "Kotori316"
 description = '''
 Auto Planter
 '''
+bannerFile = "assets/auto_planter/textures/planter_big.png"
+iconFile = "assets/auto_planter/textures/planter_big.png"
 [[mixins]]
 config = "auto_planter.mixins.json"
 [[dependencies.auto_planter]]

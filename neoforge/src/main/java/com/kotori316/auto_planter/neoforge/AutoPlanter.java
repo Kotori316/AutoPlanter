@@ -11,10 +11,13 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -29,8 +32,9 @@ import org.slf4j.Logger;
 public final class AutoPlanter {
     public static final Logger LOGGER = AutoPlanterCommon.LOGGER;
 
-    public AutoPlanter() {
+    public AutoPlanter(ModContainer container) {
         LOGGER.info("{} initialization", AutoPlanterCommon.AUTO_PLANTER);
+        container.registerConfig(ModConfig.Type.COMMON, AutoPlanterConfig.SPEC_INSTANCE);
     }
 
     @EventBusSubscriber(modid = AutoPlanterCommon.AUTO_PLANTER)
@@ -114,7 +118,7 @@ public final class AutoPlanter {
 
         @Override
         public boolean isPlantableCropAddition(Block crop) {
-            return AutoPlanterCommon.TypeAccessor.super.isPlantableCropAddition(crop);
+            return AutoPlanterConfig.INSTANCE.allowSugarcane.getAsBoolean() && crop instanceof SugarCaneBlock; // Allow Sugarcane if config permits
         }
 
         static {

@@ -2,5 +2,6 @@
   "item.auto_planter.check_plantable": "Check Plantable Item",
   "block.auto_planter.planter": "Auto Planter",
   "block.auto_planter.planter_upgraded": "Advanced Auto Planter",
-  "tooltip.auto_planter.planter_item": "Interact with this block using a hoe to plant seeds"
+  "tooltip.auto_planter.planter_item": "Interact with this block using a hoe to plant seeds",
+  "config.auto_planter.allow_sugarcane": "Allow AutoPlanter to place Sugarcane in Farmland mode"
 }
