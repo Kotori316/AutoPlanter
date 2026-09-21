@@ -100,18 +100,18 @@ public final class AutoPlanterGameTest {
     }
 
     private static List<TestFunction> createTests() {
-        Map<String, BiConsumer<ExtendedGameTestHelper, PlanterBlock>> tests = Map.of(
-            "placeTest", AutoPlanterGameTest::placeTest,
-            "placeSaplingTest1", AutoPlanterGameTest::placeSaplingTest1,
-            "placeSaplingTest2", AutoPlanterGameTest::placeSaplingTest2,
-            "placeSeedTest1", AutoPlanterGameTest::placeSeedTest1,
-            "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2,
-            "canPlaceSapling", AutoPlanterGameTest::canPlaceSapling,
-            "placeSaplingItemTest", AutoPlanterGameTest::placeSaplingItemTest,
-            "placeSeedItemFailTest", AutoPlanterGameTest::placeSeedItemFailTest,
-            "placeSeedItemSuccessTest", AutoPlanterGameTest::placeSeedItemSuccessTest,
-            "hopperInsertTest", AutoPlanterGameTest::hopperInsertTest,
-            "hoeTriggersTest", AutoPlanterGameTest::hoeTriggersTest
+        Map<String, BiConsumer<ExtendedGameTestHelper, PlanterBlock>> tests = Map.ofEntries(
+            Map.entry("placeTest", AutoPlanterGameTest::placeTest),
+            Map.entry("placeSaplingTest1", AutoPlanterGameTest::placeSaplingTest1),
+            Map.entry("placeSaplingTest2", AutoPlanterGameTest::placeSaplingTest2),
+            Map.entry("placeSeedTest1", AutoPlanterGameTest::placeSeedTest1),
+            Map.entry("placeSeedTest2", AutoPlanterGameTest::placeSeedTest2),
+            Map.entry("canPlaceSapling", AutoPlanterGameTest::canPlaceSapling),
+            Map.entry("placeSaplingItemTest", AutoPlanterGameTest::placeSaplingItemTest),
+            Map.entry("placeSeedItemFailTest", AutoPlanterGameTest::placeSeedItemFailTest),
+            Map.entry("placeSeedItemSuccessTest", AutoPlanterGameTest::placeSeedItemSuccessTest),
+            Map.entry("hopperInsertTest", AutoPlanterGameTest::hopperInsertTest),
+            Map.entry("hoeTriggersTest", AutoPlanterGameTest::hoeTriggersTest)
         );
         var blocks = Stream.of(Map.entry("Normal", AutoPlanter.Holder.PLANTER_BLOCK), Map.entry("Advanced", AutoPlanter.Holder.PLANTER_BLOCK));
 

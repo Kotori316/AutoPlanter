@@ -15,6 +15,7 @@ final class PlanterItem extends BlockItem {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> componentAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, display, componentAdder, flag);
         componentAdder.accept(Component.translatable("tooltip.auto_planter.planter_item"));
