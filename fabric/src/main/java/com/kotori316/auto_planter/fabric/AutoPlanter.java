@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -24,6 +25,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.slf4j.Logger;
 
@@ -86,6 +88,17 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         @Override
         public MenuType<? extends PlanterContainer<?>> planterMenuType() {
             return PLANTER_CONTAINER_TYPE;
+        }
+
+        @Override
+        public boolean isPlantableCropAddition(Block crop) {
+            // Fish of Thieves' pineapple (Issue #668): PineappleCropBlock extends DoublePlantBlock,
+            // not CropBlock/PitcherCropBlock, so it can't be recognized generically. The mod isn't
+            // a compile dependency, so it's identified by class name and only when actually loaded.
+            if (FabricLoader.getInstance().isModLoaded("fishofthieves")) {
+                return crop.getClass().getName().equals("com.stevekung.fishofthieves.block.PineappleCropBlock");
+            }
+            return false;
         }
     }
 }
