@@ -1,14 +1,12 @@
 package com.kotori316.auto_planter.planter;
 
+import com.kotori316.auto_planter.AutoPlanterCommon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -16,19 +14,22 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.PitcherCropBlock;
+import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.function.Consumer;
 
 public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     protected final SimpleContainer container;
     private final PlanterBlock.PlanterBlockType blockType;
+    boolean plant = false;
 
     protected PlanterTile(BlockPos pos, BlockState state, PlanterBlock.PlanterBlockType blockType) {
         super(blockType.entityType.get(), pos, state);
@@ -36,8 +37,17 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
         this.container = new PlanterInventory(blockType.storageSize, this::onInventoryOpen, this::onInventoryClose, this::onInventoryUpdate);
     }
 
-    public void plantSapling() {
-        if (level != null && !level.isClientSide()) {
+    public void schedulePlantSapling() {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+
+        plant = true;
+    }
+
+    void plantSapling() {
+        if (level != null && !level.isClientSide() && plant) {
+            plant = false;
             BlockPos upPos = getBlockPos().above();
             BlockState state = level.getBlockState(upPos);
             if (level.getFluidState(upPos).isEmpty()) { // Water removes sapling immediately.
@@ -47,6 +57,7 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
                         if (state.canBeReplaced(context)) {
                             ((BlockItem) maybeSapling.getItem()).place(context);
                             setChanged();
+                            break;
                         }
                     }
                 }
@@ -80,16 +91,20 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     public static boolean isPlantable(ItemStack stack, boolean triggered) {
         if (stack.isEmpty()) return false;
         Item item = stack.getItem();
-        if (item instanceof BlockItem) {
+        if (item instanceof BlockItem blockItem) {
             if (stack.is(ItemTags.SAPLINGS)) {
                 return true;
             }
             if (triggered) {
-                // Seed and crops
-                return ((BlockItem) item).getBlock() instanceof CropBlock;
+                return isPlantableCrop(blockItem.getBlock());
             }
         }
         return false;
+    }
+
+    public static boolean isPlantableCrop(Block crop) {
+        return crop instanceof CropBlock || crop instanceof PitcherCropBlock || crop instanceof SugarCaneBlock
+            || AutoPlanterCommon.accessor.isPlantableCropAddition(crop);
     }
 
     @Override
@@ -100,16 +115,23 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     @Override
     public abstract PlanterContainer<?> createMenu(int id, Inventory inv, Player p);
 
-    @VisibleForTesting
     public final Container getContainer() {
         return this.container;
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (this.level != null) {
+            Containers.dropContents(this.level, pos, container);
+        }
     }
 
     protected void onInventoryOpen(ServerPlayer player) {
     }
 
     protected void onInventoryClose() {
-        plantSapling();
+        schedulePlantSapling();
     }
 
     protected void onInventoryUpdate() {

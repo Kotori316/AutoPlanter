@@ -24,6 +24,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.slf4j.Logger;
 
@@ -86,6 +87,11 @@ public final class AutoPlanter implements ModInitializer, ClientModInitializer {
         @Override
         public MenuType<? extends PlanterContainer<?>> planterMenuType() {
             return PLANTER_CONTAINER_TYPE;
+        }
+
+        @Override
+        public boolean isPlantableCropAddition(Block crop) {
+            return AutoPlanterCommon.TypeAccessor.super.isPlantableCropAddition(crop);
         }
     }
 }

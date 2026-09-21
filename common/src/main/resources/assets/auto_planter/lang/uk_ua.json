@@ -1,5 +1,6 @@
 {
   "item.auto_planter.check_plantable": "Перевірте садильний предмет",
   "block.auto_planter.planter": "Автосадівник",
-  "block.auto_planter.planter_upgraded": "Просунутий автосадівник"
+  "block.auto_planter.planter_upgraded": "Просунутий автосадівник",
+  "tooltip.auto_planter.planter_item": "Взаємодійте з цим блоком мотикою, щоб посадити насіння"
 }

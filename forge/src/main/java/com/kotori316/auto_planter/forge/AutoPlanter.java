@@ -100,6 +100,11 @@ public final class AutoPlanter {
             return PLANTER_CONTAINER_TYPE;
         }
 
+        @Override
+        public boolean isPlantableCropAddition(Block crop) {
+            return AutoPlanterCommon.TypeAccessor.super.isPlantableCropAddition(crop);
+        }
+
         static {
             AutoPlanterCommon.accessor = new Holder();
         }

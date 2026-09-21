@@ -143,6 +143,7 @@ publishMods {
     file = tasks.jar.archiveFile
     additionalFiles.from(tasks.named("sourcesJar"))
     modLoaders.add("forge")
+    version = "${project.version}-forge"
     displayName = "${project.version}-forge"
     changelog = "For Minecraft ${project.minecraftVersion} with Forge ${project.forgeVersion}"
 

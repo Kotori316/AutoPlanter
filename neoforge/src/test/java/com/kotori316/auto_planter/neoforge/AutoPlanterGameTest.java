@@ -101,6 +101,8 @@ public final class AutoPlanterGameTest {
             "placeSeedTest2", AutoPlanterGameTest::placeSeedTest2,
             "canPlaceSapling", AutoPlanterGameTest::canPlaceSapling,
             "placeSaplingItemTest", AutoPlanterGameTest::placeSaplingItemTest,
+            "placeSeedItemFailTest", AutoPlanterGameTest::placeSeedItemFailTest,
+            "placeSeedItemSuccessTest", AutoPlanterGameTest::placeSeedItemSuccessTest,
             "hopperInsertTest", AutoPlanterGameTest::hopperInsertTest
         );
         var blocks = Stream.of(Map.entry("Normal", AutoPlanter.Holder.PLANTER_BLOCK), Map.entry("Advanced", AutoPlanter.Holder.PLANTER_BLOCK));
@@ -202,11 +204,50 @@ public final class AutoPlanterGameTest {
         helper.setBlock(pos, block.defaultBlockState().setValue(PlanterBlock.TRIGGERED, false));
         var tile = helper.getBlockEntity(pos, PlanterTile.class);
         tile.getContainer().setItem(0, new ItemStack(sapling));
-        tile.plantSapling();
-
-        helper.assertBlockPresent(sapling, pos.above());
-        helper.assertBlockState(pos, tile.getBlockState());
-        helper.assertTrue(tile.getContainer().countItem(sapling.asItem()) == 0, "Must be empty");
-        helper.succeed();
+        helper.startSequence()
+            .thenExecuteAfter(1, tile::schedulePlantSapling)
+            .thenExecuteAfter(1, () -> {
+                helper.assertBlockPresent(sapling, pos.above());
+                helper.assertBlockState(pos, tile.getBlockState());
+                helper.assertTrue(tile.getContainer().countItem(sapling.asItem()) == 0, "Must be empty");
+            })
+            .thenSucceed();
     }
+
+    static void placeSeedItemFailTest(GameTestHelper helper, PlanterBlock block) {
+        var pos = new BlockPos(0, 1, 0);
+        helper.setBlock(pos, Blocks.AIR);
+        helper.setBlock(pos.above(), Blocks.AIR);
+        var seed = Items.WHEAT_SEEDS;
+        helper.setBlock(pos, block.defaultBlockState().setValue(PlanterBlock.TRIGGERED, false));
+        var tile = helper.getBlockEntity(pos, PlanterTile.class);
+        tile.getContainer().setItem(0, new ItemStack(seed));
+        helper.startSequence()
+            .thenExecuteAfter(1, tile::schedulePlantSapling)
+            .thenExecuteAfter(1, () -> {
+                helper.assertBlockPresent(Blocks.AIR, pos.above());
+                helper.assertBlockState(pos, tile.getBlockState());
+                helper.assertTrue(tile.getContainer().countItem(seed.asItem()) == 1, "Must not consume");
+            })
+            .thenSucceed();
+    }
+
+    static void placeSeedItemSuccessTest(GameTestHelper helper, PlanterBlock block) {
+        var pos = new BlockPos(0, 1, 0);
+        helper.setBlock(pos, Blocks.AIR);
+        helper.setBlock(pos.above(), Blocks.AIR);
+        var seed = Items.WHEAT_SEEDS;
+        helper.setBlock(pos, block.defaultBlockState().setValue(PlanterBlock.TRIGGERED, true));
+        var tile = helper.getBlockEntity(pos, PlanterTile.class);
+        tile.getContainer().setItem(0, new ItemStack(seed));
+        helper.startSequence()
+            .thenExecuteAfter(1, tile::schedulePlantSapling)
+            .thenExecuteAfter(1, () -> {
+                helper.assertBlockPresent(Blocks.WHEAT, pos.above());
+                helper.assertBlockState(pos, tile.getBlockState());
+                helper.assertTrue(tile.getContainer().countItem(seed.asItem()) == 0, "Must be empty");
+            })
+            .thenSucceed();
+    }
+
 }
