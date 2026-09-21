@@ -3,5 +3,9 @@
   "block.auto_planter.planter": "Auto Planter",
   "block.auto_planter.planter_upgraded": "Advanced Auto Planter",
   "tooltip.auto_planter.planter_item": "クワを使うと種が植えられるようになります",
-  "config.auto_planter.allow_sugarcane": "サトウキビをAuto Planterに植えられるようにする"
+  "auto_planter.configuration.title": "Auto Planter",
+  "auto_planter.configuration.section.auto.planter.common.toml": "Auto Planterの設定",
+  "auto_planter.configuration.section.auto.planter.common.toml.title": "Auto Planter",
+  "config.auto_planter.allow_sugarcane": "サトウキビのサポート",
+  "config.auto_planter.allow_sugarcane.tooltip": "サトウキビをAuto Planterに植えられるようにする"
 }
