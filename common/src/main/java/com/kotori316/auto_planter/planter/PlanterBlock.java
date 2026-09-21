@@ -53,7 +53,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         );
         this.blockType = blockType;
         this.name = name;
-        this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name))).useBlockDescriptionPrefix());
+        this.blockItem = new PlanterItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(AutoPlanterCommon.AUTO_PLANTER, name))).useBlockDescriptionPrefix());
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
         this.planterCodec = this.createCodec();
     }
