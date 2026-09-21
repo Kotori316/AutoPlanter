@@ -24,8 +24,7 @@
     ]
   },
   "mixins": [
-    "auto_planter.mixins.json",
-    "auto_planter_compat.mixins.json"
+    "auto_planter.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.11",
