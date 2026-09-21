@@ -101,6 +101,7 @@ publishMods {
     file = tasks.jar.archiveFile
     additionalFiles.from(tasks.named("sourcesJar"))
     modLoaders.add("fabric")
+    version = "${project.version}-fabric"
     displayName = "${project.version}-fabric"
     changelog = "For Minecraft ${project.minecraftVersion} with Fabric ${project.fabric_version}"
 

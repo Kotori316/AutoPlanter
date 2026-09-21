@@ -158,6 +158,7 @@ publishMods {
     file = tasks.jar.archiveFile
     additionalFiles.from(tasks.named("sourcesJar"))
     modLoaders.add("neoforge")
+    version = "${project.version}-neoforge"
     displayName = "${project.version}-neoforge"
     changelog = "For Minecraft ${project.minecraftVersion} with NeoForge ${project.neo_version}"
 
