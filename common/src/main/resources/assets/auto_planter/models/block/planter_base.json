@@ -3,7 +3,7 @@
   "textures": {
     "particle": "#side",
     "down": "minecraft:block/dirt",
-    "up": "minecraft:block/dirt",
+    "up": "#up",
     "north": "#side",
     "east": "#side",
     "south": "#side",

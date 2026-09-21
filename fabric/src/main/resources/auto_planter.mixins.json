@@ -6,9 +6,11 @@
   "mixins": [
     "MixinCanPlantOnSapling",
     "MixinCanPlantOnSeed",
+    "MixinCanPlantOnSugarCane",
     "MixinGetAvailableMoisture",
     "MixinTrunkPlacer",
-    "MixinSaplingGrow"
+    "MixinSaplingGrow",
+    "MixinTrunkPlacer"
   ],
   "client": [ ],
   "server": [ ],

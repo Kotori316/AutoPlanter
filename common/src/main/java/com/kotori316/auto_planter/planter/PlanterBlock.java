@@ -4,8 +4,8 @@ import com.kotori316.auto_planter.AutoPlanterCommon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,7 +52,7 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         );
         this.blockType = blockType;
         this.name = name;
-        this.blockItem = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, identifier)).useBlockDescriptionPrefix());
+        this.blockItem = new PlanterItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, identifier)).useBlockDescriptionPrefix());
         registerDefaultState(getStateDefinition().any().setValue(TRIGGERED, false));
     }
 
@@ -94,9 +95,21 @@ public abstract class PlanterBlock extends BaseEntityBlock {
         super.neighborChanged(state, worldIn, pos, blockIn, orientation, isMoving);
         if (!worldIn.isClientSide()) {
             if (worldIn.getBlockEntity(pos) instanceof PlanterTile tile) {
-                tile.plantSapling();
+                tile.schedulePlantSapling();
             }
         }
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (blockEntityType == AutoPlanterCommon.accessor.normalType() || blockEntityType == AutoPlanterCommon.accessor.upgradedType()) {
+            return (_, _, _, t) -> {
+                if (t instanceof PlanterTile tile) {
+                    tile.plantSapling();
+                }
+            };
+        }
+        return null;
     }
 
     public enum PlanterBlockType {

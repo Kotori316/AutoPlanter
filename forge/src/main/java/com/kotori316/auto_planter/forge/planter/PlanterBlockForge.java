@@ -15,11 +15,12 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.PlantType;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.Result;
@@ -62,12 +63,14 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
 
     @Override
     public final boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
-        PlantType type = plantable.getPlantType(world, pos.relative(facing));
-        if (state.getValue(TRIGGERED)) {
-            return type == PlantType.PLAINS || type == PlantType.CROP;
-        } else {
-            return type == PlantType.PLAINS;
+        Block block = plantable.getPlant(world, pos.relative(facing)).getBlock();
+        if (block instanceof SaplingBlock) {
+            return true;
         }
+        if (state.getValue(TRIGGERED) && PlanterTile.isPlantableCrop(block)) {
+            return true;
+        }
+        return super.canSustainPlant(state, world, pos, facing, plantable);
     }
 
     @Override

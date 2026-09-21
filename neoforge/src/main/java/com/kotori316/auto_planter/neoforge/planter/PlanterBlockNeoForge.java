@@ -16,7 +16,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
@@ -60,10 +59,8 @@ public sealed abstract class PlanterBlockNeoForge extends PlanterBlock {
         if (block instanceof SaplingBlock) {
             return TriState.TRUE;
         }
-        if (block instanceof CropBlock) {
-            if (state.getValue(TRIGGERED)) {
-                return TriState.TRUE;
-            }
+        if (state.getValue(TRIGGERED) && PlanterTile.isPlantableCrop(block)) {
+            return TriState.TRUE;
         }
         return super.canSustainPlant(state, level, soilPosition, facing, plant);
     }
