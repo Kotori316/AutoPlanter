@@ -33,7 +33,7 @@ public abstract sealed class PlanterTileNeoForge extends PlanterTile {
     }
 
     @Override
-    public PlanterContainerNeoForge createMenu(int id, Inventory inv, Player p) {
+    public PlanterContainerNeoForge createMenu(int id, @NotNull Inventory inv, @NotNull Player p) {
         return new PlanterContainerNeoForge(id, p, getBlockPos(), AutoPlanterCommon.accessor.planterMenuType());
     }
 

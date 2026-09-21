@@ -70,13 +70,13 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
+    protected void saveAdditional(@NotNull ValueOutput output) {
         ContainerHelper.saveAllItems(output, this.container.getItems());
         super.saveAdditional(output);
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
+    protected void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
         ContainerHelper.loadAllItems(input, this.container.getItems());
     }
@@ -106,20 +106,21 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
             || AutoPlanterCommon.accessor.isPlantableCropAddition(crop);
     }
 
+    @NotNull
     @Override
     public Component getDisplayName() {
         return getBlockState().getBlock().getName();
     }
 
     @Override
-    public abstract PlanterContainer<?> createMenu(int id, Inventory inv, Player p);
+    public abstract PlanterContainer<?> createMenu(int id, @NotNull Inventory inv, @NotNull Player p);
 
     public final Container getContainer() {
         return this.container;
     }
 
     @Override
-    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
         super.preRemoveSideEffects(pos, state);
         if (this.level != null) {
             Containers.dropContents(this.level, pos, container);
@@ -150,7 +151,7 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
         }
 
         @Override
-        public void startOpen(ContainerUser containerUser) {
+        public void startOpen(@NotNull ContainerUser containerUser) {
             super.startOpen(containerUser);
             if (containerUser instanceof ServerPlayer player) {
                 onOpen.accept(player);
@@ -158,13 +159,13 @@ public abstract class PlanterTile extends BlockEntity implements MenuProvider {
         }
 
         @Override
-        public void stopOpen(ContainerUser containerUser) {
+        public void stopOpen(@NotNull ContainerUser containerUser) {
             super.stopOpen(containerUser);
             onClose.run();
         }
 
         @Override
-        public boolean canPlaceItem(int slot, ItemStack itemStack) {
+        public boolean canPlaceItem(int slot, @NotNull ItemStack itemStack) {
             return isPlantable(itemStack, true);
         }
 
