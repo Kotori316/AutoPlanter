@@ -22,8 +22,7 @@ jobs:
     strategy:
       matrix:
         platform:
-          # Forge for 26.3 is not available yet
-          # - forge
+          - forge
           - fabric
           - neoforge
       fail-fast: false

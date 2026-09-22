@@ -6,26 +6,23 @@ import com.kotori316.auto_planter.planter.PlanterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.Result;
 import net.minecraftforge.event.level.BlockEvent;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
@@ -37,8 +34,11 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (stack.canPerformAction(ToolActions.HOE_TILL)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (stack.is(ItemTags.HOES)) {
+            if (!state.getValue(TRIGGERED) && !worldIn.isClientSide()) {
+                worldIn.setBlockAndUpdate(pos, state.setValue(TRIGGERED, Boolean.TRUE));
+            }
+            return InteractionResult.SUCCESS;
         }
         if (worldIn.getBlockEntity(pos) instanceof PlanterTile planterTile) {
             boolean notHasSapling = hit.getDirection() != Direction.UP || !PlanterTile.isPlantable(stack, true);
@@ -49,16 +49,6 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
             }
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
-
-    @Nullable
-    @Override
-    public final BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
-        if (toolAction == ToolActions.HOE_TILL && state.is(this) && !state.getValue(TRIGGERED)) {
-            return state.setValue(TRIGGERED, Boolean.TRUE);
-        } else {
-            return super.getToolModifiedState(state, context, toolAction, simulate);
-        }
     }
 
     @Override
@@ -74,7 +64,7 @@ public sealed abstract class PlanterBlockForge extends PlanterBlock {
     }
 
     @Override
-    public boolean onTreeGrow(BlockState state, LevelReader level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeConfiguration config) {
+    public boolean onTreeGrow(BlockState state, LevelReader level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeFeature config) {
         // No action is needed in TrunkPlacer#placeBelowTrunkBlock
         return false;
     }
