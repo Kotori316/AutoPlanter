@@ -34,7 +34,7 @@ public final class AutoPlanter {
 
     public AutoPlanter(ModContainer container) {
         LOGGER.info("{} initialization", AutoPlanterCommon.AUTO_PLANTER);
-        container.registerConfig(ModConfig.Type.COMMON, AutoPlanterConfig.SPEC_INSTANCE);
+        container.registerConfig(ModConfig.Type.SYNCED, AutoPlanterConfig.SPEC_INSTANCE);
     }
 
     @EventBusSubscriber(modid = AutoPlanterCommon.AUTO_PLANTER)
