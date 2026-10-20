@@ -24,8 +24,6 @@ public final class AutoPlanterCommon {
 
         MenuType<? extends PlanterContainer<?>> planterMenuType();
 
-        default boolean isPlantableCropAddition(Block crop) {
-            return false;
-        }
+        boolean isPlantableCropAddition(Block crop);
     }
 }
