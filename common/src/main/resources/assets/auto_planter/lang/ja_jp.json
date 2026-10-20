@@ -1,11 +1,11 @@
 {
-  "item.auto_planter.check_plantable": "Check Plantable Item",
+  "auto_planter.configuration.section.auto.planter.synced.toml": "Auto Planterの設定",
+  "auto_planter.configuration.section.auto.planter.synced.toml.title": "Auto Planter",
+  "auto_planter.configuration.title": "Auto Planter",
   "block.auto_planter.planter": "Auto Planter",
   "block.auto_planter.planter_upgraded": "Advanced Auto Planter",
-  "tooltip.auto_planter.planter_item": "クワを使うと種が植えられるようになります",
-  "auto_planter.configuration.title": "Auto Planter",
-  "auto_planter.configuration.section.auto.planter.common.toml": "Auto Planterの設定",
-  "auto_planter.configuration.section.auto.planter.common.toml.title": "Auto Planter",
   "config.auto_planter.allow_sugarcane": "サトウキビのサポート",
-  "config.auto_planter.allow_sugarcane.tooltip": "サトウキビをAuto Planterに植えられるようにする"
+  "config.auto_planter.allow_sugarcane.tooltip": "サトウキビをAuto Planterに植えられるようにする",
+  "item.auto_planter.check_plantable": "Check Plantable Item",
+  "tooltip.auto_planter.planter_item": "クワを使うと種が植えられるようになります"
 }

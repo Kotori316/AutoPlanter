@@ -1,11 +1,11 @@
 {
-  "item.auto_planter.check_plantable": "Перевірте садильний предмет",
+  "auto_planter.configuration.section.auto.planter.synced.toml": "Автосадівник Configuration",
+  "auto_planter.configuration.section.auto.planter.synced.toml.title": "Автосадівник",
+  "auto_planter.configuration.title": "Автосадівник",
   "block.auto_planter.planter": "Автосадівник",
   "block.auto_planter.planter_upgraded": "Просунутий автосадівник",
-  "tooltip.auto_planter.planter_item": "Взаємодійте з цим блоком мотикою, щоб посадити насіння",
-  "auto_planter.configuration.title": "Auto Planter",
-  "auto_planter.configuration.section.auto.planter.common.toml": "Auto Planterの設定",
-  "auto_planter.configuration.section.auto.planter.common.toml.title": "Auto Planter",
   "config.auto_planter.allow_sugarcane": "Sugarcane support",
-  "config.auto_planter.allow_sugarcane.tooltip": "Allow AutoPlanter to place Sugarcane in Farmland mode"
+  "config.auto_planter.allow_sugarcane.tooltip": "Allow Автосадівник to place Sugarcane in Farmland mode",
+  "item.auto_planter.check_plantable": "Перевірте садильний предмет",
+  "tooltip.auto_planter.planter_item": "Взаємодійте з цим блоком мотикою, щоб посадити насіння"
 }
